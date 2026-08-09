@@ -2,6 +2,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from apps.common.exceptions import ConflictError
+from apps.products.services.lifecycle_service import ProductLifecycleService
 
 from .models import (
     VendorDocument,
@@ -90,8 +91,8 @@ class VendorSuspensionService:
                 store=store,
                 is_active=False,
             )
-
-        # Product suspension cascade will be added when products exists.
+            # Product suspension cascade.
+            ProductLifecycleService.suspend_store_products(store=store)
         return vendor_profile
 
     @staticmethod
@@ -115,8 +116,8 @@ class VendorSuspensionService:
                 store=store,
                 is_active=True,
             )
-
-        # Product reinstatement cascade will be added when products exists.
+            # Product reinstatement cascade
+            ProductLifecycleService.reinstate_store_products(store=store)
         return vendor_profile
 
 
