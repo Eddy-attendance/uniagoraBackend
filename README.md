@@ -177,7 +177,7 @@ License information will be added before the first public release.
 
 **Abdulsalam Abdulsomad Abdulkadir**
 
-Computer Engineering Student • Backend Engineer
+Software Engineer
 
 ---
 
