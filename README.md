@@ -151,7 +151,7 @@ Development follows a structured engineering process:
 * [x] Universities
 * [x] Vendors
 * [x] Stores
-* [ ] Products
+* [x] Products
 * [ ] Chat
 * [ ] Reviews
 * [ ] Notifications
