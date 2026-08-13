@@ -11,3 +11,5 @@ cloudinary
 django-cloudinary-storage
 drf-spectacular
 Pillow
+daphne
+redis
