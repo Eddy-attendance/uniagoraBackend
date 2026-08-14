@@ -152,10 +152,13 @@ Development follows a structured engineering process:
 * [x] Vendors
 * [x] Stores
 * [x] Products
-* [ ] Chat
-* [ ] Reviews
-* [ ] Notifications
-* [ ] Production deployment
+* [x] Chat
+* [x] Admin Dashboard
+* [x] Reports
+* [x] Categories
+* [x] Reviews
+* [x] Notifications
+* [] Production deployment
 
 ---
 
