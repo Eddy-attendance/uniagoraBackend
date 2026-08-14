@@ -43,3 +43,21 @@ class UserService:
         user.active_university = university
         user.save(update_fields=["active_university", "updated_at"])
         return user
+
+    @staticmethod
+    def activate(*, user):
+        if user.is_active:
+            raise ConflictError("User is already active.")
+
+        user.is_active = True
+        user.save(update_fields=["is_active", "updated_at"])
+        return user
+
+    @staticmethod
+    def deactivate(*, user):
+        if not user.is_active:
+            raise ConflictError("User is already inactive.")
+
+        user.is_active = False
+        user.save(update_fields=["is_active", "updated_at"])
+        return user

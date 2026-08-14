@@ -9,7 +9,7 @@ reordering belongs to a future CategoryService... not MVP-exposed per PRD,
 but schema is ready." See ADR-CAT1 in the EDD.
 """
 
-from django.db import transaction
+from django.db import IntegrityError, transaction
 
 from apps.common.exceptions import ConflictError
 
@@ -24,16 +24,17 @@ class CategoryService:
     @staticmethod
     @transaction.atomic
     def create(*, name, parent=None, display_order=0):
-        """
-        Create a category. `slug` is never accepted as input (AutoSlugMixin
-        derives it). `is_active` is never accepted — new categories are
-        always created active.
-        """
-        return Category.objects.create(
-            name=name,
-            parent=parent,
-            display_order=display_order,
-        )
+        try:
+            with transaction.atomic():
+                return Category.objects.create(
+                    name=name,
+                    parent=parent,
+                    display_order=display_order,
+                )
+        except IntegrityError as exc:
+            raise ConflictError(
+                "A category with this name already exists at this level."
+            ) from exc
 
     @staticmethod
     @transaction.atomic
