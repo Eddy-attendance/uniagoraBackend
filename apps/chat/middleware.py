@@ -1,22 +1,3 @@
-"""
-apps/chat/middleware.py
-
-Channels ASGI middleware authenticating WebSocket connections using the
-project's existing JWT approach (SimpleJWT) — per the task brief:
-"Do not create a separate authentication system for WebSockets." DRF's
-authentication classes only run inside DRF's request/response cycle, so
-an ASGI-level equivalent is required for the socket handshake; this is
-the standard, minimal way to bridge the two (no new token format, no new
-issuance/verification logic — `AccessToken` is SimpleJWT's own class).
-
-Token is expected as a query-string parameter: `?token=<access_token>`
-— chosen because WebSocket clients (browsers, React Native) cannot set
-an `Authorization` header on the handshake request; this is the common,
-documented pattern for Channels + SimpleJWT. Flagged as an Engineering
-Implementation Decision (chat README Assumption 7) since no frozen
-document specifies WebSocket auth transport.
-"""
-
 from urllib.parse import parse_qs
 
 from channels.db import database_sync_to_async

@@ -1,26 +1,3 @@
-"""
-apps/chat/views.py
-
-Thin views only — every mutating action delegates immediately to a
-service (Architecture §7).
-
-Response envelope (CTO review fix): views now call `common.response
-.success_response()` explicitly on every success path, matching the
-current project convention (`products` and other recent apps construct
-the envelope explicitly rather than relying solely on the renderer).
-The global `EnvelopeJSONRenderer` remains in place as the defensive
-backstop it was always meant to be (ADR-006) — it is not removed or
-altered, and failure paths still rely entirely on it plus
-`custom_exception_handler`: no view here calls `error_response()`
-directly, since every expected failure is already raised as an
-`ApplicationError` subclass by a service or a DRF `ValidationError` by a
-serializer, and `common` EDD §26 pitfall #5 explicitly warns against
-reintroducing per-view try/except for exactly that case. As with
-`EDD_users_authentication.md` §10 item 6, `success_response()`'s exact
-keyword arguments (`data=`, `message=`, `status=`) are reused from that
-already-established, not-yet-source-verified inference.
-"""
-
 from django.db.models import Count, Q
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
@@ -46,39 +23,12 @@ class ConversationViewSet(
     mixins.CreateModelMixin,
     viewsets.GenericViewSet,
 ):
-    """
-    /api/v1/conversations/
-
-    Route shape — including the single, unified "my conversations" list
-    covering both the customer side and the vendor side of every thread
-    a user participates in, and messages/read/complete as sub-actions on
-    the conversation resource rather than a separate top-level messages
-    endpoint — is an Engineering Implementation Decision. No frozen
-    document names an exact chat route list; only the underlying DDS §11
-    query patterns and PRD §10/§7 workflows are specified. See the chat
-    README, "API Layer", for the full reasoning.
-    """
-
     serializer_class = ConversationSerializer
     permission_classes = [IsAuthenticatedCustomer]
     pagination_class = StandardResultsSetPagination
     lookup_field = "id"
 
     def get_queryset(self):
-        """
-        CTO review fix: `unread_count` is annotated here via a single
-        conditional `Count` per query — not computed per-row in the
-        serializer (previously an N+1: one query per conversation in a
-        list of N). The filter mirrors exactly what the old per-object
-        query did (`read_at IS NULL`, excluding the requesting user's
-        own messages, alive rows only), so the value is identical — just
-        computed once, in SQL, for the whole page. Works unchanged for
-        both a customer's and a vendor's own conversations, since `user`
-        is always `request.user` regardless of which side of the thread
-        they're on. The existing partial index on `Message.read_at`
-        (`WHERE read_at IS NULL`) remains useful to the planner for the
-        `read_at IS NULL` predicate inside this annotation.
-        """
         user = self.request.user
         unread_count = Count(
             "messages",
@@ -103,25 +53,10 @@ class ConversationViewSet(
         return [IsAuthenticatedCustomer()]
 
     def _serialize_annotated(self, conversation):
-        """
-        Re-fetches `conversation` through the annotated queryset before
-        serializing, so `create`/`complete` responses carry a correct,
-        SQL-computed `unread_count` too (not just list/retrieve) — one
-        cheap single-row PK lookup, not a per-list-item cost, so this
-        does not reintroduce the N+1 this fix removes.
-        """
         annotated = self.get_queryset().get(pk=conversation.pk)
         return self.get_serializer(annotated)
 
     def create(self, request, *args, **kwargs):
-        """
-        CTO review fix: `ConversationService.initiate` now returns
-        `(conversation, created)`. A brand-new conversation returns 201;
-        an idempotent resolution to an already-existing conversation
-        returns 200 — the previous implementation returned 201
-        unconditionally, which was semantically incorrect for the
-        already-exists case.
-        """
         serializer = ConversationCreateSerializer(
             data=request.data, context={"request": request}
         )
@@ -176,22 +111,10 @@ class ConversationViewSet(
         queryset = conversation.messages.alive().select_related("sender")
         page = self.paginate_queryset(queryset)
         serializer = MessageSerializer(page, many=True, context={"request": request})
-        # StandardResultsSetPagination.get_paginated_response() already
-        # builds the envelope via success_response() internally (common
-        # EDD §10) — wrapping it again here would double-envelope the
-        # payload.
         return self.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=["post"], url_path="read")
     def mark_read(self, request, *args, **kwargs):
-        """
-        Returns 200 (not the previous 204) now that the response carries
-        an explicit envelope body — a 204 must not have a body per HTTP
-        semantics, which would conflict with unconditionally calling
-        `success_response()` here. `marked_read` reports how many
-        messages actually transitioned, which 204's empty body could
-        not.
-        """
         conversation = self.get_object()
         updated = MessageService.mark_conversation_read(
             conversation=conversation, reader=request.user

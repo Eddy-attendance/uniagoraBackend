@@ -1,9 +1,3 @@
-"""
-apps/chat/tests/test_services.py
-
-Written, not executed this session — see chat README "Testing".
-"""
-
 import threading
 
 from django.db import connection

@@ -1,29 +1,3 @@
-"""
-apps/chat/consumers.py
-
-Real-time chat delivery (Architecture §12). The consumer's responsibility
-is deliberately narrow: connect/disconnect/receive, authorization, and
-group membership/broadcast. Message persistence and every business rule
-(participant check, body required, etc.) live in `MessageService.send`,
-the *same* service the REST endpoint uses — no logic is duplicated
-between the two transports (task brief §15).
-
-WebSockets are never the system of record: a message only reaches other
-clients after `MessageService.send` has committed it to the database
-(via `transaction.on_commit`, see `services/message_service.py` and
-`services/broadcast.py`).
-
-Error handling (CTO review fix): `ApplicationError` (and subclasses —
-`PermissionDeniedError`, `ConflictError`, etc.) are the *expected*
-failure shape a service can raise; their `.message` is already the same
-client-safe text the REST envelope would show, so it is safe to forward
-as-is. Anything else is an unexpected, unhandled exception — it is
-logged server-side (never sent to the client) and surfaced generically,
-mirroring `common.exceptions.custom_exception_handler`'s own "never
-silently reshape an exception it doesn't recognize into a 400" caution,
-adapted to a transport that has no equivalent of that handler.
-"""
-
 import logging
 
 from channels.db import database_sync_to_async

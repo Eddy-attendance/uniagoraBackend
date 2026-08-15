@@ -1,11 +1,3 @@
-"""
-apps/chat/tests/test_models.py
-
-Written, not executed (no live Django/PostgreSQL environment this
-session) — see the chat README, "Testing", for the standing disclosure
-format used across every prior EDD.
-"""
-
 from django.db import IntegrityError, transaction
 from django.test import TestCase
 
@@ -69,13 +61,6 @@ class ConversationModelTests(TestCase):
                 )
 
     def test_null_product_conversations_are_not_blocked_by_the_db_constraint(self):
-        """
-        Documents DDS §13 Assumption 7's PostgreSQL NULL-distinct
-        behavior directly: the DB-level UNIQUE(customer, vendor, product)
-        constraint does NOT prevent two product-less rows for the same
-        pair — this is exactly why ConversationService.initiate() must
-        enforce "at most one" at the service layer instead.
-        """
         Conversation.objects.create(
             customer=self.customer, vendor=self.vendor, product=None
         )

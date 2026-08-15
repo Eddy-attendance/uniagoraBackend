@@ -604,20 +604,6 @@ The chat app contains tests covering:
 - Blank message rejection
 - Generic unexpected-error handling
 
-Run the app test suite with:
-
-```bash
-python manage.py test apps.chat
-```
-
-Current verified result:
-
-```text
-Ran 76 tests
-OK
-```
-
----
 
 ## 18. Important Engineering Decisions
 
@@ -693,15 +679,3 @@ apps/chat/
 ## 20. Status
 
 **Implementation status: Complete**
-
-Latest verification:
-
-```text
-python manage.py test apps.chat
-
-76 tests
-76 passed
-0 failures
-```
-
-The chat app is ready for project-wide integration testing and frontend consumption.

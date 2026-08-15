@@ -1,13 +1,3 @@
-"""
-apps/chat/services/broadcast.py
-
-Thin WebSocket-broadcast helper. Deliberately does NOT import from
-serializers.py: Architecture §7 states "services never import from
-views.py or serializers.py" (one-directional dependency, independently
-testable without DRF request/response objects). The broadcast payload is
-therefore built by hand here rather than reusing MessageSerializer.
-"""
-
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
@@ -25,13 +15,6 @@ def _serialize_message(message):
 
 
 def broadcast_new_message(message):
-    """
-    Best-effort push to `conversation_{id}`. Persistence has already
-    succeeded by the time this runs (called via `transaction.on_commit`)
-    — a missing channel layer (e.g. some test environments) or broadcast
-    failure must never be mistaken for a failed message send, so this
-    function never raises.
-    """
     channel_layer = get_channel_layer()
     if channel_layer is None:
         return

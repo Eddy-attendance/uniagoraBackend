@@ -1,16 +1,3 @@
-"""
-apps/chat/tests/test_serializers.py
-
-Serializer tests verify input/output shape and validation only.
-
-Business rules such as vendor verification and unread-count calculation
-belong to the service/queryset layer respectively:
-- ConversationService.initiate() owns vendor eligibility.
-- ConversationViewSet.get_queryset() annotates unread_count.
-
-These tests intentionally do not duplicate those business rules.
-"""
-
 from unittest.mock import MagicMock
 
 from django.test import TestCase

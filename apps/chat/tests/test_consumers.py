@@ -1,18 +1,3 @@
-"""
-apps/chat/tests/test_consumers.py
-
-Uses `channels.testing.WebsocketCommunicator` against the application
-stack wrapped with `JWTAuthMiddlewareStack` (mirroring the real ASGI
-config — see Required Integration Changes, config/asgi.py), so these
-tests exercise the actual auth path, not a stand-in. Written, not
-executed this session — requires `pytest-django`/`channels`' test runner
-with `--keepdb`/async DB support, per Channels' own testing docs; the
-CTO should confirm the project's test runner is configured for async
-TestCase support (`from channels.testing import WebsocketCommunicator`
-requires `pytest-asyncio` or Django's `TransactionTestCase` +
-`async def test_*`, depending on the chosen runner) before running.
-"""
-
 from channels.db import database_sync_to_async
 from channels.routing import URLRouter
 from channels.testing import WebsocketCommunicator

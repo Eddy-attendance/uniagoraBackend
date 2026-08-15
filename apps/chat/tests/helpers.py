@@ -1,16 +1,3 @@
-"""
-apps/chat/tests/helpers.py
-
-Shared fixture builders for the chat test suite.
-
-These helpers deliberately use the real model classes from the already
-approved applications (`users`, `universities`, `vendors`, `stores`,
-`products`) rather than mocks.
-
-The fixtures establish valid cross-app relationships so chat tests exercise
-the real application boundaries.
-"""
-
 from apps.products.models import Product, ProductCondition
 from apps.stores.models import Store
 from apps.universities.models import University
@@ -114,9 +101,6 @@ def make_store(vendor_profile=None, **kwargs):
 def make_product(store=None, university=None, **kwargs):
     """
     Create a product belonging to the supplied store.
-
-    The university defaults to the vendor's university, preserving the
-    Product.university denormalization defined by the project design.
     """
     store = store or make_store()
 

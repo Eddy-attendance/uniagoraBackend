@@ -1,14 +1,3 @@
-"""
-apps/chat/models.py
-
-Chat domain models: Conversation, Message, MessageAttachment.
-Reproduces DDS §4.10-4.12 field-for-field. All models inherit
-apps.common.models.BaseModel (UUID PK, created_at, updated_at, is_deleted,
-soft delete via .delete()/.restore(), unfiltered-by-default `.objects`
-with `.alive()`/`.dead()` supplied by common.managers.SoftDeleteManager).
-
-"""
-
 from django.conf import settings
 from django.db import models
 
@@ -17,21 +6,21 @@ from apps.common.models import BaseModel
 
 
 class TransactionStatus(models.TextChoices):
-    """Conversation.transaction_status — DDS §5."""
+    """Conversation.transaction_status"""
 
     ONGOING = "ONGOING", "Ongoing"
     COMPLETED = "COMPLETED", "Completed"
 
 
 class MessageType(models.TextChoices):
-    """Message.content_type — DDS §5. Only TEXT is ever created in MVP."""
+    """Message.content_type Only TEXT is ever created in MVP."""
 
     TEXT = "TEXT", "Text"
     IMAGE = "IMAGE", "Image"  # schema-ready, unused in MVP
 
 
 class AttachmentType(models.TextChoices):
-    """MessageAttachment.attachment_type — DDS §5."""
+    """MessageAttachment.attachment_type"""
 
     IMAGE = "IMAGE", "Image"
 
@@ -68,12 +57,6 @@ class Conversation(BaseModel):
     completed_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        # Engineering Decision: overrides BaseModel's inherited
-        # "-created_at" default so unordered querysets match the DDS §11
-        # "My conversations" / "Vendor inbox" read patterns, both
-        # expressed as `.order_by('-updated_at')` — mirrors ADR-U2's
-        # precedent (universities app) of aligning default ordering with
-        # the documented primary read pattern for a model.
         ordering = ["-updated_at"]
         indexes = [
             models.Index(fields=["customer"], name="chat_conv_customer_idx"),
@@ -112,9 +95,6 @@ class Message(BaseModel):
         choices=MessageType.choices,
         default=MessageType.TEXT,
     )
-    # Required when content_type=TEXT; blank permitted only when an
-    # attachment carries the content instead — enforced at the
-    # serializer/service layer per DDS §4.11/§7.2, not as a DB constraint.
     body = models.TextField(  # noqa: DJ001
         null=True, blank=True
     )
@@ -123,8 +103,6 @@ class Message(BaseModel):
     )
 
     class Meta:
-        # Overrides BaseModel's "-created_at" default: a chat thread reads
-        # oldest-first (DDS §11: "Chat history (ordered thread)").
         ordering = ["created_at"]
         indexes = [
             models.Index(
@@ -138,10 +116,6 @@ class Message(BaseModel):
         ]
 
     def __str__(self):
-        # Single confirmed consumer for text truncation (DDS §4.11) —
-        # inlined directly here per common EDD ADR-004's own precedent
-        # (truncate_text() was removed from `common` for exactly this
-        # reason: one consumer does not clear the shared-abstraction bar).
         return (self.body or "")[:50]
 
     @property
@@ -150,12 +124,6 @@ class Message(BaseModel):
 
 
 class MessageAttachment(BaseModel):
-    """
-    Schema-ready, unused-in-MVP support for image attachments (DDS §4.12).
-    No serializer, view, or URL exposes this model in this delivery — see
-    the chat README "Scope" section for the explicit MVP boundary.
-    """
-
     message = models.OneToOneField(
         Message,
         on_delete=models.CASCADE,

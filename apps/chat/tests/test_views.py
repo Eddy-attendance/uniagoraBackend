@@ -1,12 +1,3 @@
-"""
-apps/chat/tests/test_views.py
-
-`rest_framework.test.APITestCase` + `force_authenticate`, matching the
-posture `universities`/`users` established for pre-JWT-mechanics view
-testing (JWT itself is exercised in `authentication`'s own suite, not
-re-tested per-app). Written, not executed this session.
-"""
-
 from uuid import UUID
 
 from rest_framework import status
@@ -38,10 +29,6 @@ class ConversationCreateViewTests(APITestCase):
         self.assertEqual(response.data["data"]["unread_count"], 0)
 
     def test_repeated_create_resolves_idempotently_with_200(self):
-        """
-        CTO review fix: first call creates (201); an identical repeat
-        resolves to the same row and must return 200, not 201.
-        """
         self.client.force_authenticate(self.customer)
         first = self.client.post(self.url, {"vendor": str(self.vendor.id)})
         second = self.client.post(self.url, {"vendor": str(self.vendor.id)})
@@ -57,14 +44,6 @@ class ConversationCreateViewTests(APITestCase):
         )
 
     def test_vendor_messaging_own_store_is_rejected(self):
-        """
-        There is no "initiate as vendor" endpoint variant — `customer` is
-        always `request.user`. A vendor user hitting this same endpoint
-        against their own vendor profile is therefore just the
-        self-messaging case, rejected by the service (PRD §10's "vendors
-        cannot initiate" is structurally true, not merely permission
-        gated — see ConversationService.initiate).
-        """
         self.client.force_authenticate(self.vendor.user)
         response = self.client.post(self.url, {"vendor": str(self.vendor.id)})
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
@@ -241,11 +220,6 @@ class ConversationMarkReadViewTests(APITestCase):
         self.read_url = f"/api/v1/conversations/{self.conversation.id}/read/"
 
     def test_customer_can_mark_conversation_read(self):
-        """
-        CTO review fix: now 200 with an explicit envelope body (a 204
-        must carry no body, which conflicts with unconditionally using
-        `success_response()`), reporting how many messages transitioned.
-        """
         self.client.force_authenticate(self.customer)
         response = self.client.post(self.read_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
