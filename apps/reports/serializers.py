@@ -69,9 +69,6 @@ class ReportCreateSerializer(serializers.ModelSerializer):
         fields = ["reason", "description"]
 
     def validate(self, attrs):
-        # Serializer-level mirror of the service/DB rule (DDS §5,
-        # ReportReason.OTHER note) — gives a friendly 400 field error
-        # ahead of the CheckConstraint, matching DDS §7.2's stated pattern.
         if (
             attrs.get("reason") == ReportReason.OTHER
             and not (attrs.get("description") or "").strip()

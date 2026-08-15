@@ -46,5 +46,6 @@ The reports app does not duplicate Product or Vendor moderation logic.
 Testing
 
 Run the app tests:
-
+```
 python manage.py test apps.reports
+```

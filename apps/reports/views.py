@@ -82,8 +82,7 @@ class MyReportsListView(generics.ListAPIView):
 
 
 class ReportAdminListView(generics.ListAPIView):
-    """GET /api/v1/reports/ — admin moderation queue. ?status= optional
-    (DDS §11: 'Report.objects.filter(status=PENDING).order_by("created_at")')."""
+    """GET /api/v1/reports/"""
 
     permission_classes = [IsAdmin]
     serializer_class = ReportAdminSerializer

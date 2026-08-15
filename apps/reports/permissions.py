@@ -3,8 +3,7 @@ from rest_framework.permissions import BasePermission
 
 class IsReportOwnerOrAdmin(BasePermission):
     """
-    Object-level only (no has_permission override — mirrors
-    core.IsOwnerVendor's precedent, core EDD §5.3): grants access to the
+    Object-level only: grants access to the
     reporter who filed the report, or to staff/admin. Ownership is
     resolved exclusively from the object itself, never from a
     client-supplied identifier.

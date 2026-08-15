@@ -24,17 +24,6 @@ class ReportStatus(models.TextChoices):
 class Report(BaseModel):
     """
     A Customer's report of a Product or a Vendor, for Admin moderation
-    (DDS §4.14).
-
-    `reports` owns this model and its lifecycle only (PENDING ->
-    UNDER_REVIEW -> RESOLVED/REJECTED, DDS §9.7). It does NOT own product
-    removal or vendor suspension logic — those remain in
-    `products.services.lifecycle_service.ProductLifecycleService` and
-    `vendors.services.VendorSuspensionService` respectively. See
-    `services.ReportService.resolve()`, which calls into those services
-    rather than mutating `Product`/`VendorProfile` directly (Architecture
-    §2: reports "Does NOT own: Product/vendor suspension actions
-    themselves").
     """
 
     reporter = models.ForeignKey(
@@ -82,10 +71,6 @@ class Report(BaseModel):
 
     class Meta:
         constraints = [
-            # DDS §4.14 Constraints: exactly one of product/vendor_profile
-            # non-null. Modeled as an explicit XOR of the two nullable FKs
-            # rather than num_nonnulls(), since Django's ORM has no direct
-            # equivalent — semantically identical.
             CheckConstraint(
                 check=(
                     Q(product__isnull=False, vendor_profile__isnull=True)
@@ -93,12 +78,6 @@ class Report(BaseModel):
                 ),
                 name="report_exactly_one_target",
             ),
-            # DDS §5, ReportReason.OTHER note: "Free-text elaboration
-            # required in description." Not listed in DDS §4.14's own
-            # "Constraints" bullet list (which only names the target-XOR
-            # check) — this DB-level backstop is an added Engineering
-            # Decision, consistent with the project's "service-enforced +
-            # DB backstop" philosophy. See ADR-REP1 in the README.
             CheckConstraint(
                 check=(
                     ~Q(reason=ReportReason.OTHER)
@@ -107,17 +86,13 @@ class Report(BaseModel):
                 name="report_other_reason_requires_description",
             ),
         ]
-        # No explicit db_index on product/vendor_profile beyond the
-        # implicit FK index Django already creates for every ForeignKey —
-        # this already satisfies DDS §6's "product_id, vendor_profile_id
-        # (each, nullable) — B-tree" requirement without a duplicate index.
 
     def __str__(self):
         return f"{self.target_label} report — {self.get_status_display()}"
 
     @property
     def target(self):
-        """Returns whichever of product/vendor_profile is set (DDS §4.14)."""
+        """Returns whichever of product/vendor_profile is set"""
         return self.product or self.vendor_profile
 
     @property
