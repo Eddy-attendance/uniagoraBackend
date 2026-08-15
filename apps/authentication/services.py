@@ -1,11 +1,3 @@
-"""Service layer for apps.authentication.
-
-Per DDS §13, Assumption 1: this app owns no persisted models. JWT issuance
-is stateless (SimpleJWT); password reset uses Django's own signed-token
-mechanism (`PasswordResetTokenGenerator`), not a persisted reset-token
-table.
-"""
-
 from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
@@ -33,12 +25,6 @@ class AuthService:
 
     @staticmethod
     def initiate_password_reset(*, email):
-        """Deliberately silent on unknown/inactive emails — the view
-        always returns the same generic success message regardless, so a
-        caller cannot use this endpoint to probe which emails have
-        accounts (standard security practice; does not conflict with any
-        frozen document).
-        """
         try:
             user = User.objects.get(email=email.lower(), is_active=True)
         except User.DoesNotExist:
@@ -52,11 +38,6 @@ class AuthService:
             "https://uniagora.app/reset-password",
         )
         reset_url = f"{reset_base}?uid={uid}&token={token}"
-
-        # Actual delivery channel/template/branding is an operational
-        # concern outside this app's scope — no email provider is named in
-        # the PRD/Architecture (EDD §10, assumption 3). `fail_silently=True`
-        # so an unconfigured backend never turns a reset request into a 500.
         send_mail(
             subject="Reset your UniAGORA password",
             message=(

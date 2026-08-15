@@ -19,14 +19,6 @@ from .services import AuthService
 
 
 class RegisterView(APIView):
-    """PRD §16: Register. Issues JWT tokens immediately on success — PRD
-    §4 states customers "may browse the marketplace immediately after
-    registration," and MVP has no email-verification gate (PRD §16), so
-    requiring a *second* login call afterward would add friction with no
-    corresponding product requirement. Engineering Implementation
-    Decision — see EDD §10, assumption 5.
-    """
-
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -43,11 +35,6 @@ class RegisterView(APIView):
 
 
 class EmailTokenObtainPairView(TokenObtainPairView):
-    """PRD §16: Login. Thin subclass — only the serializer differs (adds
-    the `user` payload); token issuance itself is entirely SimpleJWT's,
-    keyed off `User.USERNAME_FIELD` ("email") automatically.
-    """
-
     serializer_class = EmailTokenObtainPairSerializer
 
     def post(self, request, *args, **kwargs):
@@ -60,8 +47,6 @@ class EmailTokenObtainPairView(TokenObtainPairView):
 
 
 class LogoutView(APIView):
-    """PRD §16: Logout, via refresh-token blacklisting."""
-
     permission_classes = [IsAuthenticatedCustomer]
 
     def post(self, request):
@@ -74,8 +59,6 @@ class LogoutView(APIView):
 
 
 class PasswordResetRequestView(APIView):
-    """PRD §16: Forgot Password."""
-
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -88,8 +71,6 @@ class PasswordResetRequestView(APIView):
 
 
 class PasswordResetConfirmView(APIView):
-    """PRD §16: Password Reset."""
-
     permission_classes = [AllowAny]
 
     def post(self, request):
