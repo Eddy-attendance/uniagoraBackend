@@ -1,12 +1,3 @@
-"""
-apps/admin_dashboard/tests/base.py
-
-Shared fixture base for admin_dashboard's test suite. Written against
-the documented apps.users.models.User interface (EDD_users_authentication
-.md §5) — not executed this session; see the app README's testing
-section for the full disclosure.
-"""
-
 from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 

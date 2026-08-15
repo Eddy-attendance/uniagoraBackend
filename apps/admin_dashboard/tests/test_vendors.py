@@ -1,10 +1,3 @@
-"""
-apps/admin_dashboard/tests/test_vendors.py
-
-Written against real model classes from apps.universities/apps.vendors
-per the already-approved apps' own EDDs — not executed this session.
-"""
-
 from unittest.mock import patch
 
 from rest_framework import status
@@ -86,9 +79,6 @@ class AdminVendorViewTests(AdminAPITestCase):
         self.assertEqual(self.vendor.status, VendorStatus.VERIFIED)
 
     def test_admin_dashboard_never_sets_vendor_status_directly(self):
-        """Structural guard mirroring test_users.py's own regression
-        check — AdminVendorService must call into
-        VendorSuspensionService, never assign .status itself."""
         with patch(
             "apps.admin_dashboard.services.VendorSuspensionService.suspend"
         ) as mock_suspend:

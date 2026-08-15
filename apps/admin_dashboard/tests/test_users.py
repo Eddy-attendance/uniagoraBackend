@@ -1,14 +1,3 @@
-"""
-apps/admin_dashboard/tests/test_users.py
-
-Includes the CTO-review delegation tests (AdminUserDelegationTests)
-confirming admin_dashboard never sets User.is_active or calls
-user.save() itself — every mutation must go through
-apps.users.services.UserService.activate()/.deactivate(). See
-docs/USERS_SERVICE_INTEGRATION_PATCH.md for the required addition to
-apps/users/services.py that these tests depend on.
-"""
-
 import uuid
 from unittest.mock import patch
 
@@ -58,10 +47,6 @@ class AdminUserViewTests(AdminAPITestCase):
         self.assertIn(r.status_code, (401, 403))
 
     def test_is_active_field_is_not_client_writable_via_patch(self):
-        """No PATCH /users/{id}/ route exists at all — is_active can
-        only ever change via the dedicated activate/deactivate actions,
-        which themselves delegate to UserService (see
-        AdminUserDelegationTests below)."""
         self.client.force_authenticate(self.admin)
         r = self.client.patch(
             f"/api/v1/admin/users/{self.customer.id}/", {"is_active": False}
@@ -70,16 +55,6 @@ class AdminUserViewTests(AdminAPITestCase):
 
 
 class AdminUserDelegationTests(AdminAPITestCase):
-    """
-    Confirms the CTO-review fix: admin_dashboard.AdminUserService never
-    sets user.is_active / calls user.save() itself — it must call
-    apps.users.services.UserService.activate()/.deactivate() exactly
-    once per request, with the resolved User instance passed through
-    unmodified. Patches at the import site inside admin_dashboard's own
-    services module (not the source module), per standard mock practice
-    for verifying a call was delegated rather than re-executed.
-    """
-
     def test_activate_delegates_to_users_domain_service_exactly_once(self):
         self.client.force_authenticate(self.admin)
         with patch(
@@ -101,10 +76,6 @@ class AdminUserDelegationTests(AdminAPITestCase):
         mock_deactivate.assert_called_once_with(user=self.customer)
 
     def test_admin_user_service_has_no_direct_save_call(self):
-        """Static/structural guard: AdminUserService.activate/deactivate
-        must not reference `.save(` anywhere in their source — a cheap,
-        durable regression check against the exact class of bug this
-        revision fixes, independent of mocking."""
         import inspect
 
         from apps.admin_dashboard.services import AdminUserService
@@ -126,13 +97,6 @@ class AdminUserDelegationTests(AdminAPITestCase):
         self.assertEqual(r.status_code, status.HTTP_409_CONFLICT)
 
     def test_activate_deactivate_round_trip_against_real_users_service(self):
-        """
-        Integration-style test (no mocking) — requires the
-        docs/USERS_SERVICE_INTEGRATION_PATCH.md addition to be merged
-        into the real apps/users/services.py before this will pass.
-        Included to verify end-to-end behavior once that merge happens,
-        not as proof it currently works in this session.
-        """
         self.client.force_authenticate(self.admin)
         url = f"/api/v1/admin/users/{self.customer.id}/deactivate/"
         r = self.client.post(url)

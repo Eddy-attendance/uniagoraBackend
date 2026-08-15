@@ -69,27 +69,16 @@ class AdminCategorySerializer(serializers.Serializer):
 
 
 class AdminCategoryWriteSerializer(serializers.Serializer):
-    """Create only. parent/display_order are settable only at creation
-    time — mirrors ADR-CAT1's own "not reparenting" reasoning."""
-
     name = serializers.CharField(max_length=100)
     parent = serializers.SlugField(required=False, allow_null=True)
     display_order = serializers.IntegerField(required=False, default=0, min_value=0)
 
 
 class AdminCategoryUpdateSerializer(serializers.Serializer):
-    """Update only. name is the sole editable field post-creation, per
-    ADR-CAT1 — parent/display_order/is_active are excluded entirely."""
-
     name = serializers.CharField(max_length=100)
 
 
 class AdminResolutionSerializer(serializers.Serializer):
-    """The only field a client may ever supply for resolve/reject —
-    resolved_by and resolved_at are always server-derived
-    (request.user, now()) inside ReportService, never from this
-    serializer."""
-
     resolution_notes = serializers.CharField(
         required=False, allow_blank=True, allow_null=True
     )

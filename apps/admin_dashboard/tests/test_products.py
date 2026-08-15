@@ -1,14 +1,3 @@
-"""
-apps/admin_dashboard/tests/test_products.py
-
-Full fixture construction (University -> VendorProfile -> Store ->
-Product) intentionally mirrors the fixture chain apps/products/tests
-already exercises end-to-end per the Products EDD §12's documented
-143-test suite. Only permission/delegation-boundary tests are spelled
-out in full here; the remaining list/detail/filter tests follow the
-identical pattern already shown in test_vendors.py.
-"""
-
 from unittest.mock import patch
 
 from rest_framework import status
@@ -17,15 +6,6 @@ from .base import AdminAPITestCase
 
 
 class AdminProductViewTests(AdminAPITestCase):
-    """
-    NOTE: Full fixture setup (University -> VendorProfile -> Store ->
-    Product) is deliberately not duplicated here — construct it using
-    the same helper pattern apps/products/tests already provides for
-    that app's own 143-test suite. `self.product` below is assumed to
-    exist as an ACTIVE product once that fixture is wired in during
-    integration.
-    """
-
     def test_non_admin_rejected(self):
         self.client.force_authenticate(self.customer)
         r = self.client.get("/api/v1/admin/products/")

@@ -1,15 +1,3 @@
-"""
-apps/admin_dashboard/views.py
-
-Every view is deliberately thin: resolve a target via the matching
-*Service.get(...)* (raises NotFoundError -> 404 through the shared
-exception handler), delegate any mutation to services.py, serialize,
-return via common.response.success_response(). No business rule is
-evaluated in this file. All endpoints are gated by core.permissions
-.IsAdmin only — no second permission/role system is introduced anywhere
-in this app.
-"""
-
 from rest_framework.views import APIView
 
 from apps.common.pagination import StandardResultsSetPagination
@@ -36,8 +24,6 @@ from .services import (
     DashboardService,
 )
 
-# --------------------------------------------------------------- Dashboard
-
 
 class DashboardSummaryView(APIView):
     permission_classes = [IsAdmin]
@@ -46,9 +32,6 @@ class DashboardSummaryView(APIView):
         data = DashboardService.get_summary()
         serializer = DashboardSummarySerializer(data)
         return success_response(data=serializer.data, message="")
-
-
-# ------------------------------------------------------------------- Users
 
 
 class AdminUserListView(APIView):
@@ -75,10 +58,6 @@ class AdminUserDetailView(APIView):
 
 
 class AdminUserActivateView(APIView):
-    """Orchestration only. The actual `is_active` mutation and its
-    conflict guard live in apps.users.services.UserService.activate() —
-    see services.py::AdminUserService.activate()."""
-
     permission_classes = [IsAdmin]
 
     def post(self, request, id):
@@ -89,10 +68,6 @@ class AdminUserActivateView(APIView):
 
 
 class AdminUserDeactivateView(APIView):
-    """Orchestration only. The actual `is_active` mutation and its
-    conflict guard live in apps.users.services.UserService.deactivate()
-    — see services.py::AdminUserService.deactivate()."""
-
     permission_classes = [IsAdmin]
 
     def post(self, request, id):
@@ -100,9 +75,6 @@ class AdminUserDeactivateView(APIView):
         return success_response(
             data=AdminUserSerializer(user).data, message="User deactivated."
         )
-
-
-# ----------------------------------------------------------------- Vendors
 
 
 class AdminVendorListView(APIView):
@@ -152,9 +124,6 @@ class AdminVendorReinstateView(APIView):
         )
 
 
-# ---------------------------------------------------------------- Products
-
-
 class AdminProductListView(APIView):
     permission_classes = [IsAdmin]
     pagination_class = StandardResultsSetPagination
@@ -188,9 +157,6 @@ class AdminProductRemoveView(APIView):
         return success_response(
             data=AdminProductSerializer(product).data, message="Product removed."
         )
-
-
-# -------------------------------------------------------------- Categories
 
 
 class AdminCategoryListCreateView(APIView):
@@ -260,9 +226,6 @@ class AdminCategoryDeactivateView(APIView):
         return success_response(
             data=AdminCategorySerializer(category).data, message="Category deactivated."
         )
-
-
-# ---------------------------------------------------------------- Reports
 
 
 class AdminReportListView(APIView):

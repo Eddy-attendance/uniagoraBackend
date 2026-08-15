@@ -1,13 +1,3 @@
-"""
-apps/admin_dashboard/tests/test_reports.py
-
-Fixture construction (a Report filed against a Product) mirrors the
-Reports app's own test suite structure (see the Reports EDD §15) — not
-duplicated in full here. Permission and delegation-boundary tests are
-spelled out in full; the remaining lifecycle tests follow the identical
-pattern already demonstrated in test_vendors.py/test_products.py.
-"""
-
 from unittest.mock import patch
 
 from rest_framework import status
@@ -85,10 +75,6 @@ class AdminReportViewTests(AdminAPITestCase):
             {"resolution_notes": 12345},
             format="json",
         )
-        # Either the target 404s first, or (once resolved against a
-        # real report) validation itself rejects the non-string type —
-        # both are acceptable depending on resolution order; the
-        # non-string payload must never reach ReportService.resolve().
         self.assertIn(
             r.status_code, (status.HTTP_400_BAD_REQUEST, status.HTTP_404_NOT_FOUND)
         )
