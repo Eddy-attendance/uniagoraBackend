@@ -35,14 +35,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
-    """The only serializer that accepts client input against `User`
-    itself. Deliberately excludes:
-      - `email` — identity; no dedicated change-email flow is specified in
-        any frozen document, so none is invented here.
-      - `active_university` — carries its own business rule (must be
-        active), handled by `SetActiveUniversitySerializer` below.
-    """
-
     class Meta:
         model = User
         fields = ["full_name", "phone_number"]
@@ -53,12 +45,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 
 class SetActiveUniversitySerializer(serializers.Serializer):
-    """Validates and resolves a `university_slug` into an active
-    `University` instance. Rejecting inactive universities at selection
-    time is an Engineering Implementation Decision — see EDD §10,
-    assumption 2.
-    """
-
     university_slug = serializers.SlugField()
 
     def validate_university_slug(self, value):

@@ -12,11 +12,7 @@ from .services import UserService
 
 
 class MeView(APIView):
-    """GET/PATCH the authenticated user's own profile. No object-level
-    permission is needed beyond authentication — the target is always
-    `request.user`, never a client-supplied identifier (same "never trust
-    a client-supplied identifier" spirit as `core.IsOwnerVendor`).
-    """
+    """GET/PATCH the authenticated user's own profile."""
 
     permission_classes = [IsAuthenticatedCustomer]
 
@@ -33,9 +29,7 @@ class MeView(APIView):
 
 
 class SetActiveUniversityView(APIView):
-    """PATCH /users/me/active-university/ — PRD §3's "change university
-    whenever they wish."
-    """
+    """PATCH /users/me/active-university/  - "change university whenever they wish." """
 
     permission_classes = [IsAuthenticatedCustomer]
 

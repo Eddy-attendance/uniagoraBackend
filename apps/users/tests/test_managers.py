@@ -42,5 +42,4 @@ class UserManagerTests(TestCase):
             email="o@example.com", password="pass12345", full_name="O"
         )
         user.delete()
-        # Regression guard mirroring common EDD ADR-001's own test intent.
         self.assertIn(user, User.objects.all())
