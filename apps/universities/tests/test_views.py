@@ -149,10 +149,6 @@ class UniversityUpdateViewTests(APITestCase):
         self.assertEqual(response.data["data"]["slug"], original_slug)
 
     def test_admin_can_explicitly_clear_logo(self):
-        """End-to-end: PATCH {"logo": null} through the real DRF request/
-        response cycle must clear a previously-set logo. Covers the
-        clear-vs-omit distinction all the way from HTTP request body
-        through serializer through service, not just at the unit level."""
         self.university.logo = "https://example.com/existing.png"
         self.university.save(update_fields=["logo"])
         self.client.force_authenticate(make_user(is_staff=True))

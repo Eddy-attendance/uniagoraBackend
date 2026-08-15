@@ -52,8 +52,6 @@ class UniversityServiceUpdateTests(TestCase):
         self.assertEqual(updated.logo, "https://example.com/new-logo.png")
 
     def test_update_omitting_logo_leaves_existing_logo_untouched(self):
-        """Calling update() without a `logo=` kwarg at all (the `_UNSET`
-        sentinel default) must not clear a pre-existing logo."""
         self.university.logo = "https://example.com/keep-me.png"
         self.university.save(update_fields=["logo"])
 
@@ -64,10 +62,6 @@ class UniversityServiceUpdateTests(TestCase):
         self.assertEqual(updated.logo, "https://example.com/keep-me.png")
 
     def test_update_with_explicit_none_logo_clears_it(self):
-        """Explicitly passing `logo=None` — as opposed to omitting the
-        keyword — must clear an existing logo. This is the behavior a
-        view relying on `**serializer.validated_data` depends on when the
-        client sends `{"logo": null}`."""
         self.university.logo = "https://example.com/remove-me.png"
         self.university.save(update_fields=["logo"])
 
@@ -121,7 +115,6 @@ class UniversityServiceActivationTests(TestCase):
             self.fail("ConflictError was not raised")
 
     def test_deactivate_does_not_soft_delete(self):
-        """DDS §4.1: inactive universities are 'never deleted'."""
         UniversityService.deactivate(university=self.university)
         self.university.refresh_from_db()
         self.assertFalse(self.university.is_deleted)

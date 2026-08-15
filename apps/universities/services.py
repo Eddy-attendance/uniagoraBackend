@@ -8,9 +8,7 @@ _UNSET = object()
 
 
 class UniversityService:
-    """Thin admin-CRUD service layer for `University`. Deliberately has no
-    transition state-machine (DDS §10: "No complex lifecycle") beyond the
-    single is_active boolean, guarded here against no-op transitions."""
+    """Thin admin-CRUD service layer for `University`."""
 
     @staticmethod
     @transaction.atomic

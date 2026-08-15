@@ -89,10 +89,6 @@ class UniversityAdminWriteSerializerTests(TestCase):
         self.assertTrue(serializer.is_valid(), serializer.errors)
 
     def test_partial_update_with_explicit_null_logo_clears_it(self):
-        """`logo: null` in the payload must survive into validated_data as
-        an explicit `None` (not be silently dropped) — this is the
-        signal `UniversityService.update()` relies on to distinguish
-        "clear the logo" from "logo wasn't mentioned"."""
         university = University.objects.create(
             name="Logo Clear Uni", short_name="LCU", logo="https://example.com/old.png"
         )
@@ -104,10 +100,6 @@ class UniversityAdminWriteSerializerTests(TestCase):
         self.assertIsNone(serializer.validated_data["logo"])
 
     def test_partial_update_omitting_logo_key_leaves_it_out_of_validated_data(self):
-        """The mirror image of the above: omitting `logo` from the payload
-        entirely must NOT produce a `logo` key in validated_data at all —
-        this is what lets the service tell "leave untouched" apart from
-        "clear it"."""
         university = University.objects.create(
             name="Logo Untouched Uni",
             short_name="LUU",

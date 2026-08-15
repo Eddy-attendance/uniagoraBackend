@@ -11,13 +11,9 @@ class University(AutoSlugMixin, BaseModel):
     """
     Represents a supported university/campus. Anchors user scoping, vendor
     eligibility, and product visibility boundaries per the "strict
-    university scoping" product decision (DDS §7.3, §1.4).
-
-    All four fields below are reproduced verbatim from DDS §4.1 — no field
-    was added, removed, or retyped from that specification.
+    university scoping" product decision.
     """
 
-    # AutoSlugMixin configuration (common app EDD §7 / §26 pitfall #4).
     slug_source_field = "name"
     slug_field_name = "slug"
     slug_max_length = 160
