@@ -1,18 +1,3 @@
-"""
-Category views.
-
-Follows the "thin view, service-layer owns business logic" pattern already
-established in `universities`/`vendors`/`stores`. Success-path response
-enveloping relies on the global `EnvelopeJSONRenderer` backstop (common
-app EDD §10, §22.5) rather than calling `success_response()` explicitly —
-every action below returns a plain serialized payload, which the renderer
-wraps automatically based on HTTP status code. `ListModelMixin`/
-`RetrieveModelMixin` are reused unmodified (pagination + envelope handled
-by the global pagination class and renderer); every mutating action is
-hand-written because it must call `CategoryService`, never
-`serializer.save()` (Backend Architecture §7).
-"""
-
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response

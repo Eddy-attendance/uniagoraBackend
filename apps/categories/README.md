@@ -244,12 +244,6 @@ The app contains focused tests covering:
 * API filtering
 * API mutation behavior
 
-The complete project test suite currently passes with:
-
-```text
-336 tests
-OK
-```
 
 ## Migration
 

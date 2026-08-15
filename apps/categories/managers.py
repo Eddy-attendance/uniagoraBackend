@@ -1,10 +1,3 @@
-"""
-Category managers/querysets. No DDS-named query shape beyond `.alive()`/
-`.dead()` (inherited) except `.visible()` — the "alive AND active" shape
-implied by DDS §7.3 ("Inactive categories hidden from browse/filter") and
-the tree-rendering query pattern documented in DDS §11.
-"""
-
 from django.db import models
 
 from apps.common.managers import SoftDeleteQuerySet

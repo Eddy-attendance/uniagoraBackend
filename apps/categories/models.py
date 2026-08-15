@@ -1,11 +1,3 @@
-"""
-Category model — DDS §4.6.
-
-Hierarchical taxonomy for products. Self-referential to support arbitrary
-depth per product decision (PRD shows 2 levels, schema is unrestricted).
-Field-for-field per the DDS; no field beyond that specification is present.
-"""
-
 from django.db import models
 
 from apps.common.mixins import AutoSlugMixin
@@ -27,7 +19,6 @@ class Category(AutoSlugMixin, BaseModel):
     display_order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True, db_index=True)
 
-    # AutoSlugMixin configuration (common app EDD §7)
     slug_source_field = "name"
     slug_field_name = "slug"
     slug_max_length = 120
@@ -56,7 +47,6 @@ class Category(AutoSlugMixin, BaseModel):
         ]
 
     def __str__(self):
-        """Full breadcrumb path, e.g. 'Electronics > Phones' (DDS §4.6)."""
         if self.parent_id and self.parent:
             return f"{self.parent} > {self.name}"
         return self.name

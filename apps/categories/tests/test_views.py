@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from apps.categories.models import Category
-from apps.users.models import User  # already-approved app; real model reused
+from apps.users.models import User
 
 
 class CategoryViewSetTests(APITestCase):

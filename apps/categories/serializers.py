@@ -24,19 +24,10 @@ class CategorySerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        # "parent" is excluded here — it's already explicitly declared
-        # read_only=True above; DRF disallows listing an explicitly
-        # declared field in read_only_fields as well.
         read_only_fields = [f for f in fields if f != "parent"]
 
 
 class CategoryCreateSerializer(serializers.ModelSerializer):
-    """
-    The only serializer that accepts `parent`/`display_order` as input —
-    both are set once, at creation. Post-creation, neither is writable
-    (see `CategoryService.update` / ADR-CAT1).
-    """
-
     parent = serializers.SlugRelatedField(
         slug_field="slug",
         queryset=Category.objects.alive(),
@@ -49,12 +40,6 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
         fields = ["name", "parent", "display_order"]
 
     def validate(self, attrs):
-        """
-        Friendly, pre-DB duplicate-sibling-name check (DDS §7.2 pattern).
-        NOTE: for root categories (parent=None) this check is the *only*
-        enforcement — see ADR-CAT2 in the EDD re: NULL-distinct composite
-        unique constraint behavior in PostgreSQL.
-        """
         parent = attrs.get("parent")
         name = attrs.get("name")
         if Category.objects.alive().filter(parent=parent, name=name).exists():
