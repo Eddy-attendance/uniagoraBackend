@@ -1,10 +1,3 @@
-"""
-View/API-level tests for the `stores` app. See test_models.py docstring
-for the shared assumptions/posture of this session (force_authenticate is
-used throughout, consistent with the `universities`/`users` EDDs' own
-JWT-independent testing approach).
-"""
-
 from rest_framework import status
 from rest_framework.test import APITestCase
 

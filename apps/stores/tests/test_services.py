@@ -1,8 +1,3 @@
-"""
-Service-layer tests for `StoreService`. See test_models.py docstring for
-the shared assumptions/posture of this test session.
-"""
-
 from django.test import TestCase
 
 from apps.common.exceptions import ConflictError

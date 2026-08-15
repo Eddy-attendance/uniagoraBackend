@@ -1,9 +1,3 @@
-"""
-Serializer tests for `StoreSerializer` / `StoreWriteSerializer`. See
-test_models.py docstring for the shared assumptions/posture of this
-session.
-"""
-
 from django.test import TestCase
 
 from apps.stores.serializers import StoreSerializer, StoreWriteSerializer

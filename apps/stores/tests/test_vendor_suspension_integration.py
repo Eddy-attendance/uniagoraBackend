@@ -1,18 +1,3 @@
-"""
-Tests for the DDS §9.2 suspend/reinstate cascade: "VERIFIED -> SUSPENDED:
-... cascades to Store.is_active=False"; "SUSPENDED -> VERIFIED ...
-cascades to Store.is_active=True."
-
-IMPORTANT: this test module exercises `apps.vendors.services.
-VendorSuspensionService`, which must first be updated per
-`apps/vendors/STORE_INTEGRATION_PATCH.md` (delivered alongside this app)
-to actually call `stores.services.StoreService.set_active_state()`. Until
-that patch is merged into the real `apps/vendors/services.py`, these tests
-will fail against the vendors app's current TODO-only implementation
-(vendors_EDD.md §6, Assumption 2) — that is expected, not a bug in this
-test file.
-"""
-
 from django.test import TestCase
 
 from apps.stores.services import StoreService

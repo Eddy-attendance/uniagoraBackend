@@ -1,5 +1,5 @@
 """
-Store views — thin, service-delegating, per Backend Architecture §7.
+Store views — thin, service-delegating.
 
 Routing:
 `me` is registered as a `detail=False` DRF router action so that
@@ -130,7 +130,7 @@ class StoreViewSet(viewsets.GenericViewSet):
         Resolve the requester's own store.
 
         Ownership is derived exclusively from request.user rather than
-        any client-supplied identifier, per Backend Architecture §8.
+        any client-supplied identifier
         """
         vendor_profile = getattr(request.user, "vendor_profile", None)
 

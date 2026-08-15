@@ -1,13 +1,3 @@
-"""
-Model-level tests for `Store` (DDS §4.5).
-
-Assumes `apps.common`, `apps.core`, `apps.universities`, `apps.users`,
-`apps.vendors` are the real, already-approved implementations described by
-their own EDDs (not reconstructed here) — same posture as `vendors_EDD.md`
-§0. Written against those documented public interfaces; not executed in
-this session (per task instruction).
-"""
-
 from django.db import IntegrityError, transaction
 from django.test import TestCase
 
