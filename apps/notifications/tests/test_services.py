@@ -146,10 +146,6 @@ class NotificationServiceTests(TestCase):
         self.assertEqual(NotificationService.unread_count(self.other), 1)
 
     def test_dispatch_is_deferred_until_transaction_commit(self):
-        """Regression test for Correction 3: dispatch must not fire until
-        the persisting transaction actually commits, and must fire exactly
-        once when it does.
-        """
         calls = []
 
         class RecordingDispatcher:
@@ -258,7 +254,6 @@ class DeviceTokenServiceTests(TestCase):
             DeviceTokenService.deactivate(device_token=token, user=self.other)
 
     def test_register_sets_last_used_at_on_create(self):
-        """Regression test for Correction 2."""
         before = timezone.now()
         token, created = DeviceTokenService.register(
             user=self.user, token="fresh-token", platform=DevicePlatform.IOS
@@ -267,7 +262,6 @@ class DeviceTokenServiceTests(TestCase):
         self.assertGreaterEqual(token.last_used_at, before)
 
     def test_register_updates_last_used_at_on_reactivation(self):
-        """Regression test for Correction 2."""
         token, _ = DeviceTokenService.register(
             user=self.user, token="reactivate-token", platform=DevicePlatform.IOS
         )
@@ -281,9 +275,6 @@ class DeviceTokenServiceTests(TestCase):
         self.assertGreater(updated.last_used_at, stale_time)
 
     def test_deactivate_does_not_update_last_used_at(self):
-        """Regression test for Correction 2 — the specific bug flagged:
-        deactivation must not implicitly mean "used."
-        """
         token, _ = DeviceTokenService.register(
             user=self.user, token="deact-token", platform=DevicePlatform.WEB
         )
@@ -296,9 +287,6 @@ class DeviceTokenServiceTests(TestCase):
         self.assertEqual(token.last_used_at, stale_time)
 
     def test_touch_last_used_updates_timestamp(self):
-        """Regression test for Correction 2 — the reserved future-dispatch
-        hook works as documented.
-        """
         token, _ = DeviceTokenService.register(
             user=self.user, token="touch-token", platform=DevicePlatform.WEB
         )

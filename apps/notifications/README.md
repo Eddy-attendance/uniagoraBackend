@@ -4,7 +4,7 @@
 
 ## Purpose
 
-Owns DDS §4.15/§4.16: persisted `Notification` records, `DeviceToken`
+Owns persisted `Notification` records, `DeviceToken`
 registration, and the `NotificationDispatcher` delivery-abstraction — but
 **not** the business events that trigger a notification. Domain apps call
 into this app; this app never calls into them.

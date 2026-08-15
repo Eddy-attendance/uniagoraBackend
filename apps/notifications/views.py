@@ -1,22 +1,3 @@
-"""Thin views — all business logic delegated to services.py, per
-Architecture §7. Every view explicitly calls `common.response
-.success_response()` on its success path (the current project convention,
-established by `chat` EDD §7a fix #4), rather than relying solely on
-`EnvelopeJSONRenderer` as a backstop.
-
-Ownership is enforced two ways, matching the `users`/`stores` "me"-route
-precedent: (1) every queryset is scoped to `request.user` at the view
-layer, so a non-owned object simply doesn't exist from the requester's
-point of view (a 404, via DRF's own `get_object_or_404`) — no client-
-supplied identifier is ever trusted; (2) the service layer re-verifies
-ownership as defense-in-depth (see services.py). No new `core`-level
-permission class was needed for object-level ownership here, unlike
-`chat.IsConversationParticipant` — a Conversation has *two* legitimate
-sides (customer and vendor); a Notification/DeviceToken has exactly one
-(the recipient/user), which plain queryset scoping already expresses
-correctly.
-"""
-
 from rest_framework import generics, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
@@ -37,8 +18,7 @@ from .services import DeviceTokenService, NotificationService
 class NotificationListView(generics.ListAPIView):
     """GET /api/v1/notifications/ — own notifications, paginated.
 
-    `?unread=true` narrows to unread-only (DDS §11's "Unread notifications
-    badge" pattern, applied to listing rather than just counting).
+    `?unread=true` narrows to unread-only
     """
 
     serializer_class = NotificationSerializer
@@ -94,13 +74,7 @@ class NotificationMarkAllReadView(APIView):
 
 
 class DeviceTokenListCreateView(APIView):
-    """GET/POST /api/v1/notifications/device-tokens/
-
-    Not paginated — a user's device-token count is small and bounded by
-    real-world device ownership, not marketplace data volume; pagination
-    here would be premature abstraction (project's stated avoid-over-
-    engineering principle).
-    """
+    """GET/POST /api/v1/notifications/device-tokens/"""
 
     permission_classes = [IsAuthenticatedCustomer]
 
@@ -126,12 +100,7 @@ class DeviceTokenListCreateView(APIView):
 
 
 class DeviceTokenDeactivateView(APIView):
-    """POST /api/v1/notifications/device-tokens/{id}/deactivate/
-
-    No DELETE endpoint exists for DeviceToken anywhere in this app — DDS
-    §4.16/§9.9 documents deactivation, not deletion, as the invalidation
-    path ("for audit trail").
-    """
+    """POST /api/v1/notifications/device-tokens/{id}/deactivate/"""
 
     permission_classes = [IsAuthenticatedCustomer]
 
