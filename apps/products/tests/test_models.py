@@ -1,12 +1,3 @@
-"""
-apps/products/tests/test_models.py
-
-Covers: Product creation, slug generation/uniqueness, price/quantity
-validation, is_out_of_stock, primary_image, search_vector synchronization,
-ProductImage relationships, ProductCategory uniqueness, and the
-ProductImage primary-image DB constraint.
-"""
-
 from decimal import Decimal
 
 from django.db import IntegrityError, transaction

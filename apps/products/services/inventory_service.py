@@ -1,12 +1,3 @@
-"""
-apps/products/services/inventory_service.py
-
-Quantity is the sole inventory source of truth (DDS §7.3, "Out-of-stock
-auto-transition"). No method here ever mutates `Product.status` — availability
-is a derived property (`Product.is_out_of_stock`), not a lifecycle transition.
-Lifecycle transitions belong exclusively to `ProductLifecycleService`.
-"""
-
 from django.db import transaction
 
 from apps.common.exceptions import ApplicationError, ConflictError
@@ -18,10 +9,6 @@ class InventoryService:
     @staticmethod
     @transaction.atomic
     def set_quantity(*, product, quantity):
-        """Sets quantity to an absolute value. `status` is never touched —
-        an ACTIVE product with quantity 0 remains ACTIVE (and simultaneously
-        out of stock, per DDS §5).
-        """
         if quantity < 0:
             raise ApplicationError("Quantity cannot be negative.")
         product.quantity = quantity

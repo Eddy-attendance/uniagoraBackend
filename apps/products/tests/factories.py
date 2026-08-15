@@ -1,14 +1,3 @@
-"""
-apps/products/tests/factories.py
-
-Not a DDS-specified file — a standard testing convenience to avoid duplicating
-University/User/VendorProfile/Store/Category/Product setup boilerplate across
-five test modules. Uses real model classes from the already-approved apps
-(`universities`, `users`, `vendors`, `stores`, `categories`), matching the
-posture already established in `vendors_EDD.md`/`Stores - EDD.md` §0 (assumed
-already implemented, not reconstructed/mocked this session).
-"""
-
 from decimal import Decimal
 
 from apps.categories.models import Category

@@ -1,15 +1,3 @@
-"""
-apps/products/urls.py
-
-Uses `SimpleRouter`, not `DefaultRouter` — the same fix already applied to
-`stores` post-approval: `mine` is registered solely as a
-`@action(detail=False)` on `ProductViewSet`, relying on `SimpleRouter`'s
-guaranteed route ordering so `/products/mine/` always matches before
-`/products/{slug}/` (see project memory: the `stores` app's
-`StoreViewSet`/`/stores/me/` correction). Applying the same router choice here
-from the start avoids repeating that class of bug.
-"""
-
 from django.urls import path
 from rest_framework.routers import SimpleRouter
 

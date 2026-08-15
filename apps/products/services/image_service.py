@@ -1,15 +1,3 @@
-"""
-apps/products/services/image_service.py
-
-Enforces the two DDS-documented image invariants (DDS §4.8/§7.3):
-exactly one primary image and a maximum of eight images per product.
-
-"Exactly one primary" has a DB partial-unique-index backstop
-(`ProductImage.Meta.constraints`); "max eight" is service-layer only,
-per the DDS's explicit note that it is not portably expressible as a
-DB constraint.
-"""
-
 from django.db import transaction
 
 from apps.common.exceptions import ConflictError, NotFoundError

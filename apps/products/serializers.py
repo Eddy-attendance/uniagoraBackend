@@ -1,14 +1,3 @@
-"""
-apps/products/serializers.py
-
-Separate serializers for read / create / update / inventory mutation / image
-operations / category assignment (instruction §19). Clients can never
-populate `university`, `status`, `listed_at`, `expires_at`, `views_count`,
-`search_vector`, or store ownership through any of these — those fields are
-either absent from every writable serializer's field list, or (for `store`)
-never accepted as client input at all (derived from `request.user`).
-"""
-
 from decimal import Decimal
 
 from rest_framework import serializers
@@ -19,22 +8,11 @@ from .models import Product, ProductCondition, ProductImage
 
 
 def _reject_duplicate_category_ids(value):
-    """Shared field-level validator for every `category_ids` input surface
-    (create / update / category-assignment). Rejects duplicates with a clean
-    serializer `ValidationError` before the value ever reaches
-    `ProductService.set_categories()` — CTO correction: previously a
-    duplicate could reach `bulk_create()` and surface as a raw DB
-    `IntegrityError` against `UNIQUE(product, category)`.
-    """
     if len(value) != len(set(value)):
         raise serializers.ValidationError("Duplicate category IDs are not allowed.")
 
 
 class CategoryBriefSerializer(serializers.ModelSerializer):
-    """Minimal, self-contained nested representation — deliberately not
-    importing `categories.serializers.CategorySerializer` directly, to avoid
-    coupling to its exact (undocumented-to-this-session) field set."""
-
     class Meta:
         model = Category
         fields = ["id", "name", "slug"]
@@ -49,9 +27,6 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    """Read-only, full representation — used for every response body (list
-    results, retrieve, and the echoed object after every mutating action)."""
-
     store = serializers.SerializerMethodField()
     university = serializers.SerializerMethodField()
     categories = serializers.SerializerMethodField()
@@ -120,12 +95,6 @@ class ProductSerializer(serializers.ModelSerializer):
         return ProductImageSerializer(image).data if image else None
 
     def get_availability(self, obj):
-        """DDS §5: out-of-stock is a derived condition (`quantity == 0`),
-        never a `Product.status` value. Exposed as a self-documenting string
-        rather than a boolean to avoid the inverted-naming ambiguity of
-        `is_out_of_stock` (CTO correction — replaces that field). Backed by
-        `Product.is_out_of_stock`; `status`/inventory semantics are
-        unchanged."""
         return "OUT_OF_STOCK" if obj.is_out_of_stock else "IN_STOCK"
 
 
@@ -135,11 +104,6 @@ class ProductCreateSerializer(serializers.Serializer):
     A primary image is required at creation time because the PRD/DDS require
     every persisted listing to have at least one image and exactly one primary
     image.
-
-    `store`/`university`/`status`/`slug`/`listed_at`/`expires_at`/
-    `views_count`/`search_vector` are absent entirely — store ownership is
-    derived from `request.user.vendor_profile` at the view/service layer,
-    never from client input.
     """
 
     name = serializers.CharField(max_length=200)
@@ -175,10 +139,6 @@ class ProductCreateSerializer(serializers.Serializer):
 
 
 class ProductUpdateSerializer(serializers.Serializer):
-    """Partial update. Deliberately excludes `quantity` — inventory mutation
-    is owned by `InventoryUpdateSerializer`/`InventoryService` — and every
-    lifecycle/derived/ownership field."""
-
     name = serializers.CharField(max_length=200, required=False)
     description = serializers.CharField(required=False, allow_blank=True)
     price = serializers.DecimalField(
@@ -204,12 +164,6 @@ class ProductUpdateSerializer(serializers.Serializer):
 
 
 class ProductListQuerySerializer(serializers.Serializer):
-    """Validates marketplace browse/search query parameters.
-
-    Query parameters are API input and therefore must be validated before
-    reaching the queryset composition helpers in products/search/.
-    """
-
     q = serializers.CharField(
         required=False,
         allow_blank=True,
@@ -256,10 +210,6 @@ class ProductListQuerySerializer(serializers.Serializer):
 
 
 class InventoryUpdateSerializer(serializers.Serializer):
-    """Absolute quantity set — the only inventory-mutating input surface
-    exposed at the API layer; `InventoryService` also exposes
-    increase/decrease for future/internal use (instruction §22)."""
-
     quantity = serializers.IntegerField(min_value=0)
 
 

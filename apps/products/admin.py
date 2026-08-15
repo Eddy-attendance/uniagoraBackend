@@ -1,10 +1,3 @@
-"""
-apps/products/admin.py
-
-Django admin registration, mirroring the `SoftDeleteAdminMixin` convention
-already established by every prior app.
-"""
-
 from django.contrib import admin
 
 from apps.common.admin import SoftDeleteAdminMixin

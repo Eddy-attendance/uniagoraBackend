@@ -1,11 +1,3 @@
-"""
-apps/products/tests/test_services.py
-
-Covers every service listed in the products implementation:
-ProductService, InventoryService, ProductLifecycleService, and
-ProductImageService.
-"""
-
 from decimal import Decimal
 
 from django.test import TestCase

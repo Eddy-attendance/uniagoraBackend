@@ -1,14 +1,3 @@
-"""
-apps/products/search/filters.py
-
-Category / price / condition filter composition (Architecture §11: search
-composition lives inside `products/search/`, not a standalone `search` app).
-Plain, composable functions over a queryset — not a DRF FilterBackend class —
-so they apply identically whether the request is a plain browse or a keyword
-search (Architecture §11's stated reason for folding search into `products`).
-"""
-
-
 def apply_category_filter(queryset, category_slug):
     if not category_slug:
         return queryset
@@ -40,6 +29,4 @@ _ORDERING_MAP = {
 
 
 def apply_ordering(queryset, ordering):
-    """Defaults to 'newest' (-listed_at) for any unrecognized/absent value —
-    DDS §8 names `listed_at` as the field driving 'Newest' sort."""
     return queryset.order_by(_ORDERING_MAP.get(ordering, "-listed_at"))

@@ -1,15 +1,3 @@
-"""
-apps/products/views.py
-
-Thin views only — authenticate/authorize, validate via serializers, call the
-appropriate service, serialize the result, return the response. No inventory,
-lifecycle, ownership, image-count, primary-image, category-assignment, or
-expiry logic lives here (instruction §21).
-
-Permission classes are reused as-is from `core.permissions` — no duplicate
-permission class is introduced in this app (instruction §17).
-"""
-
 from django.db.models import F
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, status, viewsets
@@ -83,20 +71,13 @@ class ProductViewSet(
                 .prefetch_related("images", "category_links__category")
             )
 
-        # Every other action (vendor mutation, admin moderation, "mine")
-        # operates against the unfiltered, any-status queryset — ownership,
-        # not current status/university, governs access for those.
         return Product.objects.alive().select_related(
             "store__vendor_profile",
             "university",
         )
 
     def filter_queryset(self, queryset):
-        """Apply university scoping and validated marketplace filters.
-
-        Query parameters are validated at the API boundary before being passed
-        into the queryset composition helpers in products/search/.
-        """
+        """Apply university scoping and validated marketplace filters."""
         if self.action != "list":
             return queryset
 
@@ -256,10 +237,6 @@ class ProductViewSet(
         )
 
     def update(self, request, *args, **kwargs):
-        """Bridge DRF's partial validated_data into ProductService's UNSET
-        sentinel so omitted fields remain distinguishable from explicitly
-        cleared fields.
-        """
         product = self.get_object()
 
         serializer = ProductUpdateSerializer(

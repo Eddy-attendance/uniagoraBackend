@@ -1,12 +1,3 @@
-"""
-apps/products/tests/test_views.py
-
-Covers: authentication, customer read access + university isolation, vendor
-ownership enforcement, verified-vendor requirement, admin moderation, invalid
-payloads, lifecycle conflicts, inventory conflicts, image limits, and the
-standard response envelope shape.
-"""
-
 from decimal import Decimal
 from io import BytesIO
 from unittest.mock import patch

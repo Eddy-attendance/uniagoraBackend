@@ -1,11 +1,3 @@
-"""
-apps/products/tests/test_serializers.py
-
-Covers read serializer field set/computed fields, write serializer valid
-payloads and protected-field absence, and the search/filter helper functions
-(keyword, category, price, condition, ordering).
-"""
-
 from decimal import Decimal
 from io import BytesIO
 

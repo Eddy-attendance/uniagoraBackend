@@ -572,17 +572,7 @@ The products app has comprehensive automated coverage across:
 * Admin moderation
 * Response envelopes
 
-Current verified test result:
 
-```text
-Found 143 test(s).
-
-Ran 143 tests in 28.246s
-
-OK
-```
-
-The products test suite is currently **green: 143/143 passing**.
 
 Cloudinary image tests mock the upload operation while still verifying the resulting Cloudinary-backed image properties, including:
 
@@ -613,8 +603,6 @@ The products app follows these non-negotiable boundaries:
 12. **API responses follow the global response envelope.**
 13. **Client input cannot control server-owned fields.**
 14. **No product business rules are duplicated in views.**
-
-These boundaries follow the approved architecture's service-layer and dependency rules: views call services, services do not depend on views/serializers, and multi-model mutations establish their transaction boundary inside services.
 
 ---
 

@@ -1,13 +1,3 @@
-"""
-apps/products/services/product_service.py
-
-Owns product creation, general field updates, and category assignment.
-Architecture §1 assigns `products` three service responsibilities
-(`ProductService`, `InventoryService`, `ProductLifecycleService`);
-`ProductCategory` is explicitly "not independently service-owned" (DDS §10)
-and is managed here, as part of create/update.
-"""
-
 from django.db import transaction
 
 from apps.categories.models import Category
@@ -16,18 +6,10 @@ from apps.stores.models import Store
 
 from ..models import Product, ProductCategory
 
-# ADR-U5 lineage (EDD_users_authentication.md / Stores EDD §6): a local sentinel
-# distinguishes "field omitted from this call" from "field explicitly cleared".
 UNSET = object()
 
 
 class ProductService:
-    """Creation and general (non-inventory, non-lifecycle) mutation of
-    `Product`. Ownership is always derived from the authenticated vendor's own
-    `VendorProfile` -> `Store` relationship, never from a client-supplied
-    store/vendor identifier (instruction §9).
-    """
-
     @staticmethod
     @transaction.atomic
     def create(
@@ -80,9 +62,6 @@ class ProductService:
                 category_ids=category_ids,
             )
 
-        # Local import avoids a services-package circular import:
-        # products.services.__init__ imports ProductService and
-        # ProductImageService.
         from .image_service import ProductImageService
 
         ProductImageService.add_image(
@@ -105,11 +84,6 @@ class ProductService:
         campus_location=UNSET,
         category_ids=UNSET,
     ):
-        """Partial update of vendor-editable fields only. `quantity` is
-        deliberately excluded — inventory mutation belongs to
-        `InventoryService`. `status`/`university`/`listed_at`/`expires_at`/
-        `views_count`/`search_vector`/`store` are never accepted here.
-        """
         if name is not UNSET:
             product.name = name
         if description is not UNSET:
@@ -128,24 +102,7 @@ class ProductService:
     @staticmethod
     @transaction.atomic
     def set_categories(*, product, category_ids):
-        """Replaces the product's full category assignment set.
-
-        Hard-deletes existing `ProductCategory` rows rather than using
-        `BaseModel`'s soft-delete default: `ProductCategory` is a pure join
-        row (DDS §4.9), and soft-deleting would leave a row occupying the
-        `UNIQUE(product, category)` constraint, blocking re-assignment of the
-        same category later — the same class of limitation already flagged
-        (and deliberately avoided here) for the `stores` app's OneToOne
-        constraint. Flagged as an Engineering Implementation Decision.
-
-        Duplicate `category_ids` are rejected here as a defensive backstop
-        (CTO correction) — the primary, user-facing rejection happens at the
-        serializer layer (`_reject_duplicate_category_ids` in
-        `serializers.py`), but this service method is also callable directly
-        (e.g. from `ProductService.create`/`update`, or future/internal
-        callers), so duplicates must never be allowed to reach
-        `bulk_create()` regardless of entry point.
-        """
+        """Replaces the product's full category assignment set."""
         category_ids = list(category_ids or [])
         if len(category_ids) != len(set(category_ids)):
             raise ApplicationError(
@@ -173,10 +130,7 @@ class ProductService:
 
     @staticmethod
     def delete(*, product):
-        """Vendor 'Delete Listing' (PRD §4). Soft-delete only — `BaseModel`'s
-        default `.delete()` behavior, mirroring the `stores` app's own
-        `DELETE /stores/me/` precedent.
-        """
+        """Vendor 'Delete Listing' Soft-delete only"""
         product.delete()
 
 

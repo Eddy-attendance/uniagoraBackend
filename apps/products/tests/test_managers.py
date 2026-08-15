@@ -1,11 +1,3 @@
-"""
-apps/products/tests/test_managers.py
-
-Covers: `.visible()` (alive + ACTIVE), `.for_university()`, composability of
-the two, and that `.objects` remains unfiltered by default (ADR-001
-regression, consistent with every prior app's own manager test suite).
-"""
-
 from django.test import TestCase
 
 from apps.products.models import Product, ProductStatus
