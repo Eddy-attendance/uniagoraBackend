@@ -144,7 +144,6 @@ class VendorProfileSerializer(serializers.ModelSerializer):
     phone_number = serializers.CharField(validators=[validate_phone_number])
 ```
 
-## No `BaseModelSerializer` (removed after CTO review)
 
 Domain serializers do **not** need a shared base class for `id`/
 `created_at`/`updated_at`. DRF's `ModelSerializer` already infers
@@ -171,8 +170,6 @@ abstraction over a problem DRF already solves.
 class ProductAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
     list_display = (*SoftDeleteAdminMixin.list_display, "name", "status")
 ```
-
-## No `utils.truncate_text` (removed after CTO review)
 
 The DDS documents exactly one model needing a truncated `__str__`
 (`Message.__str__`, §4.11 — "truncates body to 50 chars"). A shared

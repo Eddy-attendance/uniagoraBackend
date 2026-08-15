@@ -1,7 +1,7 @@
 """
 Response envelope helpers implementing the PRD's mandated API contract.
 
-PRD §17 ("API Principles"):
+API Principles:
     Success: {"success": true, "message": "", "data": {}}
     Failure: {"success": false, "message": "", "errors": {}}
 
@@ -23,7 +23,7 @@ def success_response(
     message: str = "",
     status: int = http_status.HTTP_200_OK,
 ) -> Response:
-    """Builds a success envelope per PRD §17."""
+    """Builds a success envelope"""
     return Response(
         {
             "success": True,
@@ -39,7 +39,7 @@ def error_response(
     errors: dict | None = None,
     status: int = http_status.HTTP_400_BAD_REQUEST,
 ) -> Response:
-    """Builds a failure envelope per PRD §17."""
+    """Builds a failure envelope"""
     return Response(
         {
             "success": False,

@@ -1,12 +1,3 @@
-"""
-Reusable Django admin mixin for any `BaseModel`-derived model.
-
-`common` registers no `ModelAdmin` of its own (it owns no concrete
-models); this mixin is composed into every domain app's `ModelAdmin`
-instead.
-"""
-
-
 class SoftDeleteAdminMixin:
     """
     Standardizes soft-delete-aware columns across every domain app's

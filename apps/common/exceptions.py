@@ -1,18 +1,3 @@
-"""
-Shared exception types and the global DRF exception handler.
-
-Backend Architecture §7 (Service Layer Conventions):
-    "Services raise domain-specific exceptions (e.g. VendorNotVerifiedError,
-    ReviewNotEligibleError), caught once by the shared common/exceptions.py
-    handler and translated into the standard error envelope — views never
-    need their own try/except blocks for expected business-rule failures."
-
-This module defines the *base* exception vocabulary only. Domain apps
-(`vendors`, `reviews`, `chat`, ...) subclass `ApplicationError` for their
-own business-rule failures; `common` has no knowledge of what those
-specific failures are.
-"""
-
 from rest_framework import status as http_status
 from rest_framework.views import exception_handler as drf_default_exception_handler
 
@@ -20,14 +5,6 @@ from .response import error_response
 
 
 class ApplicationError(Exception):
-    """
-    Base class for every service-layer business-rule exception in the
-    system. Domain apps subclass this instead of raising bare exceptions
-    or DRF exceptions directly from services, keeping the service layer
-    decoupled from DRF (Backend Architecture §7: "services never import
-    from views.py or serializers.py").
-    """
-
     default_message = "A business rule prevented this action."
     default_status_code = http_status.HTTP_400_BAD_REQUEST
 
@@ -58,12 +35,6 @@ class PermissionDeniedError(ApplicationError):
 
 
 class ConflictError(ApplicationError):
-    """
-    Raised for invalid state transitions, e.g. attempting to renew a
-    product that is `HIDDEN_BY_SUSPENSION` rather than `EXPIRED`
-    (DDS §7.3 lifecycle rules).
-    """
-
     default_message = "This action conflicts with the current state of the resource."
     default_status_code = http_status.HTTP_409_CONFLICT
 
@@ -72,7 +43,7 @@ def custom_exception_handler(exc, context):
     """
     Global DRF exception handler, wired via
     `REST_FRAMEWORK["EXCEPTION_HANDLER"]`. Normalizes every error source
-    into the PRD §17 failure envelope:
+    into the failure envelope:
 
     1. `ApplicationError` (and subclasses) raised anywhere in a service layer.
     2. Standard DRF exceptions (`ValidationError`, `NotFound`,

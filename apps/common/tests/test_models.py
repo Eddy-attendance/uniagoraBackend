@@ -1,14 +1,3 @@
-"""
-Tests for `BaseModel`, `SoftDeleteManager`/`SoftDeleteQuerySet`, and
-`AutoSlugMixin`.
-
-`common` defines only abstract classes, so a concrete, test-only model is
-required to exercise them. `isolate_apps` + `schema_editor` is Django's own
-documented pattern for testing abstract model mixins without a real
-migration or polluting the global app registry (used throughout Django's
-own test suite for exactly this purpose).
-"""
-
 from django.db import connection, models
 from django.test import TestCase
 from django.test.utils import isolate_apps

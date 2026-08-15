@@ -1,11 +1,3 @@
-"""
-Standard page-number pagination for every list endpoint in the backend.
-
-Backend Architecture §9 (API Conventions):
-    "Standard page-number pagination (common/pagination.py), pagination
-    metadata nested inside data."
-"""
-
 from collections import OrderedDict
 
 from rest_framework.pagination import PageNumberPagination

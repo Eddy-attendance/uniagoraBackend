@@ -1,15 +1,5 @@
 """
-Global renderer enforcing the PRD §17 response envelope as a backstop.
-
-Backend Architecture §9 (API Conventions):
-    "enforced globally via a shared renderer + common/exceptions.py custom
-    exception handler, so no individual view can break the contract."
-
-In normal operation every response already arrives pre-wrapped via
-`response.py` helpers (success paths) or `exceptions.custom_exception_handler`
-(failure paths). This renderer is the second, independent line of defense:
-if a view or a third-party DRF code path ever emits an unwrapped payload,
-it is wrapped here rather than reaching the client malformed.
+Global renderer enforcing the response envelope as a backstop.
 """
 
 from typing import Any
