@@ -1,16 +1,3 @@
-"""
-`reviews` owns exactly one object-level permission not already covered by
-`core`: review-edit ownership. `core.permissions` has no knowledge of
-`Review` (a domain model that postdates `core`'s own build-order
-position) and never will — new domain permissions belong in the owning
-app, not bolted onto the frozen `core` app. This mirrors
-`chat.permissions.IsConversationParticipant`'s own precedent exactly.
-
-Conversation-participant checks for review retrieval/creation reuse
-`chat.permissions.IsConversationParticipant` directly (DDS §3: `reviews`
-depends on `chat`) rather than being reimplemented here.
-"""
-
 from rest_framework.permissions import BasePermission
 
 

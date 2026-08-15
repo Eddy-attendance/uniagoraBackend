@@ -1,11 +1,3 @@
-"""
-Thin views only — business rules live in ReviewService.
-
-Review endpoints are intentionally kept under the reviews URL namespace.
-The chat app continues to own /api/v1/conversations/, while the reviews
-app owns /api/v1/reviews/.
-"""
-
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.generics import ListAPIView
@@ -151,11 +143,7 @@ class ReviewDetailView(APIView):
 class StoreReviewListView(ListAPIView):
     """
     GET /api/v1/reviews/stores/{store_slug}/
-
     Returns paginated reviews for an active store, newest first.
-
-    Uses the denormalized Review.store FK defined by the DDS rather than
-    traversing Review -> Conversation -> VendorProfile -> Store.
     """
 
     serializer_class = ReviewSerializer

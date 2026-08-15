@@ -7,10 +7,10 @@ from .models import Review
 
 @admin.register(Review)
 class ReviewAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
-    """Inspection-only. `rating`/`comment`/`edited_at` are read-only here
-    on purpose — editing them through Django admin would bypass
-    ReviewService.update() (and its edited_at/ownership guarantees)
-    entirely, which the task brief explicitly forbids."""
+    """
+    Inspection-only. `rating`/`comment`/`edited_at` are read-only here
+    on purpose
+    """
 
     list_display = ("id", "store", "rating", "is_edited", "created_at", "is_deleted")
     list_filter = ("rating", "is_deleted")

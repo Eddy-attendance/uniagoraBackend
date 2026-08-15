@@ -1,14 +1,12 @@
 """
 Service layer for Reviews.
 
-Owns the review business rules defined by DDS §7.3:
+Owns the review business rules:
 - creation eligibility
 - one-review-per-conversation
 - ownership on create/edit
 - rating validation
 - server-derived, immutable store denormalization
-
-Views and serializers do not implement these domain rules directly.
 """
 
 from django.db import transaction
@@ -25,8 +23,6 @@ from apps.stores.models import Store
 
 from .models import Review
 
-# Local sentinel. This is intentionally not promoted to common because
-# it has only one consumer.
 _UNSET = object()
 
 _MIN_RATING = 1
@@ -107,9 +103,6 @@ class ReviewService:
     def update(*, review, actor, rating=_UNSET, comment=_UNSET):
         """
         Update a review owned by the requesting customer.
-
-        `store` and `conversation` are deliberately absent from the
-        signature, making them structurally immutable through this service.
         """
         if review.conversation.customer_id != actor.id:
             raise PermissionDeniedError("Only the review's author may edit it.")

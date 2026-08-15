@@ -4,12 +4,6 @@ from .models import Review
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    """Read-only representation used for every Review response body.
-    Exposes `conversation_id` (a reference, not the full Conversation —
-    chat content stays inside `chat`'s own boundary) and a flattened
-    store summary rather than nesting `stores`' own serializer, keeping
-    this app's response shape independent of stores' serializer internals."""
-
     customer_name = serializers.CharField(
         source="conversation.customer.full_name", read_only=True
     )
