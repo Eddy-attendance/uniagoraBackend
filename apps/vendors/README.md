@@ -306,17 +306,6 @@ The app has dedicated tests covering:
 * Authentication and permissions.
 * Student document submission.
 
-The vendors test suite currently passes as part of the full project suite.
-
-At the time of implementation:
-
-```text
-236 tests
-236 passed
-0 failures
-0 errors
-```
-
 ## Migrations
 
 Migrations are generated from the Django models using the project's Django environment.
@@ -359,13 +348,3 @@ Vendor suspension will eventually need to coordinate with the `stores` and `prod
 Once those apps exist, `VendorSuspensionService` must be extended so suspension can affect the vendor's active storefront and products as specified by the database/architecture design.
 
 That functionality is intentionally deferred rather than introducing premature dependencies into the vendors app.
-
-## Related Project Documents
-
-The implementation is based on the approved:
-
-* Product Requirements Document (PRD)
-* Backend Architecture
-* Database Design Specification (DDS)
-
-Key areas include vendor onboarding, vendor profile/document structure, vendor status transitions, validation rules, and service-layer responsibilities.

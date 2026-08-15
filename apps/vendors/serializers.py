@@ -15,8 +15,7 @@ class VendorDocumentSerializer(serializers.ModelSerializer):
 
 class VendorProfileSerializer(serializers.ModelSerializer):
     """Read-only. Used for every response body (list/retrieve/create/
-    activate-style actions) — mirrors the read/write split established by
-    UniversitySerializer / UniversityAdminWriteSerializer."""
+    activate-style actions)"""
 
     university = UniversitySerializer(read_only=True)
     reviewed_by = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -50,11 +49,6 @@ class VendorProfileSerializer(serializers.ModelSerializer):
 
 
 class VendorApplicationSerializer(serializers.ModelSerializer):
-    """The only serializer that accepts client input for this app. Enforces
-    DDS §7.2's conditional-required fields per vendor_type, plus the
-    matric/university uniqueness friendly check ahead of the DB partial
-    unique index (DDS §7.1)."""
-
     university = serializers.PrimaryKeyRelatedField(
         queryset=University.objects.active()
     )

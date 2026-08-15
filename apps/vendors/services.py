@@ -14,8 +14,7 @@ from .models import (
 
 
 class VendorDocumentService:
-    """One document per vendor in MVP flow (DDS §4.4 Constraints — service-layer
-    only, no DB uniqueness constraint, so multi-document support stays additive)."""
+    """One document per vendor in MVP flow"""
 
     @staticmethod
     def create_for_vendor(*, vendor_profile, document_type, file):
@@ -26,8 +25,6 @@ class VendorDocumentService:
             document_type=document_type,
             file=file,
         )
-        # DDS §5 VendorDocumentStatus.PENDING note: "auto-approved alongside
-        # profile in MVP".
         document.status = VendorDocumentStatus.APPROVED
         document.reviewed_at = timezone.now()
         document.save(update_fields=["status", "reviewed_at", "updated_at"])
@@ -35,7 +32,7 @@ class VendorDocumentService:
 
 
 class VendorVerificationService:
-    """Status transitions out of PENDING (DDS §9.2)."""
+    """Status transitions out of PENDING"""
 
     @staticmethod
     def approve(*, vendor_profile, reviewed_by=None):
@@ -51,11 +48,6 @@ class VendorVerificationService:
 
     @staticmethod
     def reject(*, vendor_profile, reviewed_by):
-        # DDS §9.2 lists PENDING -> REJECTED only under "future manual review".
-        # Since MVP auto-approves synchronously at submission, PENDING is not
-        # externally observable and this path is not reachable via the current
-        # API surface. Retained for schema/service completeness; no endpoint
-        # exposes it in MVP — see README "Assumptions".
         if vendor_profile.status != VendorStatus.PENDING:
             raise ConflictError("Only a pending application can be rejected.")
         vendor_profile.status = VendorStatus.REJECTED
@@ -122,9 +114,8 @@ class VendorSuspensionService:
 
 
 class VendorApplicationService:
-    """Application intake (DDS §10). Creates VendorProfile (+ document for
-    STUDENT vendors) and auto-approves in the same transaction, per PRD §5:
-    "Vendor applications are automatically approved after submission"."""
+    """Application intake. Creates VendorProfile (+ document for
+    STUDENT vendors) and auto-approves in the same transaction."""
 
     @staticmethod
     @transaction.atomic
@@ -144,10 +135,6 @@ class VendorApplicationService:
         document_type=None,
         document_file=None,
     ):
-        # PRD §4: "Each account may own only one vendor profile" — friendly
-        # service-layer check before it would hit the OneToOneField's DB
-        # constraint. Uses the same hasattr probe as User.is_vendor (users
-        # app), so the two can never diverge.
         if hasattr(user, "vendor_profile"):
             raise ConflictError("This account already has a vendor profile.")
 

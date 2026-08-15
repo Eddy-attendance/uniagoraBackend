@@ -78,22 +78,13 @@ class VendorProfile(BaseModel):
     )
 
     class Meta:
-        # BaseModel's Meta (abstract) is not automatically inherited across the
-        # multi-parent chain once this model declares its own Meta — restated
-        # explicitly, same reasoning as User (EDD_users_authentication §5).
         ordering = ["-created_at"]
         constraints = [
-            # DDS §4.3 Constraints / §6: matric numbers unique per university,
-            # not globally; partial so BUSINESS vendors (matric_number=NULL)
-            # never collide.
             models.UniqueConstraint(
                 fields=["university", "matric_number"],
                 condition=Q(matric_number__isnull=False),
                 name="unique_matric_number_per_university",
             ),
-            # DDS §4.3 Constraints: DB-level backstop for conditional-required
-            # fields per vendor_type; primary enforcement is the serializer
-            # (DDS §7.2).
             models.CheckConstraint(
                 check=(
                     Q(

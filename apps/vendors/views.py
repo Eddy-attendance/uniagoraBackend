@@ -23,8 +23,6 @@ class VendorProfileViewSet(
     GET    /vendors/me/             own profile (Customer)
     POST   /vendors/{id}/suspend/   Admin
     POST   /vendors/{id}/reinstate/ Admin
-    No `destroy` — no delete workflow described in any frozen document
-    (same reasoning as ADR-U3 in the universities EDD).
     """
 
     queryset = VendorProfile.objects.alive().select_related("university", "reviewed_by")
