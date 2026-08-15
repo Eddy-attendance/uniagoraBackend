@@ -52,7 +52,7 @@ def make_vendor_profile(pk="vendor-1", is_verified=True):
 
 
 class IsAuthenticatedCustomerTests(SimpleTestCase):
-    """PRD Sec 4: every registered account is automatically a Customer."""
+    """Every registered account is automatically a Customer."""
 
     def setUp(self):
         self.permission = IsAuthenticatedCustomer()
@@ -71,7 +71,7 @@ class IsAuthenticatedCustomerTests(SimpleTestCase):
 
 
 class IsVerifiedVendorTests(SimpleTestCase):
-    """Architecture Sec 8: authenticated + VendorProfile.status == VERIFIED."""
+    """Authenticated + VendorProfile.status == VERIFIED."""
 
     def setUp(self):
         self.permission = IsVerifiedVendor()
@@ -100,8 +100,7 @@ class IsVerifiedVendorTests(SimpleTestCase):
 
 class IsOwnerVendorTests(SimpleTestCase):
     """
-    Architecture Sec 8: object-level ownership check, never trusting a
-    client-supplied vendor/store ID.
+    Object-level ownership check, never trusting a client-supplied vendor/store ID.
     """
 
     def setUp(self):
@@ -131,11 +130,6 @@ class IsOwnerVendorTests(SimpleTestCase):
         )
 
     def test_object_level_treats_same_pk_as_same_owner_regardless_of_other_fields(self):
-        # Exercises the switch from `.pk == .pk` to `==` (CTO review,
-        # round 1, item 1): two VendorProfile instances with the same
-        # pk but different is_verified values must still be treated as
-        # the same owner, exactly as Django's Model.__eq__ would (it
-        # compares model class + pk only, never other field values).
         request_vendor_profile = make_vendor_profile(pk="vendor-1", is_verified=True)
         request = make_request(make_user(vendor_profile=request_vendor_profile))
         store_obj = SimpleNamespace(
@@ -152,8 +146,6 @@ class IsOwnerVendorTests(SimpleTestCase):
         )
 
     def test_object_level_ignores_client_supplied_identifiers(self):
-        # Even if the object carries a client-supplied-looking field,
-        # only the resolved VendorProfile comparison matters.
         request_vendor_profile = make_vendor_profile(pk="vendor-1")
         request = make_request(make_user(vendor_profile=request_vendor_profile))
         store_obj = SimpleNamespace(
@@ -188,7 +180,7 @@ class IsOwnerVendorTests(SimpleTestCase):
 
 
 class IsAdminTests(SimpleTestCase):
-    """Architecture Sec 8, verbatim: 'IsAdmin — is_staff/is_superuser.'"""
+    """IsAdmin — is_staff/is_superuser."""
 
     def setUp(self):
         self.permission = IsAdmin()
@@ -206,8 +198,6 @@ class IsAdminTests(SimpleTestCase):
         self.assertFalse(self.permission.has_permission(request, view=None))
 
     def test_anonymous_staff_flag_is_denied(self):
-        # is_staff=True is meaningless without is_authenticated=True —
-        # guards against a stale/detached user object being trusted.
         request = make_request(make_user(is_authenticated=False, is_staff=True))
         self.assertFalse(self.permission.has_permission(request, view=None))
 

@@ -1,13 +1,3 @@
-"""
-Tests for `apps.core.filters.ActiveUniversityFilterBackend`.
-
-A `unittest.mock.MagicMock` stands in for a real Django `QuerySet`:
-this backend's entire contract is "call `.none()`, or call
-`.filter(**{lookup_field: value})`" — a Mock lets that contract be
-asserted directly without depending on any concrete, university-scoped
-model (none exist yet in the build order ).
-"""
-
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
