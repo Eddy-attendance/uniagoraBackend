@@ -8,7 +8,7 @@ UniAGORA is a campus marketplace platform designed to connect students within th
 
 This repository contains the backend services powering the UniAGORA ecosystem.
 
-> **Project Status:** 🚧 Active Development (Bootstrap Phase)
+> **Project Status:** 🚧 Active Development
 
 ---
 
@@ -176,7 +176,7 @@ License information will be added before the first public release.
 
 ---
 
-## 👨‍💻 Backend Author
+## 👨‍💻 Author
 
 **Abdulsalam Abdulsomad Abdulkadir**
 
