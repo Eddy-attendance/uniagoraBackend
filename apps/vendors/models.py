@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema_field
+from rest_framework import serializers
 
 from apps.common.fields import CloudinaryDocumentField, CloudinaryImageField
 from apps.common.models import BaseModel
@@ -107,6 +109,7 @@ class VendorProfile(BaseModel):
         return self.store_name
 
     @property
+    @extend_schema_field(serializers.BooleanField())
     def is_verified(self):
         return self.status == VendorStatus.VERIFIED
 

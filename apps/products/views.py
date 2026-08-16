@@ -1,5 +1,6 @@
 from django.db.models import F
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
@@ -28,6 +29,8 @@ from .serializers import (
     InventoryUpdateSerializer,
     ProductCategoryAssignmentSerializer,
     ProductCreateSerializer,
+    ProductImageListResponseSerializer,
+    ProductImageResponseSerializer,
     ProductImageSerializer,
     ProductImageUploadSerializer,
     ProductListQuerySerializer,
@@ -378,6 +381,9 @@ class ProductImageListCreateView(
         JSONParser,
     ]
 
+    @extend_schema(
+        responses={200: ProductImageListResponseSerializer},
+    )
     def get(self, request, slug):
         product = self.get_product(
             request,
@@ -393,6 +399,10 @@ class ProductImageListCreateView(
             ).data,
         )
 
+    @extend_schema(
+        request=ProductImageUploadSerializer,
+        responses={201: ProductImageResponseSerializer},
+    )
     def post(self, request, slug):
         product = self.get_product(
             request,
@@ -421,6 +431,9 @@ class ProductImageDetailView(
     _ProductOwnedImageMixin,
     APIView,
 ):
+    @extend_schema(
+        responses={204: None},
+    )
     def delete(self, request, slug, image_id):
         product = self.get_product(
             request,
@@ -446,6 +459,10 @@ class ProductImageSetPrimaryView(
     _ProductOwnedImageMixin,
     APIView,
 ):
+    @extend_schema(
+        request=None,
+        responses={200: ProductImageResponseSerializer},
+    )
     def patch(self, request, slug, image_id):
         product = self.get_product(
             request,

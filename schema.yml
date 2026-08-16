@@ -1,0 +1,4624 @@
+openapi: 3.0.3
+info:
+  title: UniAGORA API
+  version: 1.0.0
+  description: UniAGORA marketplace REST API.
+paths:
+  /api/v1/admin/categories/:
+    get:
+      operationId: admin_categories_list
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCategory'
+          description: ''
+    post:
+      operationId: admin_categories_create
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCategoryWrite'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminCategoryWrite'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminCategoryWrite'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCategory'
+          description: ''
+  /api/v1/admin/categories/{slug}/:
+    get:
+      operationId: admin_categories_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCategory'
+          description: ''
+    patch:
+      operationId: admin_categories_partial_update
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminCategoryUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminCategoryUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminCategoryUpdate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCategory'
+          description: ''
+    delete:
+      operationId: admin_categories_destroy
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/admin/categories/{slug}/activate/:
+    post:
+      operationId: admin_categories_activate_create
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCategory'
+          description: ''
+  /api/v1/admin/categories/{slug}/deactivate/:
+    post:
+      operationId: admin_categories_deactivate_create
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCategory'
+          description: ''
+  /api/v1/admin/dashboard/:
+    get:
+      operationId: admin_dashboard_retrieve
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardSummary'
+          description: ''
+  /api/v1/admin/products/:
+    get:
+      operationId: admin_products_list
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminProduct'
+          description: ''
+  /api/v1/admin/products/{id}/:
+    get:
+      operationId: admin_products_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminProduct'
+          description: ''
+  /api/v1/admin/products/{id}/remove/:
+    post:
+      operationId: admin_products_remove_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminProduct'
+          description: ''
+  /api/v1/admin/reports/:
+    get:
+      operationId: admin_reports_list
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportAdmin'
+          description: ''
+  /api/v1/admin/reports/{id}/:
+    get:
+      operationId: admin_reports_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportAdmin'
+          description: ''
+  /api/v1/admin/reports/{id}/reject/:
+    post:
+      operationId: admin_reports_reject_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminResolution'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminResolution'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminResolution'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportAdmin'
+          description: ''
+  /api/v1/admin/reports/{id}/resolve/:
+    post:
+      operationId: admin_reports_resolve_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminResolution'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminResolution'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminResolution'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportAdmin'
+          description: ''
+  /api/v1/admin/reports/{id}/under-review/:
+    post:
+      operationId: admin_reports_under_review_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportAdmin'
+          description: ''
+  /api/v1/admin/users/:
+    get:
+      operationId: admin_users_list
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUser'
+          description: ''
+  /api/v1/admin/users/{id}/:
+    get:
+      operationId: admin_users_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUser'
+          description: ''
+  /api/v1/admin/users/{id}/activate/:
+    post:
+      operationId: admin_users_activate_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUser'
+          description: ''
+  /api/v1/admin/users/{id}/deactivate/:
+    post:
+      operationId: admin_users_deactivate_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUser'
+          description: ''
+  /api/v1/admin/vendors/:
+    get:
+      operationId: admin_vendors_list
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminVendor'
+          description: ''
+  /api/v1/admin/vendors/{id}/:
+    get:
+      operationId: admin_vendors_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminVendor'
+          description: ''
+  /api/v1/admin/vendors/{id}/reinstate/:
+    post:
+      operationId: admin_vendors_reinstate_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminVendor'
+          description: ''
+  /api/v1/admin/vendors/{id}/suspend/:
+    post:
+      operationId: admin_vendors_suspend_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminVendor'
+          description: ''
+  /api/v1/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailTokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EmailTokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EmailTokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailTokenObtainPair'
+          description: ''
+  /api/v1/auth/logout/:
+    post:
+      operationId: auth_logout_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Logout'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Logout'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Logout'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/password-reset/confirm/:
+    post:
+      operationId: auth_password_reset_confirm_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/password-reset/request/:
+    post:
+      operationId: auth_password_reset_request_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/register/:
+    post:
+      operationId: auth_register_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+          description: ''
+  /api/v1/auth/token/refresh/:
+    post:
+      operationId: auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/v1/categories/:
+    get:
+      operationId: categories_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - categories
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCategoryList'
+          description: ''
+    post:
+      operationId: categories_create
+      tags:
+      - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoryCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoryCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryCreate'
+          description: ''
+  /api/v1/categories/{slug}/:
+    get:
+      operationId: categories_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - categories
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    put:
+      operationId: categories_update
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoryUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoryUpdate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryUpdate'
+          description: ''
+    patch:
+      operationId: categories_partial_update
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoryUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoryUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoryUpdate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryUpdate'
+          description: ''
+    delete:
+      operationId: categories_destroy
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - categories
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/categories/{slug}/activate/:
+    post:
+      operationId: categories_activate_create
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/v1/categories/{slug}/deactivate/:
+    post:
+      operationId: categories_deactivate_create
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/v1/conversations/:
+    get:
+      operationId: conversations_list
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: Conversation UUID.
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - conversations
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedConversationList'
+          description: ''
+    post:
+      operationId: conversations_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: Conversation UUID.
+        required: true
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+  /api/v1/conversations/{id}/:
+    get:
+      operationId: conversations_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: Conversation UUID.
+        required: true
+      tags:
+      - conversations
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+  /api/v1/conversations/{id}/complete/:
+    post:
+      operationId: conversations_complete_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: Conversation UUID.
+        required: true
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+  /api/v1/conversations/{id}/messages/:
+    get:
+      operationId: conversations_messages_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: Conversation UUID.
+        required: true
+      tags:
+      - conversations
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+    post:
+      operationId: conversations_messages_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: Conversation UUID.
+        required: true
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+  /api/v1/conversations/{id}/read/:
+    post:
+      operationId: conversations_read_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: Conversation UUID.
+        required: true
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+  /api/v1/notifications/:
+    get:
+      operationId: notifications_list
+      description: |-
+        GET /api/v1/notifications/ — own notifications, paginated.
+
+        `?unread=true` narrows to unread-only
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationListResponseList'
+          description: ''
+  /api/v1/notifications/{id}/read/:
+    post:
+      operationId: notifications_read_create
+      description: POST /api/v1/notifications/{id}/read/
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponse'
+          description: ''
+  /api/v1/notifications/device-tokens/:
+    get:
+      operationId: notifications_device_tokens_retrieve
+      description: GET/POST /api/v1/notifications/device-tokens/
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceTokenListResponse'
+          description: ''
+    post:
+      operationId: notifications_device_tokens_create
+      description: GET/POST /api/v1/notifications/device-tokens/
+      tags:
+      - notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceTokenRegister'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DeviceTokenRegister'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DeviceTokenRegister'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceTokenResponse'
+          description: ''
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceTokenResponse'
+          description: ''
+  /api/v1/notifications/device-tokens/{id}/deactivate/:
+    post:
+      operationId: notifications_device_tokens_deactivate_create
+      description: POST /api/v1/notifications/device-tokens/{id}/deactivate/
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceTokenResponse'
+          description: ''
+  /api/v1/notifications/read-all/:
+    post:
+      operationId: notifications_read_all_create
+      description: POST /api/v1/notifications/read-all/
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarkAllReadResponse'
+          description: ''
+  /api/v1/notifications/unread-count/:
+    get:
+      operationId: notifications_unread_count_retrieve
+      description: GET /api/v1/notifications/unread-count/
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnreadCountResponse'
+          description: ''
+  /api/v1/products/products/:
+    get:
+      operationId: products_products_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - products
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductList'
+          description: ''
+    post:
+      operationId: products_products_create
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCreate'
+          description: ''
+  /api/v1/products/products/{slug}/:
+    get:
+      operationId: products_products_retrieve
+      description: |-
+        Visible to:
+
+        (a) any authenticated customer, if ACTIVE and in the requester's
+            active_university,
+        (b) the owning vendor, any status,
+        (c) an admin, any status.
+
+        This is a custom visibility rule, not expressible as a single DRF
+        permission/filter composition, so it is implemented directly here
+        rather than via `get_object()`.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    put:
+      operationId: products_products_update
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductUpdate'
+          description: ''
+    patch:
+      operationId: products_products_partial_update
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProductUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProductUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProductUpdate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductUpdate'
+          description: ''
+    delete:
+      operationId: products_products_destroy
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/products/products/{slug}/categories/:
+    put:
+      operationId: products_products_categories_update
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+  /api/v1/products/products/{slug}/images/:
+    get:
+      operationId: products_products_images_retrieve
+      description: Shared ownership-resolution for product image sub-resource views.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductImageListResponse'
+          description: ''
+    post:
+      operationId: products_products_images_create
+      description: Shared ownership-resolution for product image sub-resource views.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductImageUpload'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductImageUpload'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductImageUpload'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductImageResponse'
+          description: ''
+  /api/v1/products/products/{slug}/images/{image_id}/:
+    delete:
+      operationId: products_products_images_destroy
+      description: Shared ownership-resolution for product image sub-resource views.
+      parameters:
+      - in: path
+        name: image_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/products/products/{slug}/images/{image_id}/primary/:
+    patch:
+      operationId: products_products_images_primary_partial_update
+      description: Shared ownership-resolution for product image sub-resource views.
+      parameters:
+      - in: path
+        name: image_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductImageResponse'
+          description: ''
+  /api/v1/products/products/{slug}/inventory/:
+    patch:
+      operationId: products_products_inventory_partial_update
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProduct'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProduct'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProduct'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+  /api/v1/products/products/{slug}/remove/:
+    post:
+      operationId: products_products_remove_create
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+  /api/v1/products/products/{slug}/renew/:
+    post:
+      operationId: products_products_renew_create
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+  /api/v1/products/products/mine/:
+    get:
+      operationId: products_products_mine_retrieve
+      tags:
+      - products
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+  /api/v1/reports/:
+    get:
+      operationId: reports_list
+      description: GET /api/v1/reports/.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - reports
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReportAdminList'
+          description: ''
+  /api/v1/reports/{report_id}/:
+    get:
+      operationId: reports_retrieve
+      description: GET /api/v1/reports/{report_id}/.
+      parameters:
+      - in: path
+        name: report_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - reports
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+          description: ''
+  /api/v1/reports/{report_id}/reject/:
+    post:
+      operationId: reports_reject_create
+      description: POST /api/v1/reports/{report_id}/reject/.
+      parameters:
+      - in: path
+        name: report_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - reports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportResolution'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReportResolution'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReportResolution'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportAdmin'
+          description: ''
+  /api/v1/reports/{report_id}/resolve/:
+    post:
+      operationId: reports_resolve_create
+      description: POST /api/v1/reports/{report_id}/resolve/.
+      parameters:
+      - in: path
+        name: report_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - reports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportResolution'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReportResolution'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReportResolution'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportAdmin'
+          description: ''
+  /api/v1/reports/{report_id}/under-review/:
+    post:
+      operationId: reports_under_review_create
+      description: POST /api/v1/reports/{report_id}/under-review/.
+      parameters:
+      - in: path
+        name: report_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - reports
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportAdmin'
+          description: ''
+  /api/v1/reports/mine/:
+    get:
+      operationId: reports_mine_list
+      description: GET /api/v1/reports/mine/.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - reports
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReportList'
+          description: ''
+  /api/v1/reports/products/{product_id}/:
+    post:
+      operationId: reports_products_create
+      description: POST /api/v1/reports/products/{product_id}/
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - reports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReportCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReportCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+          description: ''
+  /api/v1/reports/vendors/{vendor_id}/:
+    post:
+      operationId: reports_vendors_create
+      description: POST /api/v1/reports/vendors/{vendor_id}/
+      parameters:
+      - in: path
+        name: vendor_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - reports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReportCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReportCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+          description: ''
+  /api/v1/reviews/{id}/:
+    get:
+      operationId: reviews_retrieve
+      description: |-
+        GET   /api/v1/reviews/{id}/
+              Retrieve a review.
+
+        PATCH /api/v1/reviews/{id}/
+              Update a review. Only the review owner may edit it.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - reviews
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+    patch:
+      operationId: reviews_partial_update
+      description: |-
+        GET   /api/v1/reviews/{id}/
+              Retrieve a review.
+
+        PATCH /api/v1/reviews/{id}/
+              Update a review. Only the review owner may edit it.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedReviewUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedReviewUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedReviewUpdate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+  /api/v1/reviews/conversations/{conversation_id}/:
+    get:
+      operationId: reviews_conversations_retrieve
+      description: |-
+        GET  /api/v1/reviews/conversations/{conversation_id}/
+             Participant-only review retrieval.
+
+        POST /api/v1/reviews/conversations/{conversation_id}/
+             Customer review creation.
+      parameters:
+      - in: path
+        name: conversation_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - reviews
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+    post:
+      operationId: reviews_conversations_create
+      description: |-
+        GET  /api/v1/reviews/conversations/{conversation_id}/
+             Participant-only review retrieval.
+
+        POST /api/v1/reviews/conversations/{conversation_id}/
+             Customer review creation.
+      parameters:
+      - in: path
+        name: conversation_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReviewCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReviewCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+  /api/v1/reviews/stores/{store_slug}/:
+    get:
+      operationId: reviews_stores_list
+      description: |-
+        GET /api/v1/reviews/stores/{store_slug}/
+        Returns paginated reviews for an active store, newest first.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: path
+        name: store_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - reviews
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReviewList'
+          description: ''
+  /api/v1/stores/:
+    post:
+      operationId: stores_create
+      tags:
+      - stores
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StoreWrite'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StoreWrite'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StoreWrite'
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreWrite'
+          description: ''
+  /api/v1/stores/{slug}/:
+    get:
+      operationId: stores_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - stores
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Store'
+          description: ''
+  /api/v1/stores/me/:
+    get:
+      operationId: stores_me_retrieve
+      tags:
+      - stores
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Store'
+          description: ''
+    patch:
+      operationId: stores_me_partial_update
+      tags:
+      - stores
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedStoreWrite'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedStoreWrite'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedStoreWrite'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreWrite'
+          description: ''
+    delete:
+      operationId: stores_me_destroy
+      tags:
+      - stores
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/universities/:
+    get:
+      operationId: universities_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - universities
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUniversityList'
+          description: ''
+    post:
+      operationId: universities_create
+      tags:
+      - universities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UniversityAdminWrite'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UniversityAdminWrite'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UniversityAdminWrite'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversityAdminWrite'
+          description: ''
+  /api/v1/universities/{slug}/:
+    get:
+      operationId: universities_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - universities
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/University'
+          description: ''
+    put:
+      operationId: universities_update
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - universities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UniversityAdminWrite'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UniversityAdminWrite'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UniversityAdminWrite'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversityAdminWrite'
+          description: ''
+    patch:
+      operationId: universities_partial_update
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - universities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUniversityAdminWrite'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUniversityAdminWrite'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUniversityAdminWrite'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversityAdminWrite'
+          description: ''
+  /api/v1/universities/{slug}/activate/:
+    post:
+      operationId: universities_activate_create
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - universities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/University'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/University'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/University'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/University'
+          description: ''
+  /api/v1/universities/{slug}/deactivate/:
+    post:
+      operationId: universities_deactivate_create
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - universities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/University'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/University'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/University'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/University'
+          description: ''
+  /api/v1/users/me/:
+    get:
+      operationId: users_me_retrieve
+      description: GET/PATCH the authenticated user's own profile.
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: users_me_partial_update
+      description: GET/PATCH the authenticated user's own profile.
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserUpdate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/users/me/active-university/:
+    patch:
+      operationId: users_me_active_university_partial_update
+      description: PATCH /users/me/active-university/  - "change university whenever
+        they wish."
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSetActiveUniversity'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSetActiveUniversity'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSetActiveUniversity'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/vendors/:
+    get:
+      operationId: vendors_list
+      description: |-
+        POST   /vendors/               apply (Customer)               -> auto-verified
+        GET    /vendors/                list (Admin)                  -> vendor queue
+        GET    /vendors/{id}/           retrieve (Admin)
+        GET    /vendors/me/             own profile (Customer)
+        POST   /vendors/{id}/suspend/   Admin
+        POST   /vendors/{id}/reinstate/ Admin
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - vendors
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedVendorProfileList'
+          description: ''
+    post:
+      operationId: vendors_create
+      description: |-
+        POST   /vendors/               apply (Customer)               -> auto-verified
+        GET    /vendors/                list (Admin)                  -> vendor queue
+        GET    /vendors/{id}/           retrieve (Admin)
+        GET    /vendors/me/             own profile (Customer)
+        POST   /vendors/{id}/suspend/   Admin
+        POST   /vendors/{id}/reinstate/ Admin
+      tags:
+      - vendors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorApplication'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VendorApplication'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VendorApplication'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorApplication'
+          description: ''
+  /api/v1/vendors/{id}/:
+    get:
+      operationId: vendors_retrieve
+      description: |-
+        POST   /vendors/               apply (Customer)               -> auto-verified
+        GET    /vendors/                list (Admin)                  -> vendor queue
+        GET    /vendors/{id}/           retrieve (Admin)
+        GET    /vendors/me/             own profile (Customer)
+        POST   /vendors/{id}/suspend/   Admin
+        POST   /vendors/{id}/reinstate/ Admin
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this vendor profile.
+        required: true
+      tags:
+      - vendors
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorProfile'
+          description: ''
+  /api/v1/vendors/{id}/reinstate/:
+    post:
+      operationId: vendors_reinstate_create
+      description: |-
+        POST   /vendors/               apply (Customer)               -> auto-verified
+        GET    /vendors/                list (Admin)                  -> vendor queue
+        GET    /vendors/{id}/           retrieve (Admin)
+        GET    /vendors/me/             own profile (Customer)
+        POST   /vendors/{id}/suspend/   Admin
+        POST   /vendors/{id}/reinstate/ Admin
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this vendor profile.
+        required: true
+      tags:
+      - vendors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VendorProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VendorProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorProfile'
+          description: ''
+  /api/v1/vendors/{id}/suspend/:
+    post:
+      operationId: vendors_suspend_create
+      description: |-
+        POST   /vendors/               apply (Customer)               -> auto-verified
+        GET    /vendors/                list (Admin)                  -> vendor queue
+        GET    /vendors/{id}/           retrieve (Admin)
+        GET    /vendors/me/             own profile (Customer)
+        POST   /vendors/{id}/suspend/   Admin
+        POST   /vendors/{id}/reinstate/ Admin
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this vendor profile.
+        required: true
+      tags:
+      - vendors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VendorProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VendorProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorProfile'
+          description: ''
+  /api/v1/vendors/me/:
+    get:
+      operationId: vendors_me_retrieve
+      description: |-
+        POST   /vendors/               apply (Customer)               -> auto-verified
+        GET    /vendors/                list (Admin)                  -> vendor queue
+        GET    /vendors/{id}/           retrieve (Admin)
+        GET    /vendors/me/             own profile (Customer)
+        POST   /vendors/{id}/suspend/   Admin
+        POST   /vendors/{id}/reinstate/ Admin
+      tags:
+      - vendors
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorProfile'
+          description: ''
+components:
+  schemas:
+    AdminCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        parent_id:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        display_order:
+          type: integer
+          readOnly: true
+        is_active:
+          type: boolean
+          readOnly: true
+      required:
+      - display_order
+      - id
+      - is_active
+      - name
+      - parent_id
+      - slug
+    AdminCategoryWrite:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        parent:
+          type: string
+          nullable: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        display_order:
+          type: integer
+          minimum: 0
+          default: 0
+      required:
+      - name
+    AdminProduct:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        name:
+          type: string
+          readOnly: true
+        store_id:
+          type: string
+          format: uuid
+          readOnly: true
+        university_id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          type: string
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        listed_at:
+          type: string
+          format: date-time
+          readOnly: true
+        expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - expires_at
+      - id
+      - listed_at
+      - name
+      - price
+      - slug
+      - status
+      - store_id
+      - university_id
+    AdminResolution:
+      type: object
+      properties:
+        resolution_notes:
+          type: string
+          nullable: true
+    AdminUser:
+      type: object
+      description: |-
+        Read-only. is_active is presented here but is never writable
+        through this serializer — the activate/deactivate actions are
+        dedicated endpoints backed by UserService, not a PATCH field.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        full_name:
+          type: string
+          readOnly: true
+        phone_number:
+          type: string
+          readOnly: true
+          nullable: true
+        is_active:
+          type: boolean
+          readOnly: true
+        is_staff:
+          type: boolean
+          readOnly: true
+        active_university:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            short_name:
+              type: string
+          readOnly: true
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - active_university
+      - created_at
+      - date_joined
+      - email
+      - full_name
+      - id
+      - is_active
+      - is_staff
+      - phone_number
+    AdminVendor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user_id:
+          type: string
+          format: uuid
+          readOnly: true
+        store_name:
+          type: string
+          readOnly: true
+        vendor_type:
+          type: string
+          readOnly: true
+        status:
+          type: string
+          readOnly: true
+        university_id:
+          type: string
+          format: uuid
+          readOnly: true
+        submitted_at:
+          type: string
+          format: date-time
+          readOnly: true
+        reviewed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - id
+      - reviewed_at
+      - status
+      - store_name
+      - submitted_at
+      - university_id
+      - user_id
+      - vendor_type
+    AvailabilityEnum:
+      type: string
+      enum:
+      - IN_STOCK
+      - OUT_OF_STOCK
+    Category:
+      type: object
+      description: Read-only representation used for every response body.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        parent:
+          type: string
+          readOnly: true
+        display_order:
+          type: integer
+          readOnly: true
+        is_active:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - display_order
+      - id
+      - is_active
+      - name
+      - parent
+      - slug
+      - updated_at
+    CategoryBrief:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - id
+      - name
+      - slug
+    CategoryCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        parent:
+          type: string
+          nullable: true
+        display_order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - name
+    CategoryUpdate:
+      type: object
+      description: Only `name` is writable post-creation.
+      properties:
+        name:
+          type: string
+          maxLength: 100
+      required:
+      - name
+    ConditionEnum:
+      enum:
+      - NEW
+      - USED
+      type: string
+      description: |-
+        * `NEW` - New
+        * `USED` - Used
+    Conversation:
+      type: object
+      description: Read-only. Used for list/retrieve/create-echo/complete-echo.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        customer:
+          type: string
+          format: uuid
+          readOnly: true
+        vendor:
+          type: string
+          format: uuid
+          readOnly: true
+        vendor_store_name:
+          type: string
+          readOnly: true
+        product:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        product_name:
+          type: string
+          readOnly: true
+        transaction_status:
+          allOf:
+          - $ref: '#/components/schemas/TransactionStatusEnum'
+          readOnly: true
+        completed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        unread_count:
+          type: integer
+          readOnly: true
+          default: 0
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - completed_at
+      - created_at
+      - customer
+      - id
+      - product
+      - product_name
+      - transaction_status
+      - unread_count
+      - updated_at
+      - vendor
+      - vendor_store_name
+    DashboardSummary:
+      type: object
+      properties:
+        users:
+          type: object
+          additionalProperties: {}
+        vendors:
+          type: object
+          additionalProperties: {}
+        products:
+          type: object
+          additionalProperties: {}
+        categories:
+          type: object
+          additionalProperties: {}
+        reports:
+          type: object
+          additionalProperties: {}
+      required:
+      - categories
+      - products
+      - reports
+      - users
+      - vendors
+    DeviceToken:
+      type: object
+      description: Read-only — every DeviceToken response body.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        token:
+          type: string
+          readOnly: true
+        platform:
+          allOf:
+          - $ref: '#/components/schemas/PlatformEnum'
+          readOnly: true
+        platform_display:
+          type: string
+          readOnly: true
+        is_active:
+          type: boolean
+          readOnly: true
+        last_used_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - is_active
+      - last_used_at
+      - platform
+      - platform_display
+      - token
+    DeviceTokenListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceToken'
+      required:
+      - data
+      - message
+      - success
+    DeviceTokenRegister:
+      type: object
+      properties:
+        token:
+          type: string
+          maxLength: 255
+        platform:
+          $ref: '#/components/schemas/PlatformEnum'
+      required:
+      - platform
+      - token
+    DeviceTokenResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/DeviceToken'
+      required:
+      - data
+      - message
+      - success
+    DocumentTypeEnum:
+      enum:
+      - ADMISSION_LETTER
+      - STUDENT_ID_CARD
+      - COURSE_REGISTRATION_SLIP
+      - SCHOOL_FEE_RECEIPT
+      - BUSINESS_DOCUMENT
+      type: string
+      description: |-
+        * `ADMISSION_LETTER` - Admission Letter
+        * `STUDENT_ID_CARD` - Student ID Card
+        * `COURSE_REGISTRATION_SLIP` - Course Registration Slip
+        * `SCHOOL_FEE_RECEIPT` - School Fee Receipt
+        * `BUSINESS_DOCUMENT` - Business Document
+    EmailTokenObtainPair:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password
+    Logout:
+      type: object
+      properties:
+        refresh:
+          type: string
+      required:
+      - refresh
+    MarkAllReadData:
+      type: object
+      properties:
+        marked_read:
+          type: integer
+      required:
+      - marked_read
+    MarkAllReadResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/MarkAllReadData'
+      required:
+      - data
+      - message
+      - success
+    Notification:
+      type: object
+      description: Read-only — every Notification response body.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        notification_type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationTypeEnum'
+          readOnly: true
+        notification_type_display:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        body:
+          type: string
+          readOnly: true
+        data:
+          readOnly: true
+          nullable: true
+        is_read:
+          type: boolean
+          readOnly: true
+        read_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - body
+      - created_at
+      - data
+      - id
+      - is_read
+      - notification_type
+      - notification_type_display
+      - read_at
+      - title
+    NotificationListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/NotificationPaginationData'
+      required:
+      - data
+      - message
+      - success
+    NotificationPaginationData:
+      type: object
+      properties:
+        count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        page_size:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+      required:
+      - count
+      - current_page
+      - next
+      - page_size
+      - previous
+      - results
+      - total_pages
+    NotificationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/Notification'
+      required:
+      - data
+      - message
+      - success
+    NotificationTypeEnum:
+      enum:
+      - NEW_MESSAGE
+      - VENDOR_VERIFICATION_UPDATE
+      - PRODUCT_MODERATION_UPDATE
+      - NEW_REVIEW
+      - PLATFORM_ANNOUNCEMENT
+      type: string
+      description: |-
+        * `NEW_MESSAGE` - New Message
+        * `VENDOR_VERIFICATION_UPDATE` - Vendor Verification Update
+        * `PRODUCT_MODERATION_UPDATE` - Product Moderation Update
+        * `NEW_REVIEW` - New Review
+        * `PLATFORM_ANNOUNCEMENT` - Platform Announcement
+    NullEnum:
+      enum:
+      - null
+    PaginatedCategoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+    PaginatedConversationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Conversation'
+    PaginatedNotificationListResponseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationListResponse'
+    PaginatedProductList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    PaginatedReportAdminList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportAdmin'
+    PaginatedReportList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Report'
+    PaginatedReviewList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+    PaginatedUniversityList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/University'
+    PaginatedVendorProfileList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/VendorProfile'
+    PasswordResetConfirm:
+      type: object
+      properties:
+        uid:
+          type: string
+        token:
+          type: string
+        new_password:
+          type: string
+          writeOnly: true
+      required:
+      - new_password
+      - token
+      - uid
+    PasswordResetRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    PatchedAdminCategoryUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+    PatchedCategoryUpdate:
+      type: object
+      description: Only `name` is writable post-creation.
+      properties:
+        name:
+          type: string
+          maxLength: 100
+    PatchedProduct:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        name:
+          type: string
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        condition:
+          allOf:
+          - $ref: '#/components/schemas/ConditionEnum'
+          readOnly: true
+        condition_display:
+          type: string
+          readOnly: true
+        quantity:
+          type: integer
+          readOnly: true
+        availability:
+          allOf:
+          - $ref: '#/components/schemas/AvailabilityEnum'
+          readOnly: true
+        campus_location:
+          type: string
+          readOnly: true
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ProductStatusEnum'
+          readOnly: true
+        status_display:
+          type: string
+          readOnly: true
+        views_count:
+          type: integer
+          readOnly: true
+        listed_at:
+          type: string
+          format: date-time
+          readOnly: true
+        expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+        store:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            slug:
+              type: string
+            display_name:
+              type: string
+          required:
+          - id
+          - slug
+          - display_name
+          readOnly: true
+        university:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            short_name:
+              type: string
+          required:
+          - id
+          - name
+          - short_name
+          readOnly: true
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryBrief'
+          readOnly: true
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductImage'
+          readOnly: true
+        primary_image:
+          allOf:
+          - $ref: '#/components/schemas/ProductImage'
+          nullable: true
+          readOnly: true
+    PatchedProductUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        condition:
+          $ref: '#/components/schemas/ConditionEnum'
+        campus_location:
+          type: string
+          nullable: true
+          maxLength: 150
+        category_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+    PatchedReviewUpdate:
+      type: object
+      description: |-
+        Partial-update serializer for `PATCH /reviews/{id}/`. Ownership is
+        enforced by `IsReviewOwner` + `ReviewService.update`, never here.
+      properties:
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        comment:
+          type: string
+          nullable: true
+    PatchedSetActiveUniversity:
+      type: object
+      properties:
+        university_slug:
+          type: string
+          pattern: ^[-a-zA-Z0-9_]+$
+    PatchedStoreWrite:
+      type: object
+      description: |-
+        The only serializer that ever accepts client input — used identically
+        for store creation (`POST /stores/`) and editing
+        (`PATCH /stores/me/`, called with `partial=True`).
+      properties:
+        display_name:
+          type: string
+          maxLength: 150
+        description:
+          type: string
+          nullable: true
+        contact_phone:
+          type: string
+          nullable: true
+          maxLength: 20
+    PatchedUniversityAdminWrite:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 150
+        short_name:
+          type: string
+          maxLength: 20
+        logo:
+          type: string
+          nullable: true
+    PatchedUserUpdate:
+      type: object
+      properties:
+        full_name:
+          type: string
+          maxLength: 150
+        phone_number:
+          type: string
+          maxLength: 20
+    PlatformEnum:
+      enum:
+      - IOS
+      - ANDROID
+      - WEB
+      type: string
+      description: |-
+        * `IOS` - iOS
+        * `ANDROID` - Android
+        * `WEB` - Web
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        name:
+          type: string
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        condition:
+          allOf:
+          - $ref: '#/components/schemas/ConditionEnum'
+          readOnly: true
+        condition_display:
+          type: string
+          readOnly: true
+        quantity:
+          type: integer
+          readOnly: true
+        availability:
+          allOf:
+          - $ref: '#/components/schemas/AvailabilityEnum'
+          readOnly: true
+        campus_location:
+          type: string
+          readOnly: true
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ProductStatusEnum'
+          readOnly: true
+        status_display:
+          type: string
+          readOnly: true
+        views_count:
+          type: integer
+          readOnly: true
+        listed_at:
+          type: string
+          format: date-time
+          readOnly: true
+        expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+        store:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            slug:
+              type: string
+            display_name:
+              type: string
+          required:
+          - id
+          - slug
+          - display_name
+          readOnly: true
+        university:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            short_name:
+              type: string
+          required:
+          - id
+          - name
+          - short_name
+          readOnly: true
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryBrief'
+          readOnly: true
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductImage'
+          readOnly: true
+        primary_image:
+          allOf:
+          - $ref: '#/components/schemas/ProductImage'
+          nullable: true
+          readOnly: true
+      required:
+      - availability
+      - campus_location
+      - categories
+      - condition
+      - condition_display
+      - description
+      - expires_at
+      - id
+      - images
+      - listed_at
+      - name
+      - price
+      - primary_image
+      - quantity
+      - slug
+      - status
+      - status_display
+      - store
+      - university
+      - views_count
+    ProductCreate:
+      type: object
+      description: |-
+        The only serializer that accepts client input for product creation.
+
+        A primary image is required at creation time because the PRD/DDS require
+        every persisted listing to have at least one image and exactly one primary
+        image.
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          default: ''
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        condition:
+          $ref: '#/components/schemas/ConditionEnum'
+        quantity:
+          type: integer
+          minimum: 0
+          default: 1
+        campus_location:
+          type: string
+          nullable: true
+          maxLength: 150
+        category_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        primary_image:
+          type: string
+          format: uri
+      required:
+      - condition
+      - name
+      - price
+      - primary_image
+    ProductImage:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        image:
+          type: string
+          readOnly: true
+        is_primary:
+          type: boolean
+          readOnly: true
+        display_order:
+          type: integer
+          readOnly: true
+      required:
+      - display_order
+      - id
+      - image
+      - is_primary
+    ProductImageListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductImage'
+      required:
+      - data
+      - message
+      - success
+    ProductImageResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/ProductImage'
+      required:
+      - data
+      - message
+      - success
+    ProductImageUpload:
+      type: object
+      properties:
+        image:
+          type: string
+          format: uri
+        is_primary:
+          type: boolean
+        display_order:
+          type: integer
+          minimum: 0
+      required:
+      - image
+    ProductStatusEnum:
+      enum:
+      - ACTIVE
+      - EXPIRED
+      - HIDDEN_BY_SUSPENSION
+      - REMOVED_BY_ADMIN
+      type: string
+      description: |-
+        * `ACTIVE` - Active
+        * `EXPIRED` - Expired
+        * `HIDDEN_BY_SUSPENSION` - Hidden by suspension
+        * `REMOVED_BY_ADMIN` - Removed by admin
+    ProductUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        condition:
+          $ref: '#/components/schemas/ConditionEnum'
+        campus_location:
+          type: string
+          nullable: true
+          maxLength: 150
+        category_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+    ReasonEnum:
+      enum:
+      - PROHIBITED_ITEM
+      - MISLEADING_LISTING
+      - SCAM_OR_FRAUD
+      - INAPPROPRIATE_BEHAVIOR
+      - FAKE_VENDOR
+      - OTHER
+      type: string
+      description: |-
+        * `PROHIBITED_ITEM` - Prohibited Item
+        * `MISLEADING_LISTING` - Misleading Listing
+        * `SCAM_OR_FRAUD` - Scam or Fraud
+        * `INAPPROPRIATE_BEHAVIOR` - Inappropriate Behavior
+        * `FAKE_VENDOR` - Fake Vendor
+        * `OTHER` - Other
+    Register:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+        full_name:
+          type: string
+          maxLength: 150
+        phone_number:
+          type: string
+          maxLength: 20
+      required:
+      - email
+      - full_name
+      - password
+    RegisterResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/RegisterResponseData'
+      required:
+      - data
+      - message
+      - success
+    RegisterResponseData:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        access:
+          type: string
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+      - user
+    Report:
+      type: object
+      description: Customer-facing report representation.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        target_type:
+          type: string
+          readOnly: true
+        target_id:
+          type: string
+          format: uuid
+          readOnly: true
+        reason:
+          allOf:
+          - $ref: '#/components/schemas/ReasonEnum'
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ReportStatusEnum'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - description
+      - id
+      - reason
+      - status
+      - target_id
+      - target_type
+      - updated_at
+    ReportAdmin:
+      type: object
+      description: Admin-facing report representation.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        target_type:
+          type: string
+          readOnly: true
+        target_id:
+          type: string
+          format: uuid
+          readOnly: true
+        reason:
+          allOf:
+          - $ref: '#/components/schemas/ReasonEnum'
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ReportStatusEnum'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        reporter:
+          type: string
+          format: uuid
+          readOnly: true
+        reporter_name:
+          type: string
+          readOnly: true
+        resolved_by:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        resolved_by_name:
+          type: string
+          readOnly: true
+        resolved_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        resolution_notes:
+          type: string
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - description
+      - id
+      - reason
+      - reporter
+      - reporter_name
+      - resolution_notes
+      - resolved_at
+      - resolved_by
+      - resolved_by_name
+      - status
+      - target_id
+      - target_type
+      - updated_at
+    ReportCreate:
+      type: object
+      description: |-
+        Input serializer for creating reports.
+
+        The target is resolved from the URL and is deliberately not accepted
+        from the request body.
+      properties:
+        reason:
+          $ref: '#/components/schemas/ReasonEnum'
+        description:
+          type: string
+          nullable: true
+      required:
+      - reason
+    ReportResolution:
+      type: object
+      description: Input serializer for Admin report resolution/rejection.
+      properties:
+        resolution_notes:
+          type: string
+          nullable: true
+    ReportStatusEnum:
+      enum:
+      - PENDING
+      - UNDER_REVIEW
+      - RESOLVED
+      - REJECTED
+      type: string
+      description: |-
+        * `PENDING` - Pending
+        * `UNDER_REVIEW` - Under Review
+        * `RESOLVED` - Resolved
+        * `REJECTED` - Rejected
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        conversation_id:
+          type: string
+          format: uuid
+          readOnly: true
+        store_id:
+          type: string
+          format: uuid
+          readOnly: true
+        store_slug:
+          type: string
+          readOnly: true
+        store_display_name:
+          type: string
+          readOnly: true
+        customer_name:
+          type: string
+          readOnly: true
+        rating:
+          type: integer
+          readOnly: true
+        comment:
+          type: string
+          readOnly: true
+          nullable: true
+        is_edited:
+          type: boolean
+          readOnly: true
+        edited_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - comment
+      - conversation_id
+      - created_at
+      - customer_name
+      - edited_at
+      - id
+      - is_edited
+      - rating
+      - store_display_name
+      - store_id
+      - store_slug
+      - updated_at
+    ReviewCreate:
+      type: object
+      description: |-
+        The only input-accepting serializer for creation. `conversation`
+        (URL) and `store` (service-derived) are never fields here — this is
+        the structural guarantee behind "client cannot control Store".
+      properties:
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        comment:
+          type: string
+          nullable: true
+      required:
+      - rating
+    Store:
+      type: object
+      description: |-
+        Read-only representation used for every response body: public detail,
+        the vendor's own `/stores/me/`, and the echoed object after
+        create/update.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        display_name:
+          type: string
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+          readOnly: true
+          nullable: true
+        contact_phone:
+          type: string
+          readOnly: true
+          nullable: true
+        is_active:
+          type: boolean
+          readOnly: true
+        vendor_type:
+          type: string
+          readOnly: true
+        is_verified:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - contact_phone
+      - created_at
+      - description
+      - display_name
+      - id
+      - is_active
+      - is_verified
+      - slug
+      - updated_at
+      - vendor_type
+    StoreWrite:
+      type: object
+      description: |-
+        The only serializer that ever accepts client input — used identically
+        for store creation (`POST /stores/`) and editing
+        (`PATCH /stores/me/`, called with `partial=True`).
+      properties:
+        display_name:
+          type: string
+          maxLength: 150
+        description:
+          type: string
+          nullable: true
+        contact_phone:
+          type: string
+          nullable: true
+          maxLength: 20
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    TransactionStatusEnum:
+      enum:
+      - ONGOING
+      - COMPLETED
+      type: string
+      description: |-
+        * `ONGOING` - Ongoing
+        * `COMPLETED` - Completed
+    University:
+      type: object
+      description: Public/customer-facing representation.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        short_name:
+          type: string
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        logo:
+          type: string
+          readOnly: true
+          nullable: true
+        is_active:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - is_active
+      - logo
+      - name
+      - short_name
+      - slug
+      - updated_at
+    UniversityAdminWrite:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 150
+        short_name:
+          type: string
+          maxLength: 20
+        logo:
+          type: string
+          nullable: true
+      required:
+      - name
+      - short_name
+    UnreadCountData:
+      type: object
+      properties:
+        unread_count:
+          type: integer
+      required:
+      - unread_count
+    UnreadCountResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/UnreadCountData'
+      required:
+      - data
+      - message
+      - success
+    User:
+      type: object
+      description: |-
+        Read-only representation of a user's own profile. Used for every
+        response body that echoes a User: register, login, /users/me/, and
+        the active-university change endpoint.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        full_name:
+          type: string
+          readOnly: true
+        phone_number:
+          type: string
+          readOnly: true
+        active_university:
+          allOf:
+          - $ref: '#/components/schemas/University'
+          readOnly: true
+        is_vendor:
+          type: boolean
+          readOnly: true
+        is_admin:
+          type: boolean
+          readOnly: true
+        is_active:
+          type: boolean
+          readOnly: true
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - active_university
+      - created_at
+      - date_joined
+      - email
+      - full_name
+      - id
+      - is_active
+      - is_admin
+      - is_vendor
+      - phone_number
+      - updated_at
+    VendorApplication:
+      type: object
+      properties:
+        university:
+          type: string
+          format: uuid
+        vendor_type:
+          $ref: '#/components/schemas/VendorTypeEnum'
+        store_name:
+          type: string
+          maxLength: 150
+        phone_number:
+          type: string
+          maxLength: 20
+        matric_number:
+          type: string
+          nullable: true
+          maxLength: 30
+        department:
+          type: string
+          nullable: true
+          maxLength: 100
+        level:
+          type: string
+          nullable: true
+          maxLength: 10
+        business_name:
+          type: string
+          nullable: true
+          maxLength: 150
+        business_address:
+          type: string
+          nullable: true
+          maxLength: 255
+        business_logo:
+          type: string
+          nullable: true
+        document_type:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/DocumentTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        document_file:
+          type: string
+          format: uri
+          nullable: true
+      required:
+      - phone_number
+      - store_name
+      - university
+      - vendor_type
+    VendorDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        document_type:
+          allOf:
+          - $ref: '#/components/schemas/DocumentTypeEnum'
+          readOnly: true
+        file:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/VendorDocumentStatusEnum'
+          readOnly: true
+        uploaded_at:
+          type: string
+          format: date-time
+          readOnly: true
+        reviewed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - document_type
+      - file
+      - id
+      - reviewed_at
+      - status
+      - uploaded_at
+    VendorDocumentStatusEnum:
+      enum:
+      - PENDING
+      - APPROVED
+      - REJECTED
+      type: string
+      description: |-
+        * `PENDING` - Pending
+        * `APPROVED` - Approved
+        * `REJECTED` - Rejected
+    VendorProfile:
+      type: object
+      description: |-
+        Read-only. Used for every response body (list/retrieve/create/
+        activate-style actions)
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          type: string
+          format: uuid
+          readOnly: true
+        university:
+          allOf:
+          - $ref: '#/components/schemas/University'
+          readOnly: true
+        vendor_type:
+          allOf:
+          - $ref: '#/components/schemas/VendorTypeEnum'
+          readOnly: true
+        store_name:
+          type: string
+          readOnly: true
+        phone_number:
+          type: string
+          readOnly: true
+        matric_number:
+          type: string
+          readOnly: true
+          nullable: true
+        department:
+          type: string
+          readOnly: true
+          nullable: true
+        level:
+          type: string
+          readOnly: true
+          nullable: true
+        business_name:
+          type: string
+          readOnly: true
+          nullable: true
+        business_address:
+          type: string
+          readOnly: true
+          nullable: true
+        business_logo:
+          type: string
+          readOnly: true
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/VendorStatusEnum'
+          readOnly: true
+        is_verified:
+          type: boolean
+          readOnly: true
+        submitted_at:
+          type: string
+          format: date-time
+          readOnly: true
+        reviewed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        reviewed_by:
+          type: string
+          format: uuid
+          readOnly: true
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/VendorDocument'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - business_address
+      - business_logo
+      - business_name
+      - created_at
+      - department
+      - documents
+      - id
+      - is_verified
+      - level
+      - matric_number
+      - phone_number
+      - reviewed_at
+      - reviewed_by
+      - status
+      - store_name
+      - submitted_at
+      - university
+      - updated_at
+      - user
+      - vendor_type
+    VendorStatusEnum:
+      enum:
+      - PENDING
+      - VERIFIED
+      - REJECTED
+      - SUSPENDED
+      type: string
+      description: |-
+        * `PENDING` - Pending
+        * `VERIFIED` - Verified
+        * `REJECTED` - Rejected
+        * `SUSPENDED` - Suspended
+    VendorTypeEnum:
+      enum:
+      - STUDENT
+      - BUSINESS
+      type: string
+      description: |-
+        * `STUDENT` - Student Vendor
+        * `BUSINESS` - Business Vendor
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
@@ -13,6 +14,7 @@ from .serializers import (
     LogoutSerializer,
     PasswordResetConfirmSerializer,
     PasswordResetRequestSerializer,
+    RegisterResponseSerializer,
     RegisterSerializer,
 )
 from .services import AuthService
@@ -21,6 +23,10 @@ from .services import AuthService
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        request=RegisterSerializer,
+        responses={201: RegisterResponseSerializer},
+    )
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -49,6 +55,10 @@ class EmailTokenObtainPairView(TokenObtainPairView):
 class LogoutView(APIView):
     permission_classes = [IsAuthenticatedCustomer]
 
+    @extend_schema(
+        request=LogoutSerializer,
+        responses=None,
+    )
     def post(self, request):
         serializer = LogoutSerializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
@@ -61,6 +71,10 @@ class LogoutView(APIView):
 class PasswordResetRequestView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        request=PasswordResetRequestSerializer,
+        responses=None,
+    )
     def post(self, request):
         serializer = PasswordResetRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -73,6 +87,10 @@ class PasswordResetRequestView(APIView):
 class PasswordResetConfirmView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        request=PasswordResetConfirmSerializer,
+        responses=None,
+    )
     def post(self, request):
         serializer = PasswordResetConfirmSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

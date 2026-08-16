@@ -46,6 +46,15 @@ class StoreViewSet(viewsets.GenericViewSet):
 
         return Store.objects.alive()
 
+    def get_serializer_class(self):
+        if self.action == "create":
+            return StoreWriteSerializer
+
+        if self.action == "me" and self.request.method == "PATCH":
+            return StoreWriteSerializer
+
+        return StoreSerializer
+
     def create(self, request, *args, **kwargs):
         serializer = StoreWriteSerializer(
             data=request.data,

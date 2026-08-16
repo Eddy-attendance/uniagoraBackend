@@ -72,11 +72,28 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "apps.common.exceptions.custom_exception_handler",
     "DEFAULT_RENDERER_CLASSES": [
         "apps.common.renderers.EnvelopeJSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
     ],
     "DEFAULT_PAGINATION_CLASS": "apps.common.pagination.StandardResultsSetPagination",
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "UniAGORA API",
+    "DESCRIPTION": "UniAGORA marketplace REST API.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SCHEMA_PATH_PREFIX": r"/api/v1/",
+    "ENUM_NAME_OVERRIDES": {
+        "TransactionStatusEnum": "apps.chat.models.TransactionStatus",
+        "ProductStatusEnum": "apps.products.models.ProductStatus",
+        "ReportStatusEnum": "apps.reports.models.ReportStatus",
+        "VendorStatusEnum": "apps.vendors.models.VendorStatus",
+        "VendorDocumentStatusEnum": "apps.vendors.models.VendorDocumentStatus",
+    },
 }
 
 MIDDLEWARE = [

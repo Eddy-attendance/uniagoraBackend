@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from apps.categories.models import Category
@@ -33,10 +34,15 @@ class ProductSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     primary_image = serializers.SerializerMethodField()
     availability = serializers.SerializerMethodField()
+
     condition_display = serializers.CharField(
-        source="get_condition_display", read_only=True
+        source="get_condition_display",
+        read_only=True,
     )
-    status_display = serializers.CharField(source="get_status_display", read_only=True)
+    status_display = serializers.CharField(
+        source="get_status_display",
+        read_only=True,
+    )
 
     class Meta:
         model = Product
@@ -64,6 +70,17 @@ class ProductSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = fields
 
+    @extend_schema_field(
+        {
+            "type": "object",
+            "properties": {
+                "id": {"type": "string", "format": "uuid"},
+                "slug": {"type": "string"},
+                "display_name": {"type": "string"},
+            },
+            "required": ["id", "slug", "display_name"],
+        }
+    )
     def get_store(self, obj):
         return {
             "id": str(obj.store_id),
@@ -71,6 +88,17 @@ class ProductSerializer(serializers.ModelSerializer):
             "display_name": obj.store.display_name,
         }
 
+    @extend_schema_field(
+        {
+            "type": "object",
+            "properties": {
+                "id": {"type": "string", "format": "uuid"},
+                "name": {"type": "string"},
+                "short_name": {"type": "string"},
+            },
+            "required": ["id", "name", "short_name"],
+        }
+    )
     def get_university(self, obj):
         return {
             "id": str(obj.university_id),
@@ -78,22 +106,33 @@ class ProductSerializer(serializers.ModelSerializer):
             "short_name": obj.university.short_name,
         }
 
+    @extend_schema_field(CategoryBriefSerializer(many=True))
     def get_categories(self, obj):
         links = obj.category_links.select_related("category").filter(
             category__is_active=True
         )
+
         return CategoryBriefSerializer(
-            [link.category for link in links], many=True
+            [link.category for link in links],
+            many=True,
         ).data
 
+    @extend_schema_field(ProductImageSerializer(many=True))
     def get_images(self, obj):
         images = obj.images.alive().order_by("display_order")
         return ProductImageSerializer(images, many=True).data
 
+    @extend_schema_field(ProductImageSerializer(allow_null=True))
     def get_primary_image(self, obj):
         image = obj.primary_image
         return ProductImageSerializer(image).data if image else None
 
+    @extend_schema_field(
+        {
+            "type": "string",
+            "enum": ["IN_STOCK", "OUT_OF_STOCK"],
+        }
+    )
     def get_availability(self, obj):
         return "OUT_OF_STOCK" if obj.is_out_of_stock else "IN_STOCK"
 
@@ -140,7 +179,10 @@ class ProductCreateSerializer(serializers.Serializer):
 
 class ProductUpdateSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=200, required=False)
-    description = serializers.CharField(required=False, allow_blank=True)
+    description = serializers.CharField(
+        required=False,
+        allow_blank=True,
+    )
     price = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -148,7 +190,8 @@ class ProductUpdateSerializer(serializers.Serializer):
         required=False,
     )
     condition = serializers.ChoiceField(
-        choices=ProductCondition.choices, required=False
+        choices=ProductCondition.choices,
+        required=False,
     )
     campus_location = serializers.CharField(
         required=False,
@@ -226,4 +269,19 @@ class ProductCategoryAssignmentSerializer(serializers.Serializer):
 class ProductImageUploadSerializer(serializers.Serializer):
     image = serializers.ImageField()
     is_primary = serializers.BooleanField(required=False)
-    display_order = serializers.IntegerField(required=False, min_value=0)
+    display_order = serializers.IntegerField(
+        required=False,
+        min_value=0,
+    )
+
+
+class ProductImageResponseSerializer(serializers.Serializer):
+    success = serializers.BooleanField()
+    message = serializers.CharField()
+    data = ProductImageSerializer()
+
+
+class ProductImageListResponseSerializer(serializers.Serializer):
+    success = serializers.BooleanField()
+    message = serializers.CharField()
+    data = ProductImageSerializer(many=True)

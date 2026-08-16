@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.views import APIView
 
 from apps.common.response import success_response
@@ -16,15 +17,29 @@ class MeView(APIView):
 
     permission_classes = [IsAuthenticatedCustomer]
 
+    @extend_schema(
+        responses=UserSerializer,
+    )
     def get(self, request):
         return success_response(data=UserSerializer(request.user).data)
 
+    @extend_schema(
+        request=UserUpdateSerializer,
+        responses=UserSerializer,
+    )
     def patch(self, request):
-        serializer = UserUpdateSerializer(request.user, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        user = UserService.update_profile(
-            user=request.user, **serializer.validated_data
+        serializer = UserUpdateSerializer(
+            request.user,
+            data=request.data,
+            partial=True,
         )
+        serializer.is_valid(raise_exception=True)
+
+        user = UserService.update_profile(
+            user=request.user,
+            **serializer.validated_data,
+        )
+
         return success_response(data=UserSerializer(user).data)
 
 
@@ -33,6 +48,10 @@ class SetActiveUniversityView(APIView):
 
     permission_classes = [IsAuthenticatedCustomer]
 
+    @extend_schema(
+        request=SetActiveUniversitySerializer,
+        responses=UserSerializer,
+    )
     def patch(self, request):
         serializer = SetActiveUniversitySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

@@ -1,4 +1,5 @@
 from django.db.models import Count, Q
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 
@@ -17,6 +18,16 @@ from apps.common.response import success_response
 from apps.core.permissions import IsAuthenticatedCustomer
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="id",
+            type=str,
+            location=OpenApiParameter.PATH,
+            description="Conversation UUID.",
+        )
+    ]
+)
 class ConversationViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,

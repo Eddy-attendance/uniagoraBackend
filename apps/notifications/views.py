@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
@@ -8,13 +9,22 @@ from apps.core.permissions import IsAuthenticatedCustomer
 
 from .models import DeviceToken, Notification
 from .serializers import (
+    DeviceTokenListResponseSerializer,
     DeviceTokenRegisterSerializer,
+    DeviceTokenResponseSerializer,
     DeviceTokenSerializer,
+    MarkAllReadResponseSerializer,
+    NotificationListResponseSerializer,
+    NotificationResponseSerializer,
     NotificationSerializer,
+    UnreadCountResponseSerializer,
 )
 from .services import DeviceTokenService, NotificationService
 
 
+@extend_schema(
+    responses={200: NotificationListResponseSerializer},
+)
 class NotificationListView(generics.ListAPIView):
     """GET /api/v1/notifications/ — own notifications, paginated.
 
@@ -38,6 +48,9 @@ class NotificationUnreadCountView(APIView):
 
     permission_classes = [IsAuthenticatedCustomer]
 
+    @extend_schema(
+        responses={200: UnreadCountResponseSerializer},
+    )
     def get(self, request):
         count = NotificationService.unread_count(request.user)
         return success_response(data={"unread_count": count})
@@ -48,6 +61,10 @@ class NotificationMarkReadView(APIView):
 
     permission_classes = [IsAuthenticatedCustomer]
 
+    @extend_schema(
+        request=None,
+        responses={200: NotificationResponseSerializer},
+    )
     def post(self, request, pk):
         notification = get_object_or_404(
             Notification.objects.alive().filter(recipient=request.user), pk=pk
@@ -66,6 +83,10 @@ class NotificationMarkAllReadView(APIView):
 
     permission_classes = [IsAuthenticatedCustomer]
 
+    @extend_schema(
+        request=None,
+        responses={200: MarkAllReadResponseSerializer},
+    )
     def post(self, request):
         marked = NotificationService.mark_all_read(request.user)
         return success_response(
@@ -78,11 +99,21 @@ class DeviceTokenListCreateView(APIView):
 
     permission_classes = [IsAuthenticatedCustomer]
 
+    @extend_schema(
+        responses={200: DeviceTokenListResponseSerializer},
+    )
     def get(self, request):
         tokens = DeviceTokenService.get_for_user(request.user, active_only=False)
         serializer = DeviceTokenSerializer(tokens, many=True)
         return success_response(data=serializer.data)
 
+    @extend_schema(
+        request=DeviceTokenRegisterSerializer,
+        responses={
+            200: DeviceTokenResponseSerializer,
+            201: DeviceTokenResponseSerializer,
+        },
+    )
     def post(self, request):
         serializer = DeviceTokenRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -104,6 +135,10 @@ class DeviceTokenDeactivateView(APIView):
 
     permission_classes = [IsAuthenticatedCustomer]
 
+    @extend_schema(
+        request=None,
+        responses={200: DeviceTokenResponseSerializer},
+    )
     def post(self, request, pk):
         device_token = get_object_or_404(
             DeviceToken.objects.alive().filter(user=request.user), pk=pk

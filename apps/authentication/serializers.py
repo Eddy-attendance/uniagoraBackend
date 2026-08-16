@@ -70,3 +70,15 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
     new_password = serializers.CharField(
         write_only=True, validators=[validate_password]
     )
+
+
+class RegisterResponseDataSerializer(serializers.Serializer):
+    user = UserSerializer()
+    access = serializers.CharField()
+    refresh = serializers.CharField()
+
+
+class RegisterResponseSerializer(serializers.Serializer):
+    success = serializers.BooleanField()
+    message = serializers.CharField()
+    data = RegisterResponseDataSerializer()

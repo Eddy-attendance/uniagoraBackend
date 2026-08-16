@@ -1,5 +1,6 @@
 """Admin Dashboard Serializers"""
 
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 
@@ -26,6 +27,17 @@ class AdminUserSerializer(serializers.Serializer):
     date_joined = serializers.DateTimeField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
 
+    @extend_schema_field(
+        {
+            "type": "object",
+            "nullable": True,
+            "properties": {
+                "id": {"type": "string", "format": "uuid"},
+                "name": {"type": "string"},
+                "short_name": {"type": "string"},
+            },
+        }
+    )
     def get_active_university(self, obj):
         if obj.active_university_id is None:
             return None

@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
@@ -27,8 +28,6 @@ class ConversationReviewView(APIView):
 
     POST /api/v1/reviews/conversations/{conversation_id}/
          Customer review creation.
-
-    Review ownership and eligibility are enforced by ReviewService.
     """
 
     def get_permissions(self):
@@ -40,6 +39,10 @@ class ConversationReviewView(APIView):
 
         return [IsAuthenticatedCustomer()]
 
+    @extend_schema(
+        request=None,
+        responses={status.HTTP_200_OK: ReviewSerializer},
+    )
     def get(self, request, conversation_id):
         conversation = get_object_or_404(
             Conversation.objects.alive(),
@@ -54,6 +57,10 @@ class ConversationReviewView(APIView):
 
         return success_response(data=serializer.data)
 
+    @extend_schema(
+        request=ReviewCreateSerializer,
+        responses={status.HTTP_201_CREATED: ReviewSerializer},
+    )
     def post(self, request, conversation_id):
         conversation = get_object_or_404(
             Conversation.objects.alive(),
@@ -110,12 +117,20 @@ class ReviewDetailView(APIView):
 
         return review
 
+    @extend_schema(
+        request=None,
+        responses={status.HTTP_200_OK: ReviewSerializer},
+    )
     def get(self, request, pk):
         review = self.get_object(pk)
         serializer = ReviewSerializer(review)
 
         return success_response(data=serializer.data)
 
+    @extend_schema(
+        request=ReviewUpdateSerializer,
+        responses={status.HTTP_200_OK: ReviewSerializer},
+    )
     def patch(self, request, pk):
         review = self.get_object(pk)
 
@@ -128,8 +143,14 @@ class ReviewDetailView(APIView):
         updated_review = ReviewService.update(
             review=review,
             actor=request.user,
-            rating=serializer.validated_data.get("rating", _UNSET),
-            comment=serializer.validated_data.get("comment", _UNSET),
+            rating=serializer.validated_data.get(
+                "rating",
+                _UNSET,
+            ),
+            comment=serializer.validated_data.get(
+                "comment",
+                _UNSET,
+            ),
         )
 
         output_serializer = ReviewSerializer(updated_review)
