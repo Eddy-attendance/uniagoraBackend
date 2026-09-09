@@ -28,10 +28,9 @@ class ReportSerializer(serializers.ModelSerializer):
     def get_target_type(self, obj) -> str:
         return "PRODUCT" if obj.product_id else "VENDOR"
 
-    @extend_schema_field(serializers.UUIDField())
-    def get_target_id(self, obj) -> str:
-        target_id = obj.product_id or obj.vendor_profile_id
-        return str(target_id)
+    @extend_schema_field(serializers.CharField())
+    def get_target_id(self, obj):
+        return str(obj.product_id or obj.vendor_profile_id)
 
 
 class ReportAdminSerializer(ReportSerializer):
@@ -41,6 +40,7 @@ class ReportAdminSerializer(ReportSerializer):
         source="reporter.full_name",
         read_only=True,
     )
+
     resolved_by_name = serializers.CharField(
         source="resolved_by.full_name",
         read_only=True,

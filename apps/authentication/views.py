@@ -5,16 +5,18 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from apps.common.openapi import success_response_schema
 from apps.common.response import success_response
 from apps.core.permissions import IsAuthenticatedCustomer
 from apps.users.serializers import UserSerializer
 
 from .serializers import (
     EmailTokenObtainPairSerializer,
+    EmptyResponseDataSerializer,
     LogoutSerializer,
     PasswordResetConfirmSerializer,
     PasswordResetRequestSerializer,
-    RegisterResponseSerializer,
+    RegisterResponseDataSerializer,
     RegisterSerializer,
 )
 from .services import AuthService
@@ -25,26 +27,53 @@ class RegisterView(APIView):
 
     @extend_schema(
         request=RegisterSerializer,
-        responses={201: RegisterResponseSerializer},
+        responses={
+            status.HTTP_201_CREATED: success_response_schema(
+                "RegisterResponse",
+                RegisterResponseDataSerializer,
+            ),
+        },
     )
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = AuthService.register(**serializer.validated_data)
+
+        user = AuthService.register(
+            **serializer.validated_data,
+        )
+
         refresh = RefreshToken.for_user(user)
+
         data = {
             "user": UserSerializer(user).data,
             "access": str(refresh.access_token),
             "refresh": str(refresh),
         }
-        return success_response(data=data, status=status.HTTP_201_CREATED)
+
+        return success_response(
+            data=data,
+            status=status.HTTP_201_CREATED,
+        )
 
 
+@extend_schema(
+    request=EmailTokenObtainPairSerializer,
+    responses={
+        status.HTTP_200_OK: success_response_schema(
+            "LoginResponse",
+            RegisterResponseDataSerializer,
+        ),
+    },
+)
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer
 
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
+        response = super().post(
+            request,
+            *args,
+            **kwargs,
+        )
 
         if response.status_code < 400:
             return success_response(data=response.data)
@@ -57,14 +86,24 @@ class LogoutView(APIView):
 
     @extend_schema(
         request=LogoutSerializer,
-        responses=None,
+        responses={
+            status.HTTP_205_RESET_CONTENT: success_response_schema(
+                "LogoutResponse",
+                EmptyResponseDataSerializer,
+            ),
+        },
     )
     def post(self, request):
-        serializer = LogoutSerializer(data=request.data, context={"request": request})
+        serializer = LogoutSerializer(
+            data=request.data,
+            context={"request": request},
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
         return success_response(
-            message="Logged out successfully.", status=status.HTTP_205_RESET_CONTENT
+            message="Logged out successfully.",
+            status=status.HTTP_205_RESET_CONTENT,
         )
 
 
@@ -73,14 +112,28 @@ class PasswordResetRequestView(APIView):
 
     @extend_schema(
         request=PasswordResetRequestSerializer,
-        responses=None,
+        responses={
+            status.HTTP_200_OK: success_response_schema(
+                "PasswordResetRequestResponse",
+                EmptyResponseDataSerializer,
+            ),
+        },
     )
     def post(self, request):
-        serializer = PasswordResetRequestSerializer(data=request.data)
+        serializer = PasswordResetRequestSerializer(
+            data=request.data,
+        )
         serializer.is_valid(raise_exception=True)
-        AuthService.initiate_password_reset(email=serializer.validated_data["email"])
+
+        AuthService.initiate_password_reset(
+            email=serializer.validated_data["email"],
+        )
+
         return success_response(
-            message="If an account with that email exists, a password reset link has been sent."
+            message=(
+                "If an account with that email exists, "
+                "a password reset link has been sent."
+            )
         )
 
 
@@ -89,14 +142,23 @@ class PasswordResetConfirmView(APIView):
 
     @extend_schema(
         request=PasswordResetConfirmSerializer,
-        responses=None,
+        responses={
+            status.HTTP_200_OK: success_response_schema(
+                "PasswordResetConfirmResponse",
+                EmptyResponseDataSerializer,
+            ),
+        },
     )
     def post(self, request):
-        serializer = PasswordResetConfirmSerializer(data=request.data)
+        serializer = PasswordResetConfirmSerializer(
+            data=request.data,
+        )
         serializer.is_valid(raise_exception=True)
+
         AuthService.confirm_password_reset(
             uidb64=serializer.validated_data["uid"],
             token=serializer.validated_data["token"],
             new_password=serializer.validated_data["new_password"],
         )
+
         return success_response(message="Password has been reset successfully.")

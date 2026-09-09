@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from apps.chat.models import Conversation, Message
@@ -69,6 +70,7 @@ class MessageSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = fields
 
+    @extend_schema_field(serializers.BooleanField())
     def get_is_own(self, obj):
         request = self.context.get("request")
         if request is None or not request.user.is_authenticated:

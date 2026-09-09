@@ -78,7 +78,5 @@ class RegisterResponseDataSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
 
-class RegisterResponseSerializer(serializers.Serializer):
-    success = serializers.BooleanField()
-    message = serializers.CharField()
-    data = RegisterResponseDataSerializer()
+class EmptyResponseDataSerializer(serializers.Serializer):
+    pass

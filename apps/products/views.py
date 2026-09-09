@@ -8,6 +8,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.common.exceptions import NotFoundError
+from apps.common.openapi import (
+    paginated_response_schema,
+    success_response_schema,
+)
 from apps.common.response import success_response
 from apps.core.filters import ActiveUniversityFilterBackend
 from apps.core.permissions import (
@@ -29,8 +33,6 @@ from .serializers import (
     InventoryUpdateSerializer,
     ProductCategoryAssignmentSerializer,
     ProductCreateSerializer,
-    ProductImageListResponseSerializer,
-    ProductImageResponseSerializer,
     ProductImageSerializer,
     ProductImageUploadSerializer,
     ProductListQuerySerializer,
@@ -154,6 +156,15 @@ class ProductViewSet(
 
     # -- Customer marketplace -------------------------------------------------
 
+    @extend_schema(
+        parameters=[ProductListQuerySerializer],
+        responses={
+            200: paginated_response_schema(
+                "ProductListResponse",
+                ProductSerializer,
+            ),
+        },
+    )
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
@@ -161,6 +172,14 @@ class ProductViewSet(
 
         return self.get_paginated_response(serializer.data)
 
+    @extend_schema(
+        responses={
+            200: success_response_schema(
+                "ProductDetailResponse",
+                ProductSerializer,
+            ),
+        },
+    )
     def retrieve(self, request, *args, **kwargs):
         """Visible to:
 
@@ -178,7 +197,9 @@ class ProductViewSet(
             kwargs["slug"],
         )
 
-        Product.objects.filter(pk=product.pk).update(views_count=F("views_count") + 1)
+        Product.objects.filter(pk=product.pk).update(
+            views_count=F("views_count") + 1,
+        )
 
         product.views_count += 1
 
@@ -225,6 +246,15 @@ class ProductViewSet(
 
     # -- Vendor product management -------------------------------------------
 
+    @extend_schema(
+        request=ProductCreateSerializer,
+        responses={
+            201: success_response_schema(
+                "ProductCreateResponse",
+                ProductSerializer,
+            ),
+        },
+    )
     def create(self, request, *args, **kwargs):
         serializer = ProductCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -239,6 +269,15 @@ class ProductViewSet(
             status=status.HTTP_201_CREATED,
         )
 
+    @extend_schema(
+        request=ProductUpdateSerializer,
+        responses={
+            200: success_response_schema(
+                "ProductUpdateResponse",
+                ProductSerializer,
+            ),
+        },
+    )
     def update(self, request, *args, **kwargs):
         product = self.get_object()
 
@@ -264,17 +303,38 @@ class ProductViewSet(
             data=ProductSerializer(product).data,
         )
 
+    @extend_schema(
+        request=ProductUpdateSerializer,
+        responses={
+            200: success_response_schema(
+                "ProductPartialUpdateResponse",
+                ProductSerializer,
+            ),
+        },
+    )
     def partial_update(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
+    @extend_schema(
+        responses={204: None},
+    )
     def destroy(self, request, *args, **kwargs):
         product = self.get_object()
+
         ProductService.delete(product=product)
 
         return Response(
             status=status.HTTP_204_NO_CONTENT,
         )
 
+    @extend_schema(
+        responses={
+            200: paginated_response_schema(
+                "ProductMineResponse",
+                ProductSerializer,
+            ),
+        },
+    )
     @action(detail=False, methods=["get"], url_path="mine")
     def mine(self, request):
         queryset = (
@@ -290,6 +350,15 @@ class ProductViewSet(
 
         return self.get_paginated_response(serializer.data)
 
+    @extend_schema(
+        request=None,
+        responses={
+            200: success_response_schema(
+                "ProductRenewResponse",
+                ProductSerializer,
+            ),
+        },
+    )
     @action(detail=True, methods=["post"], url_path="renew")
     def renew(self, request, slug=None):
         product = self.get_object()
@@ -302,6 +371,15 @@ class ProductViewSet(
             data=ProductSerializer(product).data,
         )
 
+    @extend_schema(
+        request=InventoryUpdateSerializer,
+        responses={
+            200: success_response_schema(
+                "ProductInventoryUpdateResponse",
+                ProductSerializer,
+            ),
+        },
+    )
     @action(detail=True, methods=["patch"], url_path="inventory")
     def inventory(self, request, slug=None):
         product = self.get_object()
@@ -320,6 +398,15 @@ class ProductViewSet(
             data=ProductSerializer(product).data,
         )
 
+    @extend_schema(
+        request=ProductCategoryAssignmentSerializer,
+        responses={
+            200: success_response_schema(
+                "ProductCategoryAssignmentResponse",
+                ProductSerializer,
+            ),
+        },
+    )
     @action(detail=True, methods=["put"], url_path="categories")
     def categories(self, request, slug=None):
         product = self.get_object()
@@ -338,8 +425,17 @@ class ProductViewSet(
             data=ProductSerializer(product).data,
         )
 
-    # -- Admin moderation ----------------------------------------------------
+    # -- Admin moderation -----------------------------------------------------
 
+    @extend_schema(
+        request=None,
+        responses={
+            200: success_response_schema(
+                "ProductRemoveResponse",
+                ProductSerializer,
+            ),
+        },
+    )
     @action(detail=True, methods=["post"], url_path="remove")
     def remove_listing(self, request, slug=None):
         product = self.get_object()
@@ -382,7 +478,12 @@ class ProductImageListCreateView(
     ]
 
     @extend_schema(
-        responses={200: ProductImageListResponseSerializer},
+        responses={
+            200: success_response_schema(
+                "ProductImageListResponse",
+                ProductImageSerializer,
+            ),
+        },
     )
     def get(self, request, slug):
         product = self.get_product(
@@ -401,7 +502,12 @@ class ProductImageListCreateView(
 
     @extend_schema(
         request=ProductImageUploadSerializer,
-        responses={201: ProductImageResponseSerializer},
+        responses={
+            201: success_response_schema(
+                "ProductImageCreateResponse",
+                ProductImageSerializer,
+            ),
+        },
     )
     def post(self, request, slug):
         product = self.get_product(
@@ -461,7 +567,12 @@ class ProductImageSetPrimaryView(
 ):
     @extend_schema(
         request=None,
-        responses={200: ProductImageResponseSerializer},
+        responses={
+            200: success_response_schema(
+                "ProductImageSetPrimaryResponse",
+                ProductImageSerializer,
+            ),
+        },
     )
     def patch(self, request, slug, image_id):
         product = self.get_product(

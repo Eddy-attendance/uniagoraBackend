@@ -6,6 +6,10 @@ from rest_framework.views import APIView
 
 from apps.chat.models import Conversation
 from apps.chat.permissions import IsConversationParticipant
+from apps.common.openapi import (
+    paginated_response_schema,
+    success_response_schema,
+)
 from apps.common.pagination import StandardResultsSetPagination
 from apps.common.response import success_response
 from apps.core.permissions import IsAuthenticatedCustomer
@@ -41,25 +45,40 @@ class ConversationReviewView(APIView):
 
     @extend_schema(
         request=None,
-        responses={status.HTTP_200_OK: ReviewSerializer},
+        responses={
+            status.HTTP_200_OK: success_response_schema(
+                "ConversationReviewResponse",
+                ReviewSerializer,
+            ),
+        },
     )
     def get(self, request, conversation_id):
         conversation = get_object_or_404(
             Conversation.objects.alive(),
             pk=conversation_id,
         )
-        self.check_object_permissions(request, conversation)
+
+        self.check_object_permissions(
+            request,
+            conversation,
+        )
 
         review = ReviewService.get_for_conversation(
             conversation=conversation,
         )
+
         serializer = ReviewSerializer(review)
 
         return success_response(data=serializer.data)
 
     @extend_schema(
         request=ReviewCreateSerializer,
-        responses={status.HTTP_201_CREATED: ReviewSerializer},
+        responses={
+            status.HTTP_201_CREATED: success_response_schema(
+                "ReviewCreateResponse",
+                ReviewSerializer,
+            ),
+        },
     )
     def post(self, request, conversation_id):
         conversation = get_object_or_404(
@@ -92,7 +111,7 @@ class ReviewDetailView(APIView):
           Retrieve a review.
 
     PATCH /api/v1/reviews/{id}/
-          Update a review. Only the review owner may edit it.
+          Update a review.
     """
 
     def get_permissions(self):
@@ -113,13 +132,21 @@ class ReviewDetailView(APIView):
             pk=pk,
         )
 
-        self.check_object_permissions(self.request, review)
+        self.check_object_permissions(
+            self.request,
+            review,
+        )
 
         return review
 
     @extend_schema(
         request=None,
-        responses={status.HTTP_200_OK: ReviewSerializer},
+        responses={
+            status.HTTP_200_OK: success_response_schema(
+                "ReviewRetrieveResponse",
+                ReviewSerializer,
+            ),
+        },
     )
     def get(self, request, pk):
         review = self.get_object(pk)
@@ -129,7 +156,12 @@ class ReviewDetailView(APIView):
 
     @extend_schema(
         request=ReviewUpdateSerializer,
-        responses={status.HTTP_200_OK: ReviewSerializer},
+        responses={
+            status.HTTP_200_OK: success_response_schema(
+                "ReviewUpdateResponse",
+                ReviewSerializer,
+            ),
+        },
     )
     def patch(self, request, pk):
         review = self.get_object(pk)
@@ -161,6 +193,14 @@ class ReviewDetailView(APIView):
         )
 
 
+@extend_schema(
+    responses={
+        status.HTTP_200_OK: paginated_response_schema(
+            "StoreReviewListResponse",
+            ReviewSerializer,
+        ),
+    },
+)
 class StoreReviewListView(ListAPIView):
     """
     GET /api/v1/reviews/stores/{store_slug}/

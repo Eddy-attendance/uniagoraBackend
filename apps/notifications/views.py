@@ -3,32 +3,38 @@ from rest_framework import generics, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 
+from apps.common.openapi import (
+    list_response_schema,
+    paginated_response_schema,
+    success_response_schema,
+)
 from apps.common.pagination import StandardResultsSetPagination
 from apps.common.response import success_response
 from apps.core.permissions import IsAuthenticatedCustomer
 
 from .models import DeviceToken, Notification
 from .serializers import (
-    DeviceTokenListResponseSerializer,
     DeviceTokenRegisterSerializer,
-    DeviceTokenResponseSerializer,
     DeviceTokenSerializer,
-    MarkAllReadResponseSerializer,
-    NotificationListResponseSerializer,
-    NotificationResponseSerializer,
+    MarkAllReadSerializer,
     NotificationSerializer,
-    UnreadCountResponseSerializer,
+    UnreadCountSerializer,
 )
 from .services import DeviceTokenService, NotificationService
 
 
 @extend_schema(
-    responses={200: NotificationListResponseSerializer},
+    responses={
+        200: paginated_response_schema(
+            "NotificationListResponse",
+            NotificationSerializer,
+        ),
+    },
 )
 class NotificationListView(generics.ListAPIView):
     """GET /api/v1/notifications/ — own notifications, paginated.
 
-    `?unread=true` narrows to unread-only
+    `?unread=true` narrows to unread-only.
     """
 
     serializer_class = NotificationSerializer
@@ -38,8 +44,10 @@ class NotificationListView(generics.ListAPIView):
     def get_queryset(self):
         unread_param = self.request.query_params.get("unread")
         unread_only = unread_param is not None and unread_param.lower() == "true"
+
         return NotificationService.get_for_user(
-            self.request.user, unread_only=unread_only
+            self.request.user,
+            unread_only=unread_only,
         )
 
 
@@ -49,11 +57,19 @@ class NotificationUnreadCountView(APIView):
     permission_classes = [IsAuthenticatedCustomer]
 
     @extend_schema(
-        responses={200: UnreadCountResponseSerializer},
+        responses={
+            200: success_response_schema(
+                "UnreadCountResponse",
+                UnreadCountSerializer,
+            ),
+        },
     )
     def get(self, request):
         count = NotificationService.unread_count(request.user)
-        return success_response(data={"unread_count": count})
+
+        return success_response(
+            data={"unread_count": count},
+        )
 
 
 class NotificationMarkReadView(APIView):
@@ -63,18 +79,31 @@ class NotificationMarkReadView(APIView):
 
     @extend_schema(
         request=None,
-        responses={200: NotificationResponseSerializer},
+        responses={
+            200: success_response_schema(
+                "NotificationMarkReadResponse",
+                NotificationSerializer,
+            ),
+        },
     )
     def post(self, request, pk):
         notification = get_object_or_404(
-            Notification.objects.alive().filter(recipient=request.user), pk=pk
+            Notification.objects.alive().filter(
+                recipient=request.user,
+            ),
+            pk=pk,
         )
+
         notification = NotificationService.mark_read(
-            notification=notification, user=request.user
+            notification=notification,
+            user=request.user,
         )
+
         serializer = NotificationSerializer(notification)
+
         return success_response(
-            data=serializer.data, message="Notification marked as read."
+            data=serializer.data,
+            message="Notification marked as read.",
         )
 
 
@@ -85,12 +114,19 @@ class NotificationMarkAllReadView(APIView):
 
     @extend_schema(
         request=None,
-        responses={200: MarkAllReadResponseSerializer},
+        responses={
+            200: success_response_schema(
+                "MarkAllReadResponse",
+                MarkAllReadSerializer,
+            ),
+        },
     )
     def post(self, request):
         marked = NotificationService.mark_all_read(request.user)
+
         return success_response(
-            data={"marked_read": marked}, message="Notifications marked as read."
+            data={"marked_read": marked},
+            message="Notifications marked as read.",
         )
 
 
@@ -100,33 +136,65 @@ class DeviceTokenListCreateView(APIView):
     permission_classes = [IsAuthenticatedCustomer]
 
     @extend_schema(
-        responses={200: DeviceTokenListResponseSerializer},
+        responses={
+            200: list_response_schema(
+                "DeviceTokenListResponse",
+                DeviceTokenSerializer,
+            ),
+        },
     )
     def get(self, request):
-        tokens = DeviceTokenService.get_for_user(request.user, active_only=False)
-        serializer = DeviceTokenSerializer(tokens, many=True)
-        return success_response(data=serializer.data)
+        tokens = DeviceTokenService.get_for_user(
+            request.user,
+            active_only=False,
+        )
+
+        serializer = DeviceTokenSerializer(
+            tokens,
+            many=True,
+        )
+
+        return success_response(
+            data=serializer.data,
+        )
 
     @extend_schema(
         request=DeviceTokenRegisterSerializer,
         responses={
-            200: DeviceTokenResponseSerializer,
-            201: DeviceTokenResponseSerializer,
+            200: success_response_schema(
+                "DeviceTokenUpdateResponse",
+                DeviceTokenSerializer,
+            ),
+            201: success_response_schema(
+                "DeviceTokenCreateResponse",
+                DeviceTokenSerializer,
+            ),
         },
     )
     def post(self, request):
-        serializer = DeviceTokenRegisterSerializer(data=request.data)
+        serializer = DeviceTokenRegisterSerializer(
+            data=request.data,
+        )
         serializer.is_valid(raise_exception=True)
+
         device_token, created = DeviceTokenService.register(
             user=request.user,
             token=serializer.validated_data["token"],
             platform=serializer.validated_data["platform"],
         )
-        response_serializer = DeviceTokenSerializer(device_token)
+
+        response_serializer = DeviceTokenSerializer(
+            device_token,
+        )
+
         response_status = status.HTTP_201_CREATED if created else status.HTTP_200_OK
+
         message = "Device token registered." if created else "Device token updated."
+
         return success_response(
-            data=response_serializer.data, message=message, status=response_status
+            data=response_serializer.data,
+            message=message,
+            status=response_status,
         )
 
 
@@ -137,16 +205,29 @@ class DeviceTokenDeactivateView(APIView):
 
     @extend_schema(
         request=None,
-        responses={200: DeviceTokenResponseSerializer},
+        responses={
+            200: success_response_schema(
+                "DeviceTokenDeactivateResponse",
+                DeviceTokenSerializer,
+            ),
+        },
     )
     def post(self, request, pk):
         device_token = get_object_or_404(
-            DeviceToken.objects.alive().filter(user=request.user), pk=pk
+            DeviceToken.objects.alive().filter(
+                user=request.user,
+            ),
+            pk=pk,
         )
+
         device_token = DeviceTokenService.deactivate(
-            device_token=device_token, user=request.user
+            device_token=device_token,
+            user=request.user,
         )
+
         serializer = DeviceTokenSerializer(device_token)
+
         return success_response(
-            data=serializer.data, message="Device token deactivated."
+            data=serializer.data,
+            message="Device token deactivated.",
         )

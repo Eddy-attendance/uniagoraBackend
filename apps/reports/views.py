@@ -1,9 +1,13 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import generics, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 
+from apps.common.openapi import (
+    paginated_response_schema,
+    success_response_schema,
+)
 from apps.common.pagination import StandardResultsSetPagination
 from apps.common.response import success_response
 from apps.core.permissions import IsAdmin, IsAuthenticatedCustomer
@@ -28,7 +32,12 @@ class ReportProductCreateView(APIView):
 
     @extend_schema(
         request=ReportCreateSerializer,
-        responses={status.HTTP_201_CREATED: ReportSerializer},
+        responses={
+            status.HTTP_201_CREATED: success_response_schema(
+                "ProductReportCreateResponse",
+                ReportSerializer,
+            ),
+        },
     )
     def post(self, request, product_id):
         product = get_object_or_404(
@@ -59,7 +68,12 @@ class ReportVendorCreateView(APIView):
 
     @extend_schema(
         request=ReportCreateSerializer,
-        responses={status.HTTP_201_CREATED: ReportSerializer},
+        responses={
+            status.HTTP_201_CREATED: success_response_schema(
+                "VendorReportCreateResponse",
+                ReportSerializer,
+            ),
+        },
     )
     def post(self, request, vendor_id):
         vendor_profile = get_object_or_404(
@@ -83,6 +97,14 @@ class ReportVendorCreateView(APIView):
         )
 
 
+@extend_schema(
+    responses={
+        status.HTTP_200_OK: paginated_response_schema(
+            "MyReportsListResponse",
+            ReportSerializer,
+        ),
+    },
+)
 class MyReportsListView(generics.ListAPIView):
     """GET /api/v1/reports/mine/."""
 
@@ -102,6 +124,24 @@ class MyReportsListView(generics.ListAPIView):
         )
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="status",
+            type=str,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            enum=ReportStatus.values,
+            description="Filter reports by moderation status.",
+        ),
+    ],
+    responses={
+        status.HTTP_200_OK: paginated_response_schema(
+            "ReportsAdminListResponse",
+            ReportAdminSerializer,
+        ),
+    },
+)
 class ReportAdminListView(generics.ListAPIView):
     """GET /api/v1/reports/."""
 
@@ -132,6 +172,14 @@ class ReportAdminListView(generics.ListAPIView):
         return queryset
 
 
+@extend_schema(
+    responses={
+        status.HTTP_200_OK: success_response_schema(
+            "ReportDetailResponse",
+            ReportSerializer,
+        ),
+    },
+)
 class ReportDetailView(generics.RetrieveAPIView):
     """GET /api/v1/reports/{report_id}/."""
 
@@ -174,7 +222,12 @@ class ReportUnderReviewView(APIView):
 
     @extend_schema(
         request=None,
-        responses={status.HTTP_200_OK: ReportAdminSerializer},
+        responses={
+            status.HTTP_200_OK: success_response_schema(
+                "ReportUnderReviewResponse",
+                ReportAdminSerializer,
+            ),
+        },
     )
     def post(self, request, report_id):
         report = get_object_or_404(
@@ -199,7 +252,12 @@ class ReportResolveView(APIView):
 
     @extend_schema(
         request=ReportResolutionSerializer,
-        responses={status.HTTP_200_OK: ReportAdminSerializer},
+        responses={
+            status.HTTP_200_OK: success_response_schema(
+                "ReportResolveResponse",
+                ReportAdminSerializer,
+            ),
+        },
     )
     def post(self, request, report_id):
         report = get_object_or_404(
@@ -233,7 +291,12 @@ class ReportRejectView(APIView):
 
     @extend_schema(
         request=ReportResolutionSerializer,
-        responses={status.HTTP_200_OK: ReportAdminSerializer},
+        responses={
+            status.HTTP_200_OK: success_response_schema(
+                "ReportRejectResponse",
+                ReportAdminSerializer,
+            ),
+        },
     )
     def post(self, request, report_id):
         report = get_object_or_404(

@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -78,12 +79,20 @@ class CategoryViewSet(
         CategoryService.delete(category=instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(
+        request=None,
+        responses={200: CategorySerializer},
+    )
     @action(detail=True, methods=["post"])
     def activate(self, request, *args, **kwargs):
         instance = self.get_object()
         category = CategoryService.activate(category=instance)
         return Response(CategorySerializer(category).data)
 
+    @extend_schema(
+        request=None,
+        responses={200: CategorySerializer},
+    )
     @action(detail=True, methods=["post"])
     def deactivate(self, request, *args, **kwargs):
         instance = self.get_object()

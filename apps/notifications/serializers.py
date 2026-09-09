@@ -64,60 +64,9 @@ class DeviceTokenRegisterSerializer(serializers.Serializer):
         return value.strip()
 
 
-# ---------------------------------------------------------------------------
-# OpenAPI response serializers
-# ---------------------------------------------------------------------------
-
-
-class UnreadCountDataSerializer(serializers.Serializer):
+class UnreadCountSerializer(serializers.Serializer):
     unread_count = serializers.IntegerField()
 
 
-class MarkAllReadDataSerializer(serializers.Serializer):
+class MarkAllReadSerializer(serializers.Serializer):
     marked_read = serializers.IntegerField()
-
-
-class UnreadCountResponseSerializer(serializers.Serializer):
-    success = serializers.BooleanField()
-    message = serializers.CharField()
-    data = UnreadCountDataSerializer()
-
-
-class MarkAllReadResponseSerializer(serializers.Serializer):
-    success = serializers.BooleanField()
-    message = serializers.CharField()
-    data = MarkAllReadDataSerializer()
-
-
-class NotificationResponseSerializer(serializers.Serializer):
-    success = serializers.BooleanField()
-    message = serializers.CharField()
-    data = NotificationSerializer()
-
-
-class DeviceTokenResponseSerializer(serializers.Serializer):
-    success = serializers.BooleanField()
-    message = serializers.CharField()
-    data = DeviceTokenSerializer()
-
-
-class DeviceTokenListResponseSerializer(serializers.Serializer):
-    success = serializers.BooleanField()
-    message = serializers.CharField()
-    data = DeviceTokenSerializer(many=True)
-
-
-class NotificationPaginationDataSerializer(serializers.Serializer):
-    count = serializers.IntegerField()
-    total_pages = serializers.IntegerField()
-    current_page = serializers.IntegerField()
-    page_size = serializers.IntegerField()
-    next = serializers.URLField(allow_null=True)
-    previous = serializers.URLField(allow_null=True)
-    results = NotificationSerializer(many=True)
-
-
-class NotificationListResponseSerializer(serializers.Serializer):
-    success = serializers.BooleanField()
-    message = serializers.CharField()
-    data = NotificationPaginationDataSerializer()

@@ -1,6 +1,11 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework.views import APIView
 
+from apps.common.openapi import (
+    list_response_schema,
+    paginated_response_schema,
+    success_response_schema,
+)
 from apps.common.pagination import StandardResultsSetPagination
 from apps.common.response import success_response
 from apps.core.permissions import IsAdmin
@@ -30,12 +35,21 @@ class DashboardSummaryView(APIView):
     permission_classes = [IsAdmin]
 
     @extend_schema(
-        responses=DashboardSummarySerializer,
+        responses={
+            200: success_response_schema(
+                "DashboardSummaryResponse",
+                DashboardSummarySerializer,
+            ),
+        },
     )
     def get(self, request):
         data = DashboardService.get_summary()
         serializer = DashboardSummarySerializer(data)
-        return success_response(data=serializer.data, message="")
+
+        return success_response(
+            data=serializer.data,
+            message="",
+        )
 
 
 class AdminUserListView(APIView):
@@ -44,7 +58,12 @@ class AdminUserListView(APIView):
 
     @extend_schema(
         operation_id="admin_users_list",
-        responses=AdminUserSerializer,
+        responses={
+            200: paginated_response_schema(
+                "AdminUserListResponse",
+                AdminUserSerializer,
+            ),
+        },
     )
     def get(self, request):
         qs = AdminUserService.get_queryset().order_by("-created_at")
@@ -65,7 +84,12 @@ class AdminUserDetailView(APIView):
 
     @extend_schema(
         operation_id="admin_users_retrieve",
-        responses=AdminUserSerializer,
+        responses={
+            200: success_response_schema(
+                "AdminUserDetailResponse",
+                AdminUserSerializer,
+            ),
+        },
     )
     def get(self, request, id):
         user = AdminUserService.get(user_id=id)
@@ -81,10 +105,17 @@ class AdminUserActivateView(APIView):
 
     @extend_schema(
         request=None,
-        responses=AdminUserSerializer,
+        responses={
+            200: success_response_schema(
+                "AdminUserActivateResponse",
+                AdminUserSerializer,
+            ),
+        },
     )
     def post(self, request, id):
-        user = AdminUserService.activate(user=AdminUserService.get(user_id=id))
+        user = AdminUserService.activate(
+            user=AdminUserService.get(user_id=id),
+        )
 
         return success_response(
             data=AdminUserSerializer(user).data,
@@ -97,10 +128,17 @@ class AdminUserDeactivateView(APIView):
 
     @extend_schema(
         request=None,
-        responses=AdminUserSerializer,
+        responses={
+            200: success_response_schema(
+                "AdminUserDeactivateResponse",
+                AdminUserSerializer,
+            ),
+        },
     )
     def post(self, request, id):
-        user = AdminUserService.deactivate(user=AdminUserService.get(user_id=id))
+        user = AdminUserService.deactivate(
+            user=AdminUserService.get(user_id=id),
+        )
 
         return success_response(
             data=AdminUserSerializer(user).data,
@@ -114,7 +152,12 @@ class AdminVendorListView(APIView):
 
     @extend_schema(
         operation_id="admin_vendors_list",
-        responses=AdminVendorSerializer,
+        responses={
+            200: paginated_response_schema(
+                "AdminVendorListResponse",
+                AdminVendorSerializer,
+            ),
+        },
     )
     def get(self, request):
         qs = AdminVendorService.get_queryset().order_by("-created_at")
@@ -135,7 +178,12 @@ class AdminVendorDetailView(APIView):
 
     @extend_schema(
         operation_id="admin_vendors_retrieve",
-        responses=AdminVendorSerializer,
+        responses={
+            200: success_response_schema(
+                "AdminVendorDetailResponse",
+                AdminVendorSerializer,
+            ),
+        },
     )
     def get(self, request, id):
         vendor = AdminVendorService.get(vendor_id=id)
@@ -151,11 +199,16 @@ class AdminVendorSuspendView(APIView):
 
     @extend_schema(
         request=None,
-        responses=AdminVendorSerializer,
+        responses={
+            200: success_response_schema(
+                "AdminVendorSuspendResponse",
+                AdminVendorSerializer,
+            ),
+        },
     )
     def post(self, request, id):
         vendor = AdminVendorService.suspend(
-            vendor_profile=AdminVendorService.get(vendor_id=id)
+            vendor_profile=AdminVendorService.get(vendor_id=id),
         )
 
         return success_response(
@@ -169,11 +222,16 @@ class AdminVendorReinstateView(APIView):
 
     @extend_schema(
         request=None,
-        responses=AdminVendorSerializer,
+        responses={
+            200: success_response_schema(
+                "AdminVendorReinstateResponse",
+                AdminVendorSerializer,
+            ),
+        },
     )
     def post(self, request, id):
         vendor = AdminVendorService.reinstate(
-            vendor_profile=AdminVendorService.get(vendor_id=id)
+            vendor_profile=AdminVendorService.get(vendor_id=id),
         )
 
         return success_response(
@@ -188,7 +246,12 @@ class AdminProductListView(APIView):
 
     @extend_schema(
         operation_id="admin_products_list",
-        responses=AdminProductSerializer,
+        responses={
+            200: paginated_response_schema(
+                "AdminProductListResponse",
+                AdminProductSerializer,
+            ),
+        },
     )
     def get(self, request):
         qs = AdminProductService.get_queryset().order_by("-listed_at")
@@ -209,7 +272,12 @@ class AdminProductDetailView(APIView):
 
     @extend_schema(
         operation_id="admin_products_retrieve",
-        responses=AdminProductSerializer,
+        responses={
+            200: success_response_schema(
+                "AdminProductDetailResponse",
+                AdminProductSerializer,
+            ),
+        },
     )
     def get(self, request, id):
         product = AdminProductService.get(product_id=id)
@@ -225,11 +293,16 @@ class AdminProductRemoveView(APIView):
 
     @extend_schema(
         request=None,
-        responses=AdminProductSerializer,
+        responses={
+            200: success_response_schema(
+                "AdminProductRemoveResponse",
+                AdminProductSerializer,
+            ),
+        },
     )
     def post(self, request, id):
         product = AdminProductService.remove(
-            product=AdminProductService.get(product_id=id)
+            product=AdminProductService.get(product_id=id),
         )
 
         return success_response(
@@ -243,11 +316,16 @@ class AdminCategoryListCreateView(APIView):
 
     @extend_schema(
         operation_id="admin_categories_list",
-        responses=AdminCategorySerializer,
+        responses={
+            200: list_response_schema(
+                "AdminCategoryListResponse",
+                AdminCategorySerializer,
+            ),
+        },
     )
     def get(self, request):
         qs = AdminCategoryService.get_queryset(
-            parent=request.query_params.get("parent")
+            parent=request.query_params.get("parent"),
         ).order_by("display_order", "name")
 
         return success_response(
@@ -257,13 +335,20 @@ class AdminCategoryListCreateView(APIView):
 
     @extend_schema(
         request=AdminCategoryWriteSerializer,
-        responses=AdminCategorySerializer,
+        responses={
+            201: success_response_schema(
+                "AdminCategoryCreatedResponse",
+                AdminCategorySerializer,
+            ),
+        },
     )
     def post(self, request):
         serializer = AdminCategoryWriteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        category = AdminCategoryService.create(**serializer.validated_data)
+        category = AdminCategoryService.create(
+            **serializer.validated_data,
+        )
 
         return success_response(
             data=AdminCategorySerializer(category).data,
@@ -277,7 +362,12 @@ class AdminCategoryDetailView(APIView):
 
     @extend_schema(
         operation_id="admin_categories_retrieve",
-        responses=AdminCategorySerializer,
+        responses={
+            200: success_response_schema(
+                "AdminCategoryDetailResponse",
+                AdminCategorySerializer,
+            ),
+        },
     )
     def get(self, request, slug):
         category = AdminCategoryService.get(slug=slug)
@@ -289,7 +379,12 @@ class AdminCategoryDetailView(APIView):
 
     @extend_schema(
         request=AdminCategoryUpdateSerializer,
-        responses=AdminCategorySerializer,
+        responses={
+            200: success_response_schema(
+                "AdminCategoryUpdateResponse",
+                AdminCategorySerializer,
+            ),
+        },
     )
     def patch(self, request, slug):
         category = AdminCategoryService.get(slug=slug)
@@ -311,7 +406,9 @@ class AdminCategoryDetailView(APIView):
         responses=None,
     )
     def delete(self, request, slug):
-        AdminCategoryService.delete(category=AdminCategoryService.get(slug=slug))
+        AdminCategoryService.delete(
+            category=AdminCategoryService.get(slug=slug),
+        )
 
         return success_response(
             data=None,
@@ -325,11 +422,16 @@ class AdminCategoryActivateView(APIView):
 
     @extend_schema(
         request=None,
-        responses=AdminCategorySerializer,
+        responses={
+            200: success_response_schema(
+                "AdminCategoryActivateResponse",
+                AdminCategorySerializer,
+            ),
+        },
     )
     def post(self, request, slug):
         category = AdminCategoryService.activate(
-            category=AdminCategoryService.get(slug=slug)
+            category=AdminCategoryService.get(slug=slug),
         )
 
         return success_response(
@@ -343,11 +445,16 @@ class AdminCategoryDeactivateView(APIView):
 
     @extend_schema(
         request=None,
-        responses=AdminCategorySerializer,
+        responses={
+            200: success_response_schema(
+                "AdminCategoryDeactivateResponse",
+                AdminCategorySerializer,
+            ),
+        },
     )
     def post(self, request, slug):
         category = AdminCategoryService.deactivate(
-            category=AdminCategoryService.get(slug=slug)
+            category=AdminCategoryService.get(slug=slug),
         )
 
         return success_response(
@@ -362,11 +469,16 @@ class AdminReportListView(APIView):
 
     @extend_schema(
         operation_id="admin_reports_list",
-        responses=ReportAdminSerializer,
+        responses={
+            200: paginated_response_schema(
+                "AdminReportListResponse",
+                ReportAdminSerializer,
+            ),
+        },
     )
     def get(self, request):
         qs = AdminReportService.get_queryset(
-            status=request.query_params.get("status")
+            status=request.query_params.get("status"),
         ).order_by("created_at")
 
         paginator = self.pagination_class()
@@ -381,7 +493,12 @@ class AdminReportDetailView(APIView):
 
     @extend_schema(
         operation_id="admin_reports_retrieve",
-        responses=ReportAdminSerializer,
+        responses={
+            200: success_response_schema(
+                "AdminReportDetailResponse",
+                ReportAdminSerializer,
+            ),
+        },
     )
     def get(self, request, id):
         report = AdminReportService.get(report_id=id)
@@ -397,11 +514,16 @@ class AdminReportUnderReviewView(APIView):
 
     @extend_schema(
         request=None,
-        responses=ReportAdminSerializer,
+        responses={
+            200: success_response_schema(
+                "AdminReportUnderReviewResponse",
+                ReportAdminSerializer,
+            ),
+        },
     )
     def post(self, request, id):
         report = AdminReportService.mark_under_review(
-            report=AdminReportService.get(report_id=id)
+            report=AdminReportService.get(report_id=id),
         )
 
         return success_response(
@@ -415,7 +537,12 @@ class AdminReportResolveView(APIView):
 
     @extend_schema(
         request=AdminResolutionSerializer,
-        responses=ReportAdminSerializer,
+        responses={
+            200: success_response_schema(
+                "AdminReportResolveResponse",
+                ReportAdminSerializer,
+            ),
+        },
     )
     def post(self, request, id):
         report = AdminReportService.get(report_id=id)
@@ -440,7 +567,12 @@ class AdminReportRejectView(APIView):
 
     @extend_schema(
         request=AdminResolutionSerializer,
-        responses=ReportAdminSerializer,
+        responses={
+            200: success_response_schema(
+                "AdminReportRejectResponse",
+                ReportAdminSerializer,
+            ),
+        },
     )
     def post(self, request, id):
         report = AdminReportService.get(report_id=id)

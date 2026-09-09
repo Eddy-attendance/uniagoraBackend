@@ -23,7 +23,12 @@ class CategoryBriefSerializer(serializers.ModelSerializer):
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
-        fields = ["id", "image", "is_primary", "display_order"]
+        fields = [
+            "id",
+            "image",
+            "is_primary",
+            "display_order",
+        ]
         read_only_fields = fields
 
 
@@ -74,11 +79,22 @@ class ProductSerializer(serializers.ModelSerializer):
         {
             "type": "object",
             "properties": {
-                "id": {"type": "string", "format": "uuid"},
-                "slug": {"type": "string"},
-                "display_name": {"type": "string"},
+                "id": {
+                    "type": "string",
+                    "format": "uuid",
+                },
+                "slug": {
+                    "type": "string",
+                },
+                "display_name": {
+                    "type": "string",
+                },
             },
-            "required": ["id", "slug", "display_name"],
+            "required": [
+                "id",
+                "slug",
+                "display_name",
+            ],
         }
     )
     def get_store(self, obj):
@@ -92,11 +108,22 @@ class ProductSerializer(serializers.ModelSerializer):
         {
             "type": "object",
             "properties": {
-                "id": {"type": "string", "format": "uuid"},
-                "name": {"type": "string"},
-                "short_name": {"type": "string"},
+                "id": {
+                    "type": "string",
+                    "format": "uuid",
+                },
+                "name": {
+                    "type": "string",
+                },
+                "short_name": {
+                    "type": "string",
+                },
             },
-            "required": ["id", "name", "short_name"],
+            "required": [
+                "id",
+                "name",
+                "short_name",
+            ],
         }
     )
     def get_university(self, obj):
@@ -120,17 +147,27 @@ class ProductSerializer(serializers.ModelSerializer):
     @extend_schema_field(ProductImageSerializer(many=True))
     def get_images(self, obj):
         images = obj.images.alive().order_by("display_order")
-        return ProductImageSerializer(images, many=True).data
 
-    @extend_schema_field(ProductImageSerializer(allow_null=True))
+        return ProductImageSerializer(
+            images,
+            many=True,
+        ).data
+
+    @extend_schema_field(
+        ProductImageSerializer(allow_null=True),
+    )
     def get_primary_image(self, obj):
         image = obj.primary_image
+
         return ProductImageSerializer(image).data if image else None
 
     @extend_schema_field(
         {
             "type": "string",
-            "enum": ["IN_STOCK", "OUT_OF_STOCK"],
+            "enum": [
+                "IN_STOCK",
+                "OUT_OF_STOCK",
+            ],
         }
     )
     def get_availability(self, obj):
@@ -138,67 +175,86 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ProductCreateSerializer(serializers.Serializer):
-    """The only serializer that accepts client input for product creation.
+    """Client input for product creation.
 
     A primary image is required at creation time because the PRD/DDS require
-    every persisted listing to have at least one image and exactly one primary
-    image.
+    every persisted listing to have at least one image and exactly one
+    primary image.
     """
 
     name = serializers.CharField(max_length=200)
+
     description = serializers.CharField(
         required=False,
         allow_blank=True,
         default="",
     )
+
     price = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
         min_value=Decimal("0"),
     )
-    condition = serializers.ChoiceField(choices=ProductCondition.choices)
+
+    condition = serializers.ChoiceField(
+        choices=ProductCondition.choices,
+    )
+
     quantity = serializers.IntegerField(
         required=False,
         min_value=0,
         default=1,
     )
+
     campus_location = serializers.CharField(
         required=False,
         allow_null=True,
         allow_blank=True,
         max_length=150,
     )
+
     category_ids = serializers.ListField(
         child=serializers.UUIDField(),
         required=False,
         default=list,
         validators=[_reject_duplicate_category_ids],
     )
-    primary_image = serializers.ImageField(required=True)
+
+    primary_image = serializers.ImageField(
+        required=True,
+    )
 
 
 class ProductUpdateSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=200, required=False)
+    name = serializers.CharField(
+        max_length=200,
+        required=False,
+    )
+
     description = serializers.CharField(
         required=False,
         allow_blank=True,
     )
+
     price = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
         min_value=Decimal("0"),
         required=False,
     )
+
     condition = serializers.ChoiceField(
         choices=ProductCondition.choices,
         required=False,
     )
+
     campus_location = serializers.CharField(
         required=False,
         allow_null=True,
         allow_blank=True,
         max_length=150,
     )
+
     category_ids = serializers.ListField(
         child=serializers.UUIDField(),
         required=False,
@@ -211,26 +267,31 @@ class ProductListQuerySerializer(serializers.Serializer):
         required=False,
         allow_blank=True,
     )
+
     category = serializers.SlugField(
         required=False,
         allow_blank=True,
     )
+
     min_price = serializers.DecimalField(
         required=False,
         min_value=Decimal("0"),
         max_digits=10,
         decimal_places=2,
     )
+
     max_price = serializers.DecimalField(
         required=False,
         min_value=Decimal("0"),
         max_digits=10,
         decimal_places=2,
     )
+
     condition = serializers.ChoiceField(
         required=False,
         choices=ProductCondition.choices,
     )
+
     ordering = serializers.ChoiceField(
         required=False,
         choices=(
@@ -253,11 +314,13 @@ class ProductListQuerySerializer(serializers.Serializer):
 
 
 class InventoryUpdateSerializer(serializers.Serializer):
-    quantity = serializers.IntegerField(min_value=0)
+    quantity = serializers.IntegerField(
+        min_value=0,
+    )
 
 
 class ProductCategoryAssignmentSerializer(serializers.Serializer):
-    """Full-replace category assignment payload for `PUT .../categories/`."""
+    """Full-replace category assignment payload for PUT .../categories/."""
 
     category_ids = serializers.ListField(
         child=serializers.UUIDField(),
@@ -268,20 +331,12 @@ class ProductCategoryAssignmentSerializer(serializers.Serializer):
 
 class ProductImageUploadSerializer(serializers.Serializer):
     image = serializers.ImageField()
-    is_primary = serializers.BooleanField(required=False)
+
+    is_primary = serializers.BooleanField(
+        required=False,
+    )
+
     display_order = serializers.IntegerField(
         required=False,
         min_value=0,
     )
-
-
-class ProductImageResponseSerializer(serializers.Serializer):
-    success = serializers.BooleanField()
-    message = serializers.CharField()
-    data = ProductImageSerializer()
-
-
-class ProductImageListResponseSerializer(serializers.Serializer):
-    success = serializers.BooleanField()
-    message = serializers.CharField()
-    data = ProductImageSerializer(many=True)
