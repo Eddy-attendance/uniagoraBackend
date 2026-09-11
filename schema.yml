@@ -812,17 +812,6 @@ paths:
         required: true
       tags:
       - categories
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Category'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Category'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Category'
       security:
       - jwtAuth: []
       responses:
@@ -843,17 +832,6 @@ paths:
         required: true
       tags:
       - categories
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Category'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Category'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Category'
       security:
       - jwtAuth: []
       responses:

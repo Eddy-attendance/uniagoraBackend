@@ -1,0 +1,412 @@
+UniAGORA Product Requirements Document (PRD)
+ 
+Version: 1.0 (MVP)
+ 
+1. Executive Summary
+Product Name
+ 
+UniAGORA
+ 
+Vision
+ 
+UniAGORA is a trusted multi-university marketplace that enables students to discover, buy, and sell products within their university through verified vendor profiles.
+ 
+The platform aims to create a safe, student-focused digital marketplace by combining verified identities, trusted vendors, real-time communication, and a simple buying experience.
+ 
+2. Product Goals
+ 
+The MVP should allow users to:
+ 
+Create an account
+Browse products
+Search for products
+Contact vendors
+Become verified vendors
+List products
+Complete transactions offline
+Leave trusted reviews
+Build trust through vendor verification
+3. Target Users
+ 
+The platform supports multiple universities.
+ 
+Each user belongs to one selected university at a time.
+ 
+Users may change their university whenever they wish.
+ 
+4. User Roles
+Customer (Default)
+ 
+Every registered account is automatically a Customer.
+ 
+Customers can:
+ 
+Register
+Login
+Browse products
+Search products
+Filter products
+View stores
+Contact vendors
+Save products
+Report products
+Report vendors
+Leave reviews after completed transactions
+Apply to become a Vendor
+ 
+Customers may browse the marketplace immediately after registration.
+ 
+Email verification will be introduced in a future release.
+ 
+Vendor
+ 
+A Customer may upgrade to a Vendor.
+ 
+Each account may own only one vendor profile.
+ 
+Vendor types:
+ 
+Student Vendor
+ 
+Required information:
+ 
+Store Name
+Phone Number
+University
+Matric Number (Unique)
+Department
+Level
+ 
+One proof of studentship:
+ 
+Admission Letter
+Student ID Card
+Course Registration Slip
+School Fee Receipt
+Business Vendor
+ 
+Required:
+ 
+Store Name
+Business Name
+Phone Number
+Business Address
+ 
+Optional:
+ 
+Business Logo
+ 
+Supporting business documents will be introduced after MVP.
+ 
+Vendor capabilities:
+ 
+Manage Store
+Create Listings
+Edit Listings
+Delete Listings
+Mark Products as Sold
+Manage Inventory
+Respond to Customer Chats
+View Reviews
+View Enquiries
+ 
+Vendors retain every Customer capability.
+ 
+Admin
+ 
+Admin accounts are created internally.
+ 
+Capabilities:
+ 
+Dashboard
+User Management
+Vendor Management
+Product Moderation
+Category Management
+Report Management
+Marketplace Analytics
+Platform Settings
+5. Vendor Verification
+ 
+For MVP:
+ 
+Vendor applications are automatically approved after submission.
+ 
+Verification statuses:
+ 
+Pending
+Verified
+Rejected
+Suspended
+ 
+Public badges:
+ 
+✓ Verified Student
+ 
+✓ Verified Business
+ 
+6. Marketplace
+ 
+Every product belongs to exactly one Vendor.
+ 
+Products may belong to multiple Categories.
+ 
+Each listing contains:
+ 
+Product Name
+Description
+Price
+Categories
+Condition
+Quantity
+Campus / Location
+Availability
+Date Listed
+ 
+Images:
+ 
+One primary image (required)
+Up to seven additional images
+ 
+Maximum:
+ 
+Eight images.
+ 
+Product conditions:
+ 
+New
+Used
+ 
+Inventory is quantity-based.
+ 
+When quantity reaches zero:
+ 
+The product becomes Out of Stock automatically.
+ 
+7. Product Lifecycle
+ 
+Vendor creates product
+ 
+↓
+ 
+Visible in marketplace
+ 
+↓
+ 
+Customers contact vendor
+ 
+↓
+ 
+Transaction completed offline
+ 
+↓
+ 
+Vendor marks transaction as completed
+ 
+↓
+ 
+Customer can leave review
+ 
+Listings expire after 30 days.
+ 
+Expired listings:
+ 
+Hidden from marketplace
+Not deleted
+Can be renewed by the Vendor
+8. Search & Filters
+ 
+Search:
+ 
+Keyword
+ 
+Filters:
+ 
+Categories
+Price Range
+Condition
+Newest
+Lowest Price
+Highest Price
+ 
+MVP search uses PostgreSQL Full-Text Search.
+ 
+9. Vendor Stores
+ 
+Every Vendor owns one Store.
+ 
+Store contains:
+ 
+Store Profile
+Verification Badge
+Products
+Reviews
+Contact Button
+10. Messaging
+ 
+Messaging is Customer → Vendor only.
+ 
+Customers initiate conversations.
+ 
+Vendors cannot start conversations with Customers.
+ 
+Features:
+ 
+Text Messaging
+ 
+Optional:
+ 
+Image Attachments (if time permits)
+11. Wishlist
+ 
+Customers may:
+ 
+Save Products
+Remove Products
+ 
+Vendors retain Wishlist functionality because Vendors remain Customers.
+ 
+12. Reviews
+ 
+Customers may review only after:
+ 
+Vendor marks the transaction as completed.
+ 
+Reviews include:
+ 
+Rating (1–5)
+Optional Comment
+ 
+Customers may edit their reviews.
+ 
+13. Reports
+ 
+Customers may report:
+ 
+Products
+Vendors
+ 
+Reports are managed by Admin.
+ 
+14. Notifications
+ 
+Push notifications include:
+ 
+New Messages
+Vendor Verification Updates
+Product Moderation Updates
+New Reviews
+Platform Announcements
+15. Marketplace Rules
+One account per email
+One vendor profile per account
+One unique matric number per student vendor
+Products belong to one Vendor
+Products may belong to multiple Categories
+Vendors retain Customer permissions
+Admin may suspend Vendors
+Admin may remove listings
+Listings expire after 30 days
+Vendors may renew expired listings
+Vendor marks completed transactions
+Customers may review completed transactions only
+16. Authentication
+ 
+MVP:
+ 
+Register
+Login
+Logout
+Forgot Password
+Password Reset
+ 
+Future Release:
+ 
+Email Verification
+Google Sign-In
+Apple Sign-In
+ 
+Authentication is centralized for all clients.
+ 
+17. API Principles
+ 
+The backend is API-first.
+ 
+The same REST API serves:
+ 
+Web
+Mobile
+Admin
+ 
+Every endpoint follows a consistent response structure:
+ 
+Success:
+ 
+{
+  "success": true,
+  "message": "",
+  "data": {}
+}
+ 
+Failure:
+ 
+{
+  "success": false,
+  "message": "",
+  "errors": {}
+}
+ 
+API versioning begins at:
+ 
+/api/v1/
+ 
+The backend owns all business rules. Client applications must never implement business logic.
+ 
+18. Technology Stack
+Backend
+Python 3.13+
+Django 5+
+Django REST Framework (DRF)
+Database
+PostgreSQL
+Authentication
+JWT Authentication
+Real-Time
+Django Channels
+Media Storage
+Cloudinary
+Web
+Next.js
+Mobile
+React Native (Expo)
+Version Control
+Git
+GitHub
+19. Out of Scope (Post-MVP)
+ 
+The following features are intentionally excluded from MVP:
+ 
+Food Ordering
+Rider Management
+Live Delivery Tracking
+Wallet
+Escrow Payments
+Service Marketplace
+Hostel Listings
+Event Tickets
+Coupons
+AI Recommendations
+Multi-Campus Logistics
+20. Success Criteria
+ 
+The MVP is considered successful if users can:
+ 
+Register an account
+Browse products
+Search and filter products
+Become a verified vendor
+Create and manage listings
+Contact vendors through chat
+Complete transactions offline
+Leave reviews after completed transactions
+Trust vendors through visible verification badges
