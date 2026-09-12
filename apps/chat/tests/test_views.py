@@ -5,6 +5,7 @@ from rest_framework.test import APITestCase
 
 from apps.chat.models import Conversation, Message, TransactionStatus
 from apps.chat.tests.helpers import make_product, make_store, make_user, make_vendor
+from apps.vendors.services import VendorSuspensionService
 
 
 class ConversationCreateViewTests(APITestCase):
@@ -48,6 +49,21 @@ class ConversationCreateViewTests(APITestCase):
         response = self.client.post(self.url, {"vendor": str(self.vendor.id)})
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
+    def test_suspended_vendor_rejected_through_the_view(self):
+        """A storefront deep-link (product payload's `vendor_id`) can outlive
+        a suspension: the create view must still refuse. `is_verified` is a
+        live property over `status`, which VendorSuspensionService flips."""
+        VendorSuspensionService.suspend(vendor_profile=self.vendor)
+
+        self.client.force_authenticate(self.customer)
+        response = self.client.post(self.url, {"vendor": str(self.vendor.id)})
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertFalse(
+            Conversation.objects.filter(
+                customer=self.customer, vendor=self.vendor
+            ).exists()
+        )
+
     def test_create_with_product_success(self):
         product = make_product(store=self.store)
         self.client.force_authenticate(self.customer)
@@ -63,6 +79,42 @@ class ConversationCreateViewTests(APITestCase):
         self.assertIn("success", response.data)
         self.assertIn("data", response.data)
         self.assertTrue(response.data["success"])
+
+    def test_storefront_discovery_flow_end_to_end(self):
+        """A customer goes from a marketplace product page to a live
+        conversation using only ids obtained from public storefront
+        payloads — the storefront's only route to a vendor id."""
+        customer = make_user(
+            email="storefront-customer@example.com",
+            university=self.vendor.university,
+        )
+        self.client.force_authenticate(customer)
+
+        product = make_product(store=self.store)
+
+        # Product payload exposes the owning vendor id.
+        product_data = self.client.get(
+            f"/api/v1/products/{product.slug}/"
+        ).data["data"]
+        vendor_id = product_data["store"]["vendor_id"]
+        self.assertEqual(vendor_id, str(self.vendor.id))
+
+        # Public store detail exposes the same id.
+        store_data = self.client.get(
+            f"/api/v1/stores/{self.store.slug}/"
+        ).data["data"]
+        self.assertEqual(store_data["vendor_id"], vendor_id)
+
+        # The discovered id initiates the conversation.
+        response = self.client.post(
+            self.url,
+            {"vendor": vendor_id, "product": str(product.id)},
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            response.data["data"]["vendor"],
+            UUID(str(self.vendor.id)),
+        )
 
 
 class ConversationListRetrieveViewTests(APITestCase):

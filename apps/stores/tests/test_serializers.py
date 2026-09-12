@@ -33,6 +33,7 @@ class StoreSerializerTests(TestCase):
         data = StoreSerializer(self.store).data
         expected_fields = {
             "id",
+            "vendor_id",
             "display_name",
             "slug",
             "description",
@@ -44,6 +45,12 @@ class StoreSerializerTests(TestCase):
             "updated_at",
         }
         self.assertEqual(set(data.keys()), expected_fields)
+
+    def test_read_serializer_exposes_vendor_id(self):
+        """Customers can only start a conversation or report a vendor if
+        some public payload reveals the VendorProfile id."""
+        data = StoreSerializer(self.store).data
+        self.assertEqual(str(data["vendor_id"]), str(self.vendor_profile.id))
 
     def test_read_serializer_exposes_verification_badge(self):
         data = StoreSerializer(self.store).data

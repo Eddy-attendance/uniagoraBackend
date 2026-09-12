@@ -66,6 +66,16 @@ class ProductSerializerReadTests(TestCase):
         data = ProductSerializer(product).data
         self.assertEqual(data["status"], ProductStatus.ACTIVE)
 
+    def test_store_object_includes_vendor_id(self):
+        """The storefront's route to a VendorProfile id for chat/report
+        initiation rides along on every product payload."""
+        product = make_product(self.store, self.university)
+        data = ProductSerializer(product).data
+        self.assertEqual(
+            str(data["store"]["vendor_id"]),
+            str(self.vendor_profile.id),
+        )
+
     def test_availability_reflected_in_output(self):
         product = make_product(
             self.store,

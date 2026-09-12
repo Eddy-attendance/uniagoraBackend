@@ -5254,12 +5254,18 @@ components:
             id:
               type: string
               format: uuid
+            vendor_id:
+              type: string
+              format: uuid
+              description: Owning VendorProfile id — the identifier clients supply
+                to initiate a conversation or report the vendor.
             slug:
               type: string
             display_name:
               type: string
           required:
           - id
+          - vendor_id
           - slug
           - display_name
           readOnly: true
@@ -6126,6 +6132,10 @@ components:
           type: string
           format: uuid
           readOnly: true
+        vendor_id:
+          type: string
+          format: uuid
+          readOnly: true
         display_name:
           type: string
           readOnly: true
@@ -6168,6 +6178,7 @@ components:
       - is_verified
       - slug
       - updated_at
+      - vendor_id
       - vendor_type
     StoreCreateResponse:
       type: object

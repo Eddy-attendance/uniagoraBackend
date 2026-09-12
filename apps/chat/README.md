@@ -140,6 +140,12 @@ Request:
 
 The customer is derived from the authenticated user.
 
+`vendor` must be a VendorProfile UUID. Clients obtain it from the
+storefront payloads, which expose it as `vendor_id`:
+
+- Product detail/list: `data.store.vendor_id` (`GET /api/v1/products/...`)
+- Public store detail: `data.vendor_id` (`GET /api/v1/stores/{slug}/`)
+
 ---
 
 ### List conversations
@@ -533,22 +539,17 @@ REST endpoints are mounted at:
 The project-level URL configuration includes:
 
 ```python
-path("api/v1/chat/", include("apps.chat.urls")),
+path("api/v1/conversations/", include("apps.chat.urls")),
 ```
 
-The chat app's router registers:
+The chat app's router registers the `ConversationViewSet` at the root of its
+urlpatterns, so the effective REST API is exactly:
 
 ```text
-conversations/
+/api/v1/conversations/
 ```
 
-Therefore the effective REST API is:
-
-```text
-/api/v1/chat/conversations/
-```
-
-> **Important:** The current project-level URL configuration prefixes the chat router with `/api/v1/chat/`. If the intended frozen API contract is `/api/v1/conversations/`, the project-level include must be adjusted accordingly. The chat router itself does not add the `chat/` prefix.
+This matches the frozen API contract. There is no `/api/v1/chat/` prefix.
 
 WebSocket routing is independent of the REST prefix:
 

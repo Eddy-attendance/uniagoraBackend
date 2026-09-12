@@ -83,6 +83,14 @@ class ProductSerializer(serializers.ModelSerializer):
                     "type": "string",
                     "format": "uuid",
                 },
+                "vendor_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": (
+                        "Owning VendorProfile id — the identifier clients supply "
+                        "to initiate a conversation or report the vendor."
+                    ),
+                },
                 "slug": {
                     "type": "string",
                 },
@@ -92,6 +100,7 @@ class ProductSerializer(serializers.ModelSerializer):
             },
             "required": [
                 "id",
+                "vendor_id",
                 "slug",
                 "display_name",
             ],
@@ -100,6 +109,7 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_store(self, obj):
         return {
             "id": str(obj.store_id),
+            "vendor_id": str(obj.store.vendor_profile_id),
             "slug": obj.store.slug,
             "display_name": obj.store.display_name,
         }

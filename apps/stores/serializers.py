@@ -19,10 +19,20 @@ class StoreSerializer(serializers.ModelSerializer):
         source="vendor_profile.is_verified", read_only=True
     )
 
+    # Identifier of the owning VendorProfile. This is the id clients must
+    # supply to start a conversation (POST /conversations/) or report a
+    # vendor (POST /reports/vendors/{vendor_id}/) — the storefront's only
+    # route to a vendor id.
+    vendor_id = serializers.UUIDField(
+        source="vendor_profile_id",
+        read_only=True,
+    )
+
     class Meta:
         model = Store
         fields = [
             "id",
+            "vendor_id",
             "display_name",
             "slug",
             "description",
