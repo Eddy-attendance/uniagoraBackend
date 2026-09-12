@@ -143,18 +143,21 @@ All Reviews API endpoints follow the project-wide `/api/v1/` convention and the 
 ### Create Review
 
 ```http
-POST /api/v1/reviews/
+POST /api/v1/reviews/conversations/{conversation_id}/
 ```
 
-Requires authentication.
+Requires authentication. The conversation is resolved from the URL —
+clients never submit a conversation id in the request body.
 
 A customer submits a review for an eligible completed conversation.
+The `conversation_id` is the id of the customer's own conversation,
+obtained from `GET /api/v1/conversations/` once the vendor marks the
+transaction completed.
 
 Example request:
 
 ```json
 {
-  "conversation": "<conversation-uuid>",
   "rating": 5,
   "comment": "Great seller and smooth transaction."
 }
@@ -162,7 +165,11 @@ Example request:
 
 ### List Store Reviews
 
-Reviews can be retrieved through the store review endpoint defined by the implementation.
+```http
+GET /api/v1/reviews/stores/{store_slug}/
+```
+
+Returns paginated reviews for an active store, newest first.
 
 The store relationship exists directly on `Review` so storefront review queries do not require repeatedly traversing:
 
@@ -170,11 +177,15 @@ The store relationship exists directly on `Review` so storefront review queries 
 Review → Conversation → VendorProfile → Store
 ```
 
-### Update Review
+### Retrieve / Update Review
 
-The review owner may edit their review through the implemented review update endpoint.
+```http
+GET   /api/v1/reviews/{id}/
+PATCH /api/v1/reviews/{id}/
+```
 
-The rating and optional comment can be updated subject to the same validation rules.
+The review owner may edit their review. The rating and optional comment
+can be updated subject to the same validation rules.
 
 ## Response Format
 

@@ -337,14 +337,12 @@ The vendors app depends on:
 * `apps.users`
 * `apps.universities`
 
-The app does not currently depend on `stores` or `products`.
+The app depends on `stores` and `products` for the suspension cascade:
+when a vendor is suspended, their storefront is deactivated and their
+product listings are hidden through `StoreService` and
+`ProductLifecycleService`. Reinstate reverses both.
 
-This is intentional: storefront and product functionality belongs to subsequent application boundaries.
+### Suspension Cascade
 
-## Future Integration
-
-Vendor suspension will eventually need to coordinate with the `stores` and `products` apps according to the approved backend design.
-
-Once those apps exist, `VendorSuspensionService` must be extended so suspension can affect the vendor's active storefront and products as specified by the database/architecture design.
-
-That functionality is intentionally deferred rather than introducing premature dependencies into the vendors app.
+`VendorSuspensionService` coordinates the vendor lifecycle across
+boundaries in a single transaction, per the approved backend design:

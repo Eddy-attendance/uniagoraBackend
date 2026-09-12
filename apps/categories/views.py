@@ -11,6 +11,7 @@ from apps.common.openapi import (
     paginated_response_schema,
     success_response_schema,
 )
+from apps.common.response import success_response
 from apps.core.permissions import IsAdmin, IsAuthenticatedCustomer
 
 from .models import Category
@@ -105,8 +106,10 @@ class CategoryViewSet(
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         category = CategoryService.create(**serializer.validated_data)
-        return Response(
-            CategorySerializer(category).data, status=status.HTTP_201_CREATED
+        return success_response(
+            data=CategorySerializer(category).data,
+            message="Category created.",
+            status=status.HTTP_201_CREATED,
         )
 
     @extend_schema(
@@ -124,7 +127,10 @@ class CategoryViewSet(
         category = CategoryService.update(
             category=instance, **serializer.validated_data
         )
-        return Response(CategorySerializer(category).data)
+        return success_response(
+            data=CategorySerializer(category).data,
+            message="Category updated.",
+        )
 
     @extend_schema(
         request=CategoryUpdateSerializer,
@@ -159,7 +165,10 @@ class CategoryViewSet(
     def activate(self, request, *args, **kwargs):
         instance = self.get_object()
         category = CategoryService.activate(category=instance)
-        return Response(CategorySerializer(category).data)
+        return success_response(
+            data=CategorySerializer(category).data,
+            message="Category activated.",
+        )
 
     @extend_schema(
         request=None,
@@ -173,4 +182,7 @@ class CategoryViewSet(
     def deactivate(self, request, *args, **kwargs):
         instance = self.get_object()
         category = CategoryService.deactivate(category=instance)
-        return Response(CategorySerializer(category).data)
+        return success_response(
+            data=CategorySerializer(category).data,
+            message="Category deactivated.",
+        )
