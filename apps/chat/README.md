@@ -104,7 +104,7 @@ This keeps business-rule failures consistent and allows the service layer to ret
 
 ### Idempotency
 
-Creating the same customer/vendor/product conversation repeatedly does not create duplicate conversations.
+Creating the same customer/vendor/product conversation repeatedly does not create duplicate conversations- confirmed
 
 The API returns:
 
