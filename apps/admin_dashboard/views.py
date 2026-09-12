@@ -1,4 +1,6 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.common.openapi import (
@@ -9,7 +11,9 @@ from apps.common.openapi import (
 from apps.common.pagination import StandardResultsSetPagination
 from apps.common.response import success_response
 from apps.core.permissions import IsAdmin
+from apps.products.models import ProductStatus
 from apps.reports.serializers import ReportAdminSerializer
+from apps.vendors.models import VendorStatus
 
 from .serializers import (
     AdminCategorySerializer,
@@ -58,6 +62,15 @@ class AdminUserListView(APIView):
 
     @extend_schema(
         operation_id="admin_users_list",
+        parameters=[
+            OpenApiParameter(
+                name="is_active",
+                type=bool,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Filter users by account activation state.",
+            ),
+        ],
         responses={
             200: paginated_response_schema(
                 "AdminUserListResponse",
@@ -152,6 +165,16 @@ class AdminVendorListView(APIView):
 
     @extend_schema(
         operation_id="admin_vendors_list",
+        parameters=[
+            OpenApiParameter(
+                name="status",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                enum=VendorStatus.values,
+                description="Filter vendors by profile status.",
+            ),
+        ],
         responses={
             200: paginated_response_schema(
                 "AdminVendorListResponse",
@@ -246,6 +269,16 @@ class AdminProductListView(APIView):
 
     @extend_schema(
         operation_id="admin_products_list",
+        parameters=[
+            OpenApiParameter(
+                name="status",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                enum=ProductStatus.values,
+                description="Filter products by lifecycle status.",
+            ),
+        ],
         responses={
             200: paginated_response_schema(
                 "AdminProductListResponse",
@@ -316,6 +349,18 @@ class AdminCategoryListCreateView(APIView):
 
     @extend_schema(
         operation_id="admin_categories_list",
+        parameters=[
+            OpenApiParameter(
+                name="parent",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description=(
+                    "Filter categories by parent category slug. Pass 'null' to "
+                    "list only root categories; omit to return all categories."
+                ),
+            ),
+        ],
         responses={
             200: list_response_schema(
                 "AdminCategoryListResponse",
@@ -410,11 +455,9 @@ class AdminCategoryDetailView(APIView):
             category=AdminCategoryService.get(slug=slug),
         )
 
-        return success_response(
-            data=None,
-            message="Category deleted.",
-            status=204,
-        )
+        # Bare 204 with no body — matches the documented contract and the
+        # other soft-delete endpoints (categories, products).
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AdminCategoryActivateView(APIView):

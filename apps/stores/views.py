@@ -17,10 +17,12 @@ No `list` action is defined. GET /stores/ therefore remains unbound
 rather than exposing an unintended collection endpoint.
 """
 
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 
 from apps.common.exceptions import NotFoundError
+from apps.common.openapi import EmptyDataSerializer, success_response_schema
 from apps.common.response import success_response
 from apps.core.permissions import IsAuthenticatedCustomer, IsVerifiedVendor
 
@@ -55,6 +57,16 @@ class StoreViewSet(viewsets.GenericViewSet):
 
         return StoreSerializer
 
+    @extend_schema(
+        summary="Create the store for the authenticated vendor.",
+        request=StoreWriteSerializer,
+        responses={
+            201: OpenApiResponse(
+                success_response_schema("StoreCreateResponse", StoreSerializer),
+                description="Store created.",
+            ),
+        },
+    )
     def create(self, request, *args, **kwargs):
         serializer = StoreWriteSerializer(
             data=request.data,
@@ -78,6 +90,12 @@ class StoreViewSet(viewsets.GenericViewSet):
             status=status.HTTP_201_CREATED,
         )
 
+    @extend_schema(
+        request=None,
+        responses={
+            200: success_response_schema("StoreDetailResponse", StoreSerializer),
+        },
+    )
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = StoreSerializer(
@@ -87,6 +105,27 @@ class StoreViewSet(viewsets.GenericViewSet):
 
         return success_response(data=serializer.data)
 
+    @extend_schema(
+        methods=["get"],
+        request=None,
+        responses={
+            200: success_response_schema("StoreMeResponse", StoreSerializer),
+        },
+    )
+    @extend_schema(
+        methods=["patch"],
+        request=StoreWriteSerializer,
+        responses={
+            200: success_response_schema("StoreMeUpdateResponse", StoreSerializer),
+        },
+    )
+    @extend_schema(
+        methods=["delete"],
+        request=None,
+        responses={
+            200: success_response_schema("StoreMeDeleteResponse", EmptyDataSerializer),
+        },
+    )
     @action(
         detail=False,
         methods=["get", "patch", "delete"],

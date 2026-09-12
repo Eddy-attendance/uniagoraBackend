@@ -7,6 +7,13 @@ paths:
   /api/v1/admin/categories/:
     get:
       operationId: admin_categories_list
+      parameters:
+      - in: query
+        name: parent
+        schema:
+          type: string
+        description: Filter categories by parent category slug. Pass 'null' to list
+          only root categories; omit to return all categories.
       tags:
       - admin
       security:
@@ -18,6 +25,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminCategoryListResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     post:
       operationId: admin_categories_create
       tags:
@@ -43,6 +57,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminCategoryCreatedResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/categories/{slug}/:
     get:
       operationId: admin_categories_retrieve
@@ -63,6 +84,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminCategoryDetailResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     patch:
       operationId: admin_categories_partial_update
       parameters:
@@ -93,6 +121,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminCategoryUpdateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     delete:
       operationId: admin_categories_destroy
       parameters:
@@ -108,6 +143,13 @@ paths:
       responses:
         '204':
           description: No response body
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/categories/{slug}/activate/:
     post:
       operationId: admin_categories_activate_create
@@ -128,6 +170,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminCategoryActivateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/categories/{slug}/deactivate/:
     post:
       operationId: admin_categories_deactivate_create
@@ -148,6 +197,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminCategoryDeactivateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/dashboard/:
     get:
       operationId: admin_dashboard_retrieve
@@ -162,9 +218,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/DashboardSummaryResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/products/:
     get:
       operationId: admin_products_list
+      parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - EXPIRED
+          - HIDDEN_BY_SUSPENSION
+          - REMOVED_BY_ADMIN
+        description: Filter products by lifecycle status.
       tags:
       - admin
       security:
@@ -176,6 +250,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminProductListResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/products/{id}/:
     get:
       operationId: admin_products_retrieve
@@ -197,6 +278,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminProductDetailResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/products/{id}/remove/:
     post:
       operationId: admin_products_remove_create
@@ -218,6 +306,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminProductRemoveResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/reports/:
     get:
       operationId: admin_reports_list
@@ -232,6 +327,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminReportListResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/reports/{id}/:
     get:
       operationId: admin_reports_retrieve
@@ -253,6 +355,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminReportDetailResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/reports/{id}/reject/:
     post:
       operationId: admin_reports_reject_create
@@ -285,6 +394,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminReportRejectResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/reports/{id}/resolve/:
     post:
       operationId: admin_reports_resolve_create
@@ -317,6 +433,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminReportResolveResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/reports/{id}/under-review/:
     post:
       operationId: admin_reports_under_review_create
@@ -338,9 +461,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminReportUnderReviewResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/users/:
     get:
       operationId: admin_users_list
+      parameters:
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+        description: Filter users by account activation state.
       tags:
       - admin
       security:
@@ -352,6 +488,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminUserListResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/users/{id}/:
     get:
       operationId: admin_users_retrieve
@@ -373,6 +516,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminUserDetailResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/users/{id}/activate/:
     post:
       operationId: admin_users_activate_create
@@ -394,6 +544,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminUserActivateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/users/{id}/deactivate/:
     post:
       operationId: admin_users_deactivate_create
@@ -415,9 +572,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminUserDeactivateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/vendors/:
     get:
       operationId: admin_vendors_list
+      parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - PENDING
+          - REJECTED
+          - SUSPENDED
+          - VERIFIED
+        description: Filter vendors by profile status.
       tags:
       - admin
       security:
@@ -429,6 +604,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminVendorListResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/vendors/{id}/:
     get:
       operationId: admin_vendors_retrieve
@@ -450,6 +632,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminVendorDetailResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/vendors/{id}/reinstate/:
     post:
       operationId: admin_vendors_reinstate_create
@@ -471,6 +660,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminVendorReinstateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/admin/vendors/{id}/suspend/:
     post:
       operationId: admin_vendors_suspend_create
@@ -492,6 +688,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminVendorSuspendResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/auth/login/:
     post:
       operationId: auth_login_create
@@ -519,6 +722,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/auth/logout/:
     post:
       operationId: auth_logout_create
@@ -545,6 +755,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/LogoutResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/auth/password-reset/confirm/:
     post:
       operationId: auth_password_reset_confirm_create
@@ -572,6 +789,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordResetConfirmResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/auth/password-reset/request/:
     post:
       operationId: auth_password_reset_request_create
@@ -599,6 +823,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordResetRequestResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/auth/register/:
     post:
       operationId: auth_register_create
@@ -626,36 +857,43 @@ paths:
               schema:
                 $ref: '#/components/schemas/RegisterResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/auth/token/refresh/:
     post:
       operationId: auth_token_refresh_create
       description: |-
-        Takes a refresh type JSON web token and returns an access type JSON web
-        token if the refresh token is valid.
+        Documentation-only subclass of SimpleJWT's refresh view.
+
+        Runtime behavior is inherited unchanged; this exists only so the
+        OpenAPI schema shows the actual success contract: the standard
+        response envelope with the (rotated) token pair in `data`, and a
+        public (token-based) operation.
       tags:
       - auth
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TokenRefresh'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TokenRefresh'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TokenRefresh'
-        required: true
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenRefresh'
-          description: ''
+                $ref: '#/components/schemas/TokenRefreshResponse'
+          description: Returns a new access token (and rotated refresh token).
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/categories/:
     get:
       operationId: categories_list
+      summary: Browse the active category tree (customer-facing).
       parameters:
       - name: page
         required: false
@@ -669,6 +907,12 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: parent
+        schema:
+          type: string
+        description: Filter children by parent category slug. Pass 'null' (or leave
+          empty) to list root categories.
       tags:
       - categories
       security:
@@ -678,10 +922,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedCategoryList'
+                $ref: '#/components/schemas/PaginatedCategoryListResponseList'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     post:
       operationId: categories_create
+      summary: Create a category (admin).
       tags:
       - categories
       requestBody:
@@ -703,8 +955,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CategoryCreate'
-          description: ''
+                $ref: '#/components/schemas/CategoryCreateResponse'
+          description: Category created.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/categories/{slug}/:
     get:
       operationId: categories_retrieve
@@ -723,10 +982,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Category'
+                $ref: '#/components/schemas/CategoryDetailResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     put:
       operationId: categories_update
+      summary: Update a category (admin).
       parameters:
       - in: path
         name: slug
@@ -754,8 +1021,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CategoryUpdate'
+                $ref: '#/components/schemas/CategoryUpdateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     patch:
       operationId: categories_partial_update
       parameters:
@@ -784,10 +1058,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CategoryUpdate'
+                $ref: '#/components/schemas/CategoryPartialUpdateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     delete:
       operationId: categories_destroy
+      summary: Soft-delete a category (admin).
       parameters:
       - in: path
         name: slug
@@ -801,6 +1083,13 @@ paths:
       responses:
         '204':
           description: No response body
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/categories/{slug}/activate/:
     post:
       operationId: categories_activate_create
@@ -819,8 +1108,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Category'
+                $ref: '#/components/schemas/CategoryActivateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/categories/{slug}/deactivate/:
     post:
       operationId: categories_deactivate_create
@@ -839,18 +1135,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Category'
+                $ref: '#/components/schemas/CategoryDeactivateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/conversations/:
     get:
       operationId: conversations_list
+      summary: List the authenticated user's conversations.
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        description: Conversation UUID.
-        required: true
       - name: page
         required: false
         in: query
@@ -874,15 +1172,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedConversationListResponseList'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     post:
       operationId: conversations_create
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        description: Conversation UUID.
-        required: true
+      summary: Initiate a conversation with a vendor (customers only).
       tags:
       - conversations
       requestBody:
@@ -912,6 +1211,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConversationCreateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/conversations/{id}/:
     get:
       operationId: conversations_retrieve
@@ -933,6 +1239,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConversationRetrieveResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/conversations/{id}/complete/:
     post:
       operationId: conversations_complete_create
@@ -945,17 +1258,6 @@ paths:
         required: true
       tags:
       - conversations
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Conversation'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Conversation'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Conversation'
       security:
       - jwtAuth: []
       responses:
@@ -965,6 +1267,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConversationCompleteResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/conversations/{id}/messages/:
     get:
       operationId: conversations_messages_retrieve
@@ -986,41 +1295,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConversationMessageListResponse'
           description: ''
-        '201':
+        4XX:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConversationMessageCreateResponse'
-          description: ''
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     post:
       operationId: conversations_messages_create
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        description: Conversation UUID.
-        required: true
-      tags:
-      - conversations
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConversationMessageListResponse'
-          description: ''
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConversationMessageCreateResponse'
-          description: ''
-  /api/v1/conversations/{id}/read/:
-    post:
-      operationId: conversations_read_create
       parameters:
       - in: path
         name: id
@@ -1034,13 +1317,42 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Conversation'
+              $ref: '#/components/schemas/MessageCreate'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Conversation'
+              $ref: '#/components/schemas/MessageCreate'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Conversation'
+              $ref: '#/components/schemas/MessageCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationMessageCreateResponse'
+          description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
+  /api/v1/conversations/{id}/read/:
+    post:
+      operationId: conversations_read_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: Conversation UUID.
+        required: true
+      tags:
+      - conversations
       security:
       - jwtAuth: []
       responses:
@@ -1050,6 +1362,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConversationMarkReadResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/notifications/:
     get:
       operationId: notifications_list
@@ -1070,6 +1389,11 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: unread
+        schema:
+          type: boolean
+        description: Pass 'true' to return only unread notifications.
       tags:
       - notifications
       security:
@@ -1081,6 +1405,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedNotificationListResponseList'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/notifications/{id}/read/:
     post:
       operationId: notifications_read_create
@@ -1103,6 +1434,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationMarkReadResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/notifications/device-tokens/:
     get:
       operationId: notifications_device_tokens_retrieve
@@ -1118,6 +1456,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/DeviceTokenListResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     post:
       operationId: notifications_device_tokens_create
       description: GET/POST /api/v1/notifications/device-tokens/
@@ -1150,6 +1495,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/DeviceTokenCreateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/notifications/device-tokens/{id}/deactivate/:
     post:
       operationId: notifications_device_tokens_deactivate_create
@@ -1172,6 +1524,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/DeviceTokenDeactivateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/notifications/read-all/:
     post:
       operationId: notifications_read_all_create
@@ -1187,6 +1546,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/MarkAllReadResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/notifications/unread-count/:
     get:
       operationId: notifications_unread_count_retrieve
@@ -1202,6 +1568,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/UnreadCountResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/products/:
     get:
       operationId: products_list
@@ -1277,6 +1650,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedProductListResponseList'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     post:
       operationId: products_create
       tags:
@@ -1302,6 +1682,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductCreateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/products/{slug}/:
     get:
       operationId: products_retrieve
@@ -1333,6 +1720,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductDetailResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     put:
       operationId: products_update
       parameters:
@@ -1363,6 +1757,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductUpdateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     patch:
       operationId: products_partial_update
       parameters:
@@ -1393,6 +1794,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductPartialUpdateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     delete:
       operationId: products_destroy
       parameters:
@@ -1408,6 +1816,13 @@ paths:
       responses:
         '204':
           description: No response body
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/products/{slug}/categories/:
     put:
       operationId: products_categories_update
@@ -1440,6 +1855,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductCategoryAssignmentResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/products/{slug}/images/:
     get:
       operationId: products_images_retrieve
@@ -1461,6 +1883,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductImageListResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     post:
       operationId: products_images_create
       description: Shared ownership-resolution for product image sub-resource views.
@@ -1493,6 +1922,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductImageCreateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/products/{slug}/images/{image_id}/:
     delete:
       operationId: products_images_destroy
@@ -1516,6 +1952,13 @@ paths:
       responses:
         '204':
           description: No response body
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/products/{slug}/images/{image_id}/primary/:
     patch:
       operationId: products_images_primary_partial_update
@@ -1543,6 +1986,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductImageSetPrimaryResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/products/{slug}/inventory/:
     patch:
       operationId: products_inventory_partial_update
@@ -1574,6 +2024,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductInventoryUpdateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/products/{slug}/remove/:
     post:
       operationId: products_remove_create
@@ -1594,6 +2051,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductRemoveResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/products/{slug}/renew/:
     post:
       operationId: products_renew_create
@@ -1614,6 +2078,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductRenewResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/products/mine/:
     get:
       operationId: products_mine_retrieve
@@ -1628,6 +2099,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductMineResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/reports/:
     get:
       operationId: reports_list
@@ -1666,6 +2144,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedReportsAdminListResponseList'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/reports/{report_id}/:
     get:
       operationId: reports_retrieve
@@ -1688,6 +2173,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReportDetailResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/reports/{report_id}/reject/:
     post:
       operationId: reports_reject_create
@@ -1721,6 +2213,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReportRejectResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/reports/{report_id}/resolve/:
     post:
       operationId: reports_resolve_create
@@ -1754,6 +2253,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReportResolveResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/reports/{report_id}/under-review/:
     post:
       operationId: reports_under_review_create
@@ -1776,6 +2282,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReportUnderReviewResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/reports/mine/:
     get:
       operationId: reports_mine_list
@@ -1804,6 +2317,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedMyReportsListResponseList'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/reports/products/{product_id}/:
     post:
       operationId: reports_products_create
@@ -1838,6 +2358,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductReportCreateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/reports/vendors/{vendor_id}/:
     post:
       operationId: reports_vendors_create
@@ -1872,6 +2399,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/VendorReportCreateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/reviews/{id}/:
     get:
       operationId: reviews_retrieve
@@ -1899,6 +2433,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReviewRetrieveResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     patch:
       operationId: reviews_partial_update
       description: |-
@@ -1936,6 +2477,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReviewUpdateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/reviews/conversations/{conversation_id}/:
     get:
       operationId: reviews_conversations_retrieve
@@ -1963,6 +2511,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConversationReviewResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     post:
       operationId: reviews_conversations_create
       description: |-
@@ -2001,6 +2556,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReviewCreateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/reviews/stores/{store_slug}/:
     get:
       operationId: reviews_stores_list
@@ -2036,9 +2598,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedStoreReviewListResponseList'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/stores/:
     post:
       operationId: stores_create
+      summary: Create the store for the authenticated vendor.
       tags:
       - stores
       requestBody:
@@ -2059,8 +2629,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreWrite'
-          description: ''
+                $ref: '#/components/schemas/StoreCreateResponse'
+          description: Store created.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/stores/{slug}/:
     get:
       operationId: stores_retrieve
@@ -2079,8 +2656,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Store'
+                $ref: '#/components/schemas/StoreDetailResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/stores/me/:
     get:
       operationId: stores_me_retrieve
@@ -2093,8 +2677,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Store'
+                $ref: '#/components/schemas/StoreMeResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     patch:
       operationId: stores_me_partial_update
       tags:
@@ -2117,8 +2708,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreWrite'
+                $ref: '#/components/schemas/StoreMeUpdateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     delete:
       operationId: stores_me_destroy
       tags:
@@ -2126,11 +2724,23 @@ paths:
       security:
       - jwtAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreMeDeleteResponse'
+          description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/universities/:
     get:
       operationId: universities_list
+      summary: List supported universities (onboarding dropdown).
       parameters:
       - name: page
         required: false
@@ -2153,10 +2763,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedUniversityList'
+                $ref: '#/components/schemas/PaginatedUniversityListResponseList'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     post:
       operationId: universities_create
+      summary: Create a university (admin).
       tags:
       - universities
       requestBody:
@@ -2178,8 +2796,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UniversityAdminWrite'
-          description: ''
+                $ref: '#/components/schemas/UniversityCreateResponse'
+          description: University created.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/universities/{slug}/:
     get:
       operationId: universities_retrieve
@@ -2198,10 +2823,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/University'
+                $ref: '#/components/schemas/UniversityDetailResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     put:
       operationId: universities_update
+      summary: Update a university (admin).
       parameters:
       - in: path
         name: slug
@@ -2229,8 +2862,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UniversityAdminWrite'
+                $ref: '#/components/schemas/UniversityUpdateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     patch:
       operationId: universities_partial_update
       parameters:
@@ -2259,8 +2899,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UniversityAdminWrite'
+                $ref: '#/components/schemas/UniversityPartialUpdateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/universities/{slug}/activate/:
     post:
       operationId: universities_activate_create
@@ -2272,17 +2919,6 @@ paths:
         required: true
       tags:
       - universities
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/University'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/University'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/University'
       security:
       - jwtAuth: []
       responses:
@@ -2290,8 +2926,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/University'
+                $ref: '#/components/schemas/UniversityActivateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/universities/{slug}/deactivate/:
     post:
       operationId: universities_deactivate_create
@@ -2303,17 +2946,6 @@ paths:
         required: true
       tags:
       - universities
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/University'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/University'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/University'
       security:
       - jwtAuth: []
       responses:
@@ -2321,8 +2953,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/University'
+                $ref: '#/components/schemas/UniversityDeactivateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/users/me/:
     get:
       operationId: users_me_retrieve
@@ -2338,6 +2977,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/CurrentUserResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     patch:
       operationId: users_me_partial_update
       description: GET/PATCH the authenticated user's own profile.
@@ -2363,6 +3009,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserUpdateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/users/me/active-university/:
     patch:
       operationId: users_me_active_university_partial_update
@@ -2391,6 +3044,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/SetActiveUniversityResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/vendors/:
     get:
       operationId: vendors_list
@@ -2401,6 +3061,7 @@ paths:
         GET    /vendors/me/             own profile (Customer)
         POST   /vendors/{id}/suspend/   Admin
         POST   /vendors/{id}/reinstate/ Admin
+      summary: List vendor profiles (admin verification queue).
       parameters:
       - name: page
         required: false
@@ -2414,6 +3075,16 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - PENDING
+          - REJECTED
+          - SUSPENDED
+          - VERIFIED
+        description: Filter vendor profiles by status.
       tags:
       - vendors
       security:
@@ -2423,8 +3094,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedVendorProfileList'
+                $ref: '#/components/schemas/PaginatedVendorProfileListResponseList'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
     post:
       operationId: vendors_create
       description: |-
@@ -2434,6 +3112,7 @@ paths:
         GET    /vendors/me/             own profile (Customer)
         POST   /vendors/{id}/suspend/   Admin
         POST   /vendors/{id}/reinstate/ Admin
+      summary: Apply to become a vendor (auto-approved in MVP).
       tags:
       - vendors
       requestBody:
@@ -2455,18 +3134,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VendorApplication'
-          description: ''
+                $ref: '#/components/schemas/VendorApplicationResponse'
+          description: Application submitted and auto-approved (MVP).
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/vendors/{id}/:
     get:
       operationId: vendors_retrieve
-      description: |-
-        POST   /vendors/               apply (Customer)               -> auto-verified
-        GET    /vendors/                list (Admin)                  -> vendor queue
-        GET    /vendors/{id}/           retrieve (Admin)
-        GET    /vendors/me/             own profile (Customer)
-        POST   /vendors/{id}/suspend/   Admin
-        POST   /vendors/{id}/reinstate/ Admin
+      description: Admin retrieval of any vendor profile (verification/audit).
+      summary: Retrieve a vendor profile (admin).
       parameters:
       - in: path
         name: id
@@ -2484,8 +3165,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VendorProfile'
+                $ref: '#/components/schemas/VendorProfileDetailResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/vendors/{id}/reinstate/:
     post:
       operationId: vendors_reinstate_create
@@ -2496,6 +3184,7 @@ paths:
         GET    /vendors/me/             own profile (Customer)
         POST   /vendors/{id}/suspend/   Admin
         POST   /vendors/{id}/reinstate/ Admin
+      summary: Reinstate a suspended vendor (admin).
       parameters:
       - in: path
         name: id
@@ -2506,17 +3195,6 @@ paths:
         required: true
       tags:
       - vendors
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VendorProfile'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/VendorProfile'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/VendorProfile'
       security:
       - jwtAuth: []
       responses:
@@ -2524,8 +3202,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VendorProfile'
+                $ref: '#/components/schemas/VendorReinstateResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/vendors/{id}/suspend/:
     post:
       operationId: vendors_suspend_create
@@ -2536,6 +3221,7 @@ paths:
         GET    /vendors/me/             own profile (Customer)
         POST   /vendors/{id}/suspend/   Admin
         POST   /vendors/{id}/reinstate/ Admin
+      summary: Suspend a vendor (admin; hides store and listings).
       parameters:
       - in: path
         name: id
@@ -2546,17 +3232,6 @@ paths:
         required: true
       tags:
       - vendors
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VendorProfile'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/VendorProfile'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/VendorProfile'
       security:
       - jwtAuth: []
       responses:
@@ -2564,8 +3239,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VendorProfile'
+                $ref: '#/components/schemas/VendorSuspendResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
   /api/v1/vendors/me/:
     get:
       operationId: vendors_me_retrieve
@@ -2576,6 +3258,7 @@ paths:
         GET    /vendors/me/             own profile (Customer)
         POST   /vendors/{id}/suspend/   Admin
         POST   /vendors/{id}/reinstate/ Admin
+      summary: Retrieve the authenticated user's own vendor profile.
       tags:
       - vendors
       security:
@@ -2585,8 +3268,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VendorProfile'
+                $ref: '#/components/schemas/VendorProfileMeResponse'
           description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Failure envelope for all 4xx responses (validation, authentication,
+            authorization, business-rule conflicts).
 components:
   schemas:
     AdminCategory:
@@ -3249,6 +3939,19 @@ components:
       - parent
       - slug
       - updated_at
+    CategoryActivateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/Category'
+      required:
+      - data
     CategoryBrief:
       type: object
       properties:
@@ -3282,6 +3985,102 @@ components:
           minimum: 0
       required:
       - name
+    CategoryCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/Category'
+      required:
+      - data
+    CategoryDeactivateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/Category'
+      required:
+      - data
+    CategoryDetailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/Category'
+      required:
+      - data
+    CategoryListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/CategoryListResponseData'
+      required:
+      - data
+    CategoryListResponseData:
+      type: object
+      properties:
+        count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        page_size:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+      required:
+      - count
+      - current_page
+      - next
+      - page_size
+      - previous
+      - results
+      - total_pages
+    CategoryPartialUpdateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/Category'
+      required:
+      - data
     CategoryUpdate:
       type: object
       description: Only `name` is writable post-creation.
@@ -3291,6 +4090,19 @@ components:
           maxLength: 100
       required:
       - name
+    CategoryUpdateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/Category'
+      required:
+      - data
     ConditionEnum:
       enum:
       - NEW
@@ -3736,6 +4548,20 @@ components:
       required:
       - email
       - password
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: false
+        message:
+          type: string
+          default: ''
+        errors:
+          type: object
+          additionalProperties: {}
+      required:
+      - errors
     LoginResponse:
       type: object
       properties:
@@ -3837,6 +4663,13 @@ components:
       - is_own
       - read_at
       - sender
+    MessageCreate:
+      type: object
+      properties:
+        body:
+          type: string
+      required:
+      - body
     MyReportsListResponse:
       type: object
       properties:
@@ -4001,7 +4834,7 @@ components:
     NullEnum:
       enum:
       - null
-    PaginatedCategoryList:
+    PaginatedCategoryListResponseList:
       type: object
       required:
       - count
@@ -4023,7 +4856,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Category'
+            $ref: '#/components/schemas/CategoryListResponse'
     PaginatedConversationListResponseList:
       type: object
       required:
@@ -4162,7 +4995,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StoreReviewListResponse'
-    PaginatedUniversityList:
+    PaginatedUniversityListResponseList:
       type: object
       required:
       - count
@@ -4184,8 +5017,8 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/University'
-    PaginatedVendorProfileList:
+            $ref: '#/components/schemas/UniversityListResponse'
+    PaginatedVendorProfileListResponseList:
       type: object
       required:
       - count
@@ -4207,7 +5040,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/VendorProfile'
+            $ref: '#/components/schemas/VendorProfileListResponse'
     PasswordResetConfirm:
       type: object
       properties:
@@ -5336,6 +6169,67 @@ components:
       - slug
       - updated_at
       - vendor_type
+    StoreCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/Store'
+      required:
+      - data
+    StoreDetailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/Store'
+      required:
+      - data
+    StoreMeDeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+    StoreMeResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/Store'
+      required:
+      - data
+    StoreMeUpdateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/Store'
+      required:
+      - data
     StoreReviewListResponse:
       type: object
       properties:
@@ -5397,12 +6291,30 @@ components:
           type: string
           nullable: true
           maxLength: 20
-    TokenRefresh:
+    TokenRefreshResponse:
       type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/TokenRefreshResponseData'
+      required:
+      - data
+    TokenRefreshResponseData:
+      type: object
+      description: |-
+        `data` payload of POST /auth/token/refresh/.
+
+        Both tokens are present because `ROTATE_REFRESH_TOKENS` is enabled
+        (settings.SIMPLE_JWT), so the refresh token is reissued on every
+        successful refresh.
       properties:
         access:
           type: string
-          readOnly: true
         refresh:
           type: string
       required:
@@ -5458,6 +6370,19 @@ components:
       - short_name
       - slug
       - updated_at
+    UniversityActivateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/University'
+      required:
+      - data
     UniversityAdminWrite:
       type: object
       properties:
@@ -5473,6 +6398,115 @@ components:
       required:
       - name
       - short_name
+    UniversityCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/University'
+      required:
+      - data
+    UniversityDeactivateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/University'
+      required:
+      - data
+    UniversityDetailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/University'
+      required:
+      - data
+    UniversityListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/UniversityListResponseData'
+      required:
+      - data
+    UniversityListResponseData:
+      type: object
+      properties:
+        count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        page_size:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/University'
+      required:
+      - count
+      - current_page
+      - next
+      - page_size
+      - previous
+      - results
+      - total_pages
+    UniversityPartialUpdateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/University'
+      required:
+      - data
+    UniversityUpdateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/University'
+      required:
+      - data
     UnreadCount:
       type: object
       properties:
@@ -5615,6 +6649,19 @@ components:
       - store_name
       - university
       - vendor_type
+    VendorApplicationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/VendorProfile'
+      required:
+      - data
     VendorDocument:
       type: object
       properties:
@@ -5765,6 +6812,89 @@ components:
       - updated_at
       - user
       - vendor_type
+    VendorProfileDetailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/VendorProfile'
+      required:
+      - data
+    VendorProfileListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/VendorProfileListResponseData'
+      required:
+      - data
+    VendorProfileListResponseData:
+      type: object
+      properties:
+        count:
+          type: integer
+        total_pages:
+          type: integer
+        current_page:
+          type: integer
+        page_size:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/VendorProfile'
+      required:
+      - count
+      - current_page
+      - next
+      - page_size
+      - previous
+      - results
+      - total_pages
+    VendorProfileMeResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/VendorProfile'
+      required:
+      - data
+    VendorReinstateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/VendorProfile'
+      required:
+      - data
     VendorReportCreateResponse:
       type: object
       properties:
@@ -5790,6 +6920,19 @@ components:
         * `VERIFIED` - Verified
         * `REJECTED` - Rejected
         * `SUSPENDED` - Suspended
+    VendorSuspendResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: ''
+        data:
+          $ref: '#/components/schemas/VendorProfile'
+      required:
+      - data
     VendorTypeEnum:
       enum:
       - STUDENT

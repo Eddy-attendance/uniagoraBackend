@@ -1,5 +1,38 @@
-from drf_spectacular.utils import inline_serializer
+from drf_spectacular.openapi import AutoSchema
+from drf_spectacular.utils import OpenApiResponse, inline_serializer
 from rest_framework import serializers
+
+
+class EnvelopeAutoSchema(AutoSchema):
+    """
+    Project-wide AutoSchema (wired via
+    `REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"]`) that documents the shared
+    failure envelope on every operation.
+
+    The runtime guarantees (via `common.exceptions.custom_exception_handler`
+    plus the `EnvelopeJSONRenderer` backstop) that every 4xx response has
+    the exact `{success, message, errors}` shape. Documenting it once,
+    here, via the `ErrorResponse` component keeps the schema aligned with
+    the API-standards requirement (Backend Responsibility doc §8: every
+    endpoint documents its error responses) without an `ErrorResponse`
+    annotation per view.
+    """
+
+    def _get_response_bodies(self, direction="response"):
+        responses = super()._get_response_bodies(direction)
+        if direction == "response" and "4XX" not in responses:
+            responses["4XX"] = self._get_response_for_code(
+                OpenApiResponse(
+                    response=ErrorResponse,
+                    description=(
+                        "Failure envelope for all 4xx responses (validation, "
+                        "authentication, authorization, business-rule conflicts)."
+                    ),
+                ),
+                "4XX",
+                direction=direction,
+            )
+        return responses
 
 
 def success_response_schema(
@@ -95,6 +128,13 @@ def paginated_response_schema(
             ),
         },
     )
+
+
+class EmptyDataSerializer(serializers.Serializer):
+    """Empty `data` payload for message-only success responses."""
+
+
+EmptyResponseData = EmptyDataSerializer()
 
 
 ErrorResponse = inline_serializer(

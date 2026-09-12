@@ -130,7 +130,7 @@ class AdminProductService:
 
     @staticmethod
     def remove(*, product):
-        return ProductLifecycleService.admin_remove(product)
+        return ProductLifecycleService.admin_remove(product=product)
 
 
 class AdminCategoryService:
@@ -194,11 +194,11 @@ class AdminReportService:
     @staticmethod
     def resolve(*, report, admin_user, resolution_notes=None):
         return ReportService.resolve(
-            report, resolved_by=admin_user, resolution_notes=resolution_notes
+            report=report, admin=admin_user, resolution_notes=resolution_notes
         )
 
     @staticmethod
     def reject(*, report, admin_user, resolution_notes=None):
         return ReportService.reject(
-            report, resolved_by=admin_user, resolution_notes=resolution_notes
+            report=report, admin=admin_user, resolution_notes=resolution_notes
         )

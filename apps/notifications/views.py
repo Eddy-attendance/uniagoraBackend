@@ -1,4 +1,4 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import generics, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
@@ -24,6 +24,15 @@ from .services import DeviceTokenService, NotificationService
 
 
 @extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="unread",
+            type=bool,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="Pass 'true' to return only unread notifications.",
+        ),
+    ],
     responses={
         200: paginated_response_schema(
             "NotificationListResponse",

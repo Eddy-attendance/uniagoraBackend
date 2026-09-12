@@ -1,9 +1,9 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from apps.common.openapi import success_response_schema
 from apps.common.response import success_response
@@ -18,8 +18,34 @@ from .serializers import (
     PasswordResetRequestSerializer,
     RegisterResponseDataSerializer,
     RegisterSerializer,
+    TokenRefreshResponseDataSerializer,
 )
 from .services import AuthService
+
+
+class EnvelopedTokenRefreshView(TokenRefreshView):
+    """Documentation-only subclass of SimpleJWT's refresh view.
+
+    Runtime behavior is inherited unchanged; this exists only so the
+    OpenAPI schema shows the actual success contract: the standard
+    response envelope with the (rotated) token pair in `data`, and a
+    public (token-based) operation.
+    """
+
+    @extend_schema(
+        auth=[],
+        request=None,
+        responses={
+            200: OpenApiResponse(
+                success_response_schema(
+                    "TokenRefreshResponse", TokenRefreshResponseDataSerializer
+                ),
+                description="Returns a new access token (and rotated refresh token).",
+            ),
+        },
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
 
 class RegisterView(APIView):

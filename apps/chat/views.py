@@ -26,22 +26,6 @@ class MarkConversationReadDataSerializer(serializers.Serializer):
     marked_read = serializers.IntegerField()
 
 
-@extend_schema(
-    parameters=[
-        OpenApiParameter(
-            name="id",
-            type=str,
-            location=OpenApiParameter.PATH,
-            description="Conversation UUID.",
-        )
-    ],
-    responses={
-        status.HTTP_200_OK: paginated_response_schema(
-            "ConversationListResponse",
-            ConversationSerializer,
-        ),
-    },
-)
 class ConversationViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
@@ -93,11 +77,25 @@ class ConversationViewSet(
 
         return [IsAuthenticatedCustomer()]
 
+    @extend_schema(
+        summary="List the authenticated user's conversations.",
+        request=None,
+        responses={
+            status.HTTP_200_OK: paginated_response_schema(
+                "ConversationListResponse",
+                ConversationSerializer,
+            ),
+        },
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
     def _serialize_annotated(self, conversation):
         annotated = self.get_queryset().get(pk=conversation.pk)
         return self.get_serializer(annotated)
 
     @extend_schema(
+        summary="Initiate a conversation with a vendor (customers only).",
         request=ConversationCreateSerializer,
         responses={
             status.HTTP_200_OK: success_response_schema(
@@ -134,6 +132,15 @@ class ConversationViewSet(
         )
 
     @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=str,
+                location=OpenApiParameter.PATH,
+                description="Conversation UUID.",
+            )
+        ],
+        request=None,
         responses={
             status.HTTP_200_OK: success_response_schema(
                 "ConversationRetrieveResponse",
@@ -145,6 +152,15 @@ class ConversationViewSet(
         return super().retrieve(request, *args, **kwargs)
 
     @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=str,
+                location=OpenApiParameter.PATH,
+                description="Conversation UUID.",
+            )
+        ],
+        request=None,
         responses={
             status.HTTP_200_OK: success_response_schema(
                 "ConversationCompleteResponse",
@@ -170,12 +186,35 @@ class ConversationViewSet(
         )
 
     @extend_schema(
+        methods=["get"],
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=str,
+                location=OpenApiParameter.PATH,
+                description="Conversation UUID.",
+            )
+        ],
         request=None,
         responses={
             status.HTTP_200_OK: paginated_response_schema(
                 "ConversationMessageListResponse",
                 MessageSerializer,
             ),
+        },
+    )
+    @extend_schema(
+        methods=["post"],
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=str,
+                location=OpenApiParameter.PATH,
+                description="Conversation UUID.",
+            )
+        ],
+        request=MessageCreateSerializer,
+        responses={
             status.HTTP_201_CREATED: success_response_schema(
                 "ConversationMessageCreateResponse",
                 MessageSerializer,
@@ -224,6 +263,15 @@ class ConversationViewSet(
         return self.get_paginated_response(serializer.data)
 
     @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=str,
+                location=OpenApiParameter.PATH,
+                description="Conversation UUID.",
+            )
+        ],
+        request=None,
         responses={
             status.HTTP_200_OK: success_response_schema(
                 "ConversationMarkReadResponse",

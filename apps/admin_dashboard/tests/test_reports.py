@@ -2,13 +2,14 @@ from unittest.mock import patch
 
 from rest_framework import status
 
+from apps.products.models import ProductStatus
 from apps.products.tests.factories import (
     make_customer,
     make_product,
     make_university,
     make_verified_vendor,
 )
-from apps.reports.models import Report, ReportReason
+from apps.reports.models import Report, ReportReason, ReportStatus
 
 from .base import AdminAPITestCase
 
@@ -104,8 +105,8 @@ class AdminReportViewTests(AdminAPITestCase):
             )
 
             mock_resolve.assert_called_once_with(
-                self.report,
-                resolved_by=self.admin,
+                report=self.report,
+                admin=self.admin,
                 resolution_notes="Confirmed violation.",
             )
 
@@ -123,5 +124,81 @@ class AdminReportViewTests(AdminAPITestCase):
                 f"/api/v1/admin/reports/{uuid.uuid4()}/reject/", {}, format="json"
             )
         mock_reject.assert_called_once_with(
-            self.report, resolved_by=self.admin, resolution_notes=None
+            report=self.report, admin=self.admin, resolution_notes=None
         )
+
+    # -- Unmocked integration tests ------------------------------------
+    #
+    # The mocked delegation tests above cannot catch signature drift in
+    # ReportService.resolve()/reject(): mocking ReportService hides a
+    # TypeError raised by a wrong call contract (the exact regression
+    # where the facade passed `resolved_by=` and a positional report
+    # argument to a keyword-only parameter). These tests exercise the
+    # real view -> AdminReportService -> ReportService -> moderation-
+    # cascade path against real fixtures.
+
+    def test_resolve_end_to_end_persists_and_cascades_through_real_service(
+        self,
+    ):
+        """Regression guard: POST .../resolve/ must succeed against the
+        real ReportService and drive the real moderation cascade.
+
+        A wrong call contract between AdminReportService and
+        ReportService surfaces here as a 500 (TypeError) instead of a
+        200, and no moderation side effect occurs.
+        """
+        self.client.force_authenticate(self.admin)
+        response = self.client.post(
+            f"/api/v1/admin/reports/{self.report.id}/resolve/",
+            {"resolution_notes": "Confirmed violation."},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Envelope contract (PRD §17) is preserved.
+        body = response.json()
+        self.assertTrue(body["success"])
+        self.assertEqual(body["message"], "Report resolved.")
+
+        self.report.refresh_from_db()
+        self.product.refresh_from_db()
+
+        # Real ReportService.resolve() persistence contract.
+        self.assertEqual(self.report.status, ReportStatus.RESOLVED)
+        self.assertEqual(self.report.resolved_by, self.admin)
+        self.assertIsNotNone(self.report.resolved_at)
+        self.assertEqual(self.report.resolution_notes, "Confirmed violation.")
+
+        # The real moderation cascade ran: product reports resolve into
+        # ProductLifecycleService.admin_remove() (DDS §7.3).
+        self.assertEqual(self.product.status, ProductStatus.REMOVED_BY_ADMIN)
+
+    def test_reject_end_to_end_closes_report_without_moderation_cascade(
+        self,
+    ):
+        """Regression guard: POST .../reject/ must succeed against the
+        real ReportService and trigger no moderation side effect.
+        """
+        self.client.force_authenticate(self.admin)
+        response = self.client.post(
+            f"/api/v1/admin/reports/{self.report.id}/reject/",
+            {},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        body = response.json()
+        self.assertTrue(body["success"])
+        self.assertEqual(body["message"], "Report rejected.")
+
+        self.report.refresh_from_db()
+        self.product.refresh_from_db()
+
+        self.assertEqual(self.report.status, ReportStatus.REJECTED)
+        self.assertEqual(self.report.resolved_by, self.admin)
+        self.assertIsNotNone(self.report.resolved_at)
+
+        # "No action warranted" path: product remains untouched.
+        self.assertEqual(self.product.status, ProductStatus.ACTIVE)

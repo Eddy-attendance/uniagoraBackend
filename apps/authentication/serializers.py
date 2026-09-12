@@ -78,5 +78,17 @@ class RegisterResponseDataSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
 
+class TokenRefreshResponseDataSerializer(serializers.Serializer):
+    """`data` payload of POST /auth/token/refresh/.
+
+    Both tokens are present because `ROTATE_REFRESH_TOKENS` is enabled
+    (settings.SIMPLE_JWT), so the refresh token is reissued on every
+    successful refresh.
+    """
+
+    access = serializers.CharField()
+    refresh = serializers.CharField()
+
+
 class EmptyResponseDataSerializer(serializers.Serializer):
     pass

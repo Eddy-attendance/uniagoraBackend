@@ -1,8 +1,16 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+)
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from apps.common.openapi import (
+    paginated_response_schema,
+    success_response_schema,
+)
 from apps.core.permissions import IsAdmin, IsAuthenticatedCustomer
 
 from .models import Category
@@ -52,6 +60,47 @@ class CategoryViewSet(
             permission_classes = [IsAdmin]
         return [permission() for permission in permission_classes]
 
+    @extend_schema(
+        summary="Browse the active category tree (customer-facing).",
+        parameters=[
+            OpenApiParameter(
+                name="parent",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description=(
+                    "Filter children by parent category slug. Pass 'null' "
+                    "(or leave empty) to list root categories."
+                ),
+            )
+        ],
+        request=None,
+        responses={
+            200: paginated_response_schema("CategoryListResponse", CategorySerializer),
+        },
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @extend_schema(
+        request=None,
+        responses={
+            200: success_response_schema("CategoryDetailResponse", CategorySerializer),
+        },
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="Create a category (admin).",
+        request=CategoryCreateSerializer,
+        responses={
+            201: OpenApiResponse(
+                success_response_schema("CategoryCreateResponse", CategorySerializer),
+                description="Category created.",
+            ),
+        },
+    )
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -60,6 +109,13 @@ class CategoryViewSet(
             CategorySerializer(category).data, status=status.HTTP_201_CREATED
         )
 
+    @extend_schema(
+        summary="Update a category (admin).",
+        request=CategoryUpdateSerializer,
+        responses={
+            200: success_response_schema("CategoryUpdateResponse", CategorySerializer),
+        },
+    )
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
@@ -70,10 +126,22 @@ class CategoryViewSet(
         )
         return Response(CategorySerializer(category).data)
 
+    @extend_schema(
+        request=CategoryUpdateSerializer,
+        responses={
+            200: success_response_schema(
+                "CategoryPartialUpdateResponse", CategorySerializer
+            ),
+        },
+    )
     def partial_update(self, request, *args, **kwargs):
         kwargs["partial"] = True
         return self.update(request, *args, **kwargs)
 
+    @extend_schema(
+        summary="Soft-delete a category (admin).",
+        responses={204: None},
+    )
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         CategoryService.delete(category=instance)
@@ -81,7 +149,11 @@ class CategoryViewSet(
 
     @extend_schema(
         request=None,
-        responses={200: CategorySerializer},
+        responses={
+            200: success_response_schema(
+                "CategoryActivateResponse", CategorySerializer
+            ),
+        },
     )
     @action(detail=True, methods=["post"])
     def activate(self, request, *args, **kwargs):
@@ -91,7 +163,11 @@ class CategoryViewSet(
 
     @extend_schema(
         request=None,
-        responses={200: CategorySerializer},
+        responses={
+            200: success_response_schema(
+                "CategoryDeactivateResponse", CategorySerializer
+            ),
+        },
     )
     @action(detail=True, methods=["post"])
     def deactivate(self, request, *args, **kwargs):
