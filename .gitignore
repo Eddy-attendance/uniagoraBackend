@@ -1,5 +1,6 @@
 # Virtual environment
 .venv/
+knowledge.md
 
 # Environment
 .env
@@ -50,3 +51,4 @@ htmlcov/
 db.sqlite3
 media/
 staticfiles/
+GEMINI.md
