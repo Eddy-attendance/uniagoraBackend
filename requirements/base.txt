@@ -6,10 +6,10 @@ python-decouple
 django-filter
 django-cors-headers
 channels
-channels-redis
+channels-redis>=4.3
 cloudinary
 django-cloudinary-storage
 drf-spectacular
 Pillow
 daphne
-redis
+redis>=4.6

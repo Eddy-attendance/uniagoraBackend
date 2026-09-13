@@ -1,4 +1,5 @@
 from decimal import Decimal
+from unittest.mock import patch
 
 from django.test import TestCase
 from django.utils import timezone
@@ -783,7 +784,11 @@ class ProductImageServiceTests(TestCase):
                 image=image_b,
             )
 
-    def test_deleting_non_primary_image_leaves_primary_untouched(self):
+    @patch("cloudinary.uploader.destroy")
+    def test_deleting_non_primary_image_leaves_primary_untouched(
+        self,
+        mock_destroy,
+    ):
         product = make_product(
             self.store,
             self.university,
@@ -808,7 +813,11 @@ class ProductImageServiceTests(TestCase):
 
         self.assertTrue(primary.is_primary)
 
-    def test_deleting_primary_image_promotes_next_image(self):
+    @patch("cloudinary.uploader.destroy")
+    def test_deleting_primary_image_promotes_next_image(
+        self,
+        mock_destroy,
+    ):
         product = make_product(
             self.store,
             self.university,
@@ -854,7 +863,11 @@ class ProductImageServiceTests(TestCase):
 
         self.assertTrue(only.is_primary)
 
-    def test_delete_image_is_hard_delete(self):
+    @patch("cloudinary.uploader.destroy")
+    def test_delete_image_is_hard_delete(
+        self,
+        mock_destroy,
+    ):
         product = make_product(
             self.store,
             self.university,
@@ -876,6 +889,9 @@ class ProductImageServiceTests(TestCase):
         )
 
         self.assertFalse(ProductImage.objects.filter(pk=second.pk).exists())
+
+        # The Cloudinary asset behind the hard-deleted row is destroyed.
+        mock_destroy.assert_called_once()
 
         primary.refresh_from_db()
 

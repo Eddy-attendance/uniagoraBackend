@@ -6,6 +6,7 @@ knowledge.md
 .env
 .env.*
 !.env.example
+.env.example
 
 # Python
 __pycache__/
@@ -52,3 +53,4 @@ db.sqlite3
 media/
 staticfiles/
 GEMINI.md
+docs/CLOUDINARY_SETUP_REPORT.md

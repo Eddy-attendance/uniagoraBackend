@@ -4,6 +4,7 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from apps.categories.models import Category
+from apps.common.fields import validate_image_content_type, validate_upload_size
 
 from .models import Product, ProductCondition, ProductImage
 
@@ -232,6 +233,7 @@ class ProductCreateSerializer(serializers.Serializer):
 
     primary_image = serializers.ImageField(
         required=True,
+        validators=[validate_upload_size, validate_image_content_type],
     )
 
 
@@ -340,7 +342,9 @@ class ProductCategoryAssignmentSerializer(serializers.Serializer):
 
 
 class ProductImageUploadSerializer(serializers.Serializer):
-    image = serializers.ImageField()
+    image = serializers.ImageField(
+        validators=[validate_upload_size, validate_image_content_type],
+    )
 
     is_primary = serializers.BooleanField(
         required=False,

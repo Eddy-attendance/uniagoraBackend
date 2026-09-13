@@ -1,4 +1,5 @@
 from decimal import Decimal
+from unittest.mock import patch
 
 from django.db import IntegrityError, transaction
 from django.test import TestCase
@@ -281,7 +282,11 @@ class ProductImageModelTests(TestCase):
             product.images.all(),
         )
 
-    def test_cascade_delete_from_product_hard_delete(self):
+    @patch("cloudinary.uploader.destroy")
+    def test_cascade_delete_from_product_hard_delete(
+        self,
+        mock_destroy,
+    ):
         product = make_product(
             self.store,
             self.university,
@@ -299,6 +304,9 @@ class ProductImageModelTests(TestCase):
             ProductImage.objects.filter(product_id=product.pk).count(),
             0,
         )
+
+        # The cascade removed the row, so its Cloudinary asset is destroyed.
+        mock_destroy.assert_called_once()
 
     def test_only_one_primary_image_allowed_at_db_level(self):
         product = make_product(

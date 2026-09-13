@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 
+import cloudinary
+import cloudinary.api  # noqa: F401  (registers the Admin API used by health checks)
+import cloudinary.uploader
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -198,6 +201,25 @@ USE_I18N = True
 USE_TZ = True
 
 
+# Media storage (Cloudinary)
+# Backs every Cloudinary-backed model field (apps.common.fields): product
+# images, vendor logos/documents, university logos, chat attachments. The
+# Cloudinary SDK's field uploads via cloudinary.uploader in pre_save — Django's
+# DEFAULT_FILE_STORAGE is intentionally NOT used (fields bypass Django's
+# storage framework).
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": config("CLOUDINARY_CLOUD_NAME", default=""),
+    "API_KEY": config("CLOUDINARY_API_KEY", default=""),
+    "API_SECRET": config("CLOUDINARY_API_SECRET", default=""),
+}
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE["CLOUD_NAME"],
+    api_key=CLOUDINARY_STORAGE["API_KEY"],
+    api_secret=CLOUDINARY_STORAGE["API_SECRET"],
+    secure=True,  # serve https://res.cloudinary.com asset URLs
+)
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
@@ -216,5 +238,5 @@ EMAIL_BACKEND = (
 )
 DEFAULT_FROM_EMAIL = "no-reply@uniagora.app"
 FRONTEND_PASSWORD_RESET_URL = (
-    "https://uniagora.app/reset-password"  # adjust to real frontend route
+    "https://uniagora.app/reset-password"  # would be adjusted to real frontend route
 )
